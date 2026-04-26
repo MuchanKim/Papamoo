@@ -1,0 +1,76 @@
+import Foundation
+import SwiftData
+
+@Observable
+final class CalendarViewModel {
+    private let context: ModelContext
+    private(set) var subscriptions: [Subscription] = []
+    var displayedMonth: Int
+    var displayedYear: Int
+    var selectedDay: Int?
+
+    init(context: ModelContext) {
+        self.context = context
+        self.displayedMonth = Calendar.current.component(.month, from: .now)
+        self.displayedYear = Calendar.current.component(.year, from: .now)
+    }
+
+    var monthName: String {
+        let components = DateComponents(year: displayedYear, month: displayedMonth)
+        let date = Calendar.current.date(from: components)!
+        return date.formatted(.dateTime.month(.wide))
+    }
+
+    var eventDates: [Int: [SubscriptionCategory]] {
+        var result: [Int: [SubscriptionCategory]] = [:]
+        for sub in subscriptions {
+            let nextDate = sub.nextPaymentDate
+            let calendar = Calendar.current
+            let month = calendar.component(.month, from: nextDate)
+            let year = calendar.component(.year, from: nextDate)
+            if month == displayedMonth && year == displayedYear {
+                let day = calendar.component(.day, from: nextDate)
+                result[day, default: []].append(sub.category)
+            }
+        }
+        return result
+    }
+
+    var selectedDaySubscriptions: [Subscription] {
+        guard let selectedDay else { return [] }
+        return subscriptions.filter { sub in
+            let calendar = Calendar.current
+            let nextDate = sub.nextPaymentDate
+            return calendar.component(.day, from: nextDate) == selectedDay
+                && calendar.component(.month, from: nextDate) == displayedMonth
+                && calendar.component(.year, from: nextDate) == displayedYear
+        }
+    }
+
+    var monthTotal: Decimal {
+        subscriptions
+            .filter { sub in
+                let calendar = Calendar.current
+                let nextDate = sub.nextPaymentDate
+                return calendar.component(.month, from: nextDate) == displayedMonth
+                    && calendar.component(.year, from: nextDate) == displayedYear
+            }
+            .reduce(0) { $0 + $1.amount }
+    }
+
+    func fetch() {
+        let descriptor = FetchDescriptor<Subscription>(
+            sortBy: [SortDescriptor(\Subscription.firstPaymentDate)]
+        )
+        subscriptions = (try? context.fetch(descriptor)) ?? []
+    }
+
+    func changeMonth(by value: Int) {
+        var components = DateComponents(year: displayedYear, month: displayedMonth)
+        components.month! += value
+        let date = Calendar.current.date(from: components)!
+        displayedMonth = Calendar.current.component(.month, from: date)
+        displayedYear = Calendar.current.component(.year, from: date)
+        selectedDay = nil
+    }
+}
