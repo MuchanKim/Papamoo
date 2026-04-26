@@ -1,0 +1,36 @@
+# Xcode
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+DerivedData/
+build/
+
+# SPM
+.build/
+.swiftpm/
+
+# Claude / Superpowers
+CLAUDE.md
+docs/superpowers/
+.claude/
+
+# Design mockups (dev only)
+docs/*.html
+
+# macOS
+.DS_Store
+*.swp
+*~
+.fseventsd
+.Spotlight-V100
+.Trashes
+
+# Secrets
+*.p12
+*.mobileprovision
+*.env
