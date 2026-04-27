@@ -5,88 +5,116 @@ struct CalendarView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                monthNavigationHeader
-                MonthGridView(
-                    year: viewModel.displayedYear,
-                    month: viewModel.displayedMonth,
-                    eventDates: viewModel.eventDates,
-                    selectedDay: $viewModel.selectedDay
-                )
+            ScrollView {
+                VStack(spacing: 0) {
+                    topNav
+                    monthTitle
+                    yellowRuler
+                    MonthGridView(
+                        displayedMonth: viewModel.displayedMonth,
+                        displayedYear: viewModel.displayedYear,
+                        eventDates: viewModel.eventDates,
+                        selectedDay: $viewModel.selectedDay
+                    )
+                    .padding(.top, 4)
 
-                if !viewModel.selectedDaySubscriptions.isEmpty {
-                    selectedDayDetail
+                    if viewModel.selectedDay == nil {
+                        MonthlyTotalBar(
+                            monthName: "\(monthNameFull()) Total",
+                            total: viewModel.monthTotal,
+                            currencyCode: viewModel.baseCurrency
+                        )
+                        .padding(.top, 14)
+                        Text("TAP A DAY TO SEE PAYMENTS")
+                            .font(.payDayMeta)
+                            .foregroundStyle(PayDayColor.textMuted)
+                            .tracking(1.4)
+                            .padding(.horizontal, 18)
+                            .padding(.top, 12)
+                    } else {
+                        MonthlyTotalBar(
+                            monthName: "\(monthNameFull()) \(viewModel.selectedDay ?? 0) · Selected",
+                            total: selectedDayTotal,
+                            currencyCode: viewModel.baseCurrency
+                        )
+                        .padding(.top, 14)
+                        Text("PAYMENTS ON THIS DAY")
+                            .font(.payDayMeta)
+                            .foregroundStyle(PayDayColor.textMuted)
+                            .tracking(1.4)
+                            .padding(.horizontal, 18)
+                            .padding(.top, 12)
+                            .padding(.bottom, 4)
+                        ForEach(viewModel.selectedDaySubscriptions, id: \.persistentModelID) { sub in
+                            SubscriptionRow(subscription: sub, baseCurrency: viewModel.baseCurrency)
+                        }
+                    }
+
+                    Spacer(minLength: 24)
                 }
-
-                Spacer()
-
-                MonthlyTotalBar(
-                    monthName: viewModel.monthName,
-                    total: viewModel.monthTotal,
-                    currencyCode: viewModel.baseCurrency
-                )
-                .padding(.bottom, 12)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("Calendar")
+            .background(PayDayColor.background.ignoresSafeArea())
+            .toolbar(.hidden, for: .navigationBar)
             .onAppear { viewModel.fetch() }
         }
     }
 
-    // MARK: - Month Navigation
-
-    private var monthNavigationHeader: some View {
+    private var topNav: some View {
         HStack {
-            Text("\(viewModel.monthName) \(String(viewModel.displayedYear))")
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundStyle(PayDayColor.brand)
+            Button { viewModel.changeMonth(by: -1) } label: {
+                Text("‹")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(PayDayColor.accent)
+            }
             Spacer()
-            HStack(spacing: 22) {
-                Button { viewModel.changeMonth(by: -1) } label: {
-                    Image(systemName: "chevron.left")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(PayDayColor.brand)
-                }
-                Button { viewModel.changeMonth(by: 1) } label: {
-                    Image(systemName: "chevron.right")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(PayDayColor.brand)
-                }
+            Text("CALENDAR")
+                .font(.payDayMeta)
+                .foregroundStyle(PayDayColor.textMuted)
+                .tracking(1.4)
+            Spacer()
+            Button { viewModel.changeMonth(by: 1) } label: {
+                Text("›")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(PayDayColor.accent)
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 18)
+        .padding(.top, 8)
     }
 
-    // MARK: - Selected Day Detail
-
-    @ViewBuilder
-    private var selectedDayDetail: some View {
-        let calendar = Calendar.current
-        let components = DateComponents(year: viewModel.displayedYear, month: viewModel.displayedMonth, day: viewModel.selectedDay)
-        let date = calendar.date(from: components)
-
-        VStack(alignment: .leading, spacing: 8) {
-            if let date {
-                Text(date, format: .dateTime.weekday(.wide).month(.abbreviated).day())
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.tertiary)
-                    .padding(.leading, 20)
-                    .padding(.top, 16)
-            }
-
-            VStack(spacing: 6) {
-                ForEach(viewModel.selectedDaySubscriptions, id: \.persistentModelID) { sub in
-                    SubscriptionRow(subscription: sub, baseCurrency: viewModel.baseCurrency)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
-                        .background(.background, in: RoundedRectangle(cornerRadius: 14))
-                        .shadow(color: .black.opacity(0.04), radius: 3, y: 1)
-                        .padding(.horizontal, 16)
-                }
-            }
+    private var monthTitle: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Text(monthNameFull())
+                .font(.payDayTitle)
+                .foregroundStyle(PayDayColor.text)
+            Text(String(viewModel.displayedYear))
+                .font(.payDayTitle)
+                .foregroundStyle(PayDayColor.textMuted)
         }
+        .padding(.horizontal, 18)
+        .padding(.top, 6)
+    }
+
+    private var yellowRuler: some View {
+        Rectangle()
+            .fill(PayDayColor.ruler)
+            .frame(height: 2)
+            .padding(.horizontal, 18)
+            .padding(.top, 14)
+            .padding(.bottom, 12)
+    }
+
+    private var selectedDayTotal: Decimal {
+        viewModel.selectedDaySubscriptions.reduce(Decimal.zero) { total, sub in
+            total + ExchangeRateManager.shared.convertToBase(amount: sub.amount, from: sub.currencyCode)
+        }
+    }
+
+    private func monthNameFull() -> String {
+        let components = DateComponents(year: viewModel.displayedYear, month: viewModel.displayedMonth)
+        let date = Calendar.current.date(from: components)!
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        return formatter.string(from: date)
     }
 }

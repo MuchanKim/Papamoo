@@ -1,84 +1,112 @@
 import SwiftUI
 
 struct MonthGridView: View {
-    let year: Int
-    let month: Int
+    let displayedMonth: Int
+    let displayedYear: Int
     let eventDates: [Int: [SubscriptionCategory]]
     @Binding var selectedDay: Int?
 
-    private let weekdays = ["S", "M", "T", "W", "T", "F", "S"]
-    private let columns = Array(repeating: GridItem(.flexible()), count: 7)
+    private var calendar: Calendar { Calendar.current }
+    private let weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 
     private var firstWeekday: Int {
-        var components = DateComponents()
-        components.year = year
-        components.month = month
-        components.day = 1
-        let date = Calendar.current.date(from: components)!
-        return Calendar.current.component(.weekday, from: date) - 1
+        let components = DateComponents(year: displayedYear, month: displayedMonth, day: 1)
+        let firstDate = calendar.date(from: components)!
+        return calendar.component(.weekday, from: firstDate)
     }
 
     private var daysInMonth: Int {
-        var components = DateComponents()
-        components.year = year
-        components.month = month
-        let date = Calendar.current.date(from: components)!
-        return Calendar.current.range(of: .day, in: .month, for: date)!.count
+        let components = DateComponents(year: displayedYear, month: displayedMonth)
+        let date = calendar.date(from: components)!
+        return calendar.range(of: .day, in: .month, for: date)!.count
     }
+
+    private var todayDay: Int? {
+        let now = Date.now
+        if calendar.component(.year, from: now) == displayedYear,
+           calendar.component(.month, from: now) == displayedMonth {
+            return calendar.component(.day, from: now)
+        }
+        return nil
+    }
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
 
     var body: some View {
         VStack(spacing: 0) {
             LazyVGrid(columns: columns, spacing: 0) {
-                ForEach(weekdays.indices, id: \.self) { index in
-                    Text(weekdays[index])
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.tertiary)
-                        .frame(height: 24)
+                ForEach(weekdays, id: \.self) { day in
+                    Text(day)
+                        .font(.payDayMono(10, weight: .bold))
+                        .foregroundStyle(day == "SUN" ? PayDayColor.sunday : PayDayColor.textMuted)
+                        .tracking(0.6)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
                 }
             }
-            .padding(.horizontal, 8)
 
-            LazyVGrid(columns: columns, spacing: 0) {
-                ForEach(0..<(firstWeekday + daysInMonth), id: \.self) { index in
-                    if index < firstWeekday {
-                        Color.clear.aspectRatio(1, contentMode: .fit)
-                    } else {
-                        let day = index - firstWeekday + 1
-                        dayCell(day: day)
-                    }
+            LazyVGrid(columns: columns, spacing: 2) {
+                ForEach(0..<(firstWeekday - 1), id: \.self) { _ in
+                    Color.clear.frame(height: 38)
+                }
+                ForEach(1...daysInMonth, id: \.self) { day in
+                    dayCell(for: day)
                 }
             }
-            .padding(.horizontal, 8)
         }
+        .padding(.horizontal, 12)
     }
 
-    private func dayCell(day: Int) -> some View {
+    private func dayCell(for day: Int) -> some View {
+        let columnIndex = (day + firstWeekday - 2) % 7
+        let isSunday = columnIndex == 0
+        let isToday = todayDay == day
         let isSelected = selectedDay == day
-        return VStack(spacing: 1) {
-            Text("\(day)")
-                .font(.body)
-                .fontWeight(isSelected ? .semibold : .regular)
-                .monospacedDigit()
-                .frame(width: 30, height: 30)
-                .background(isSelected ? PayDayColor.brand : .clear, in: Circle())
-                .foregroundStyle(isSelected ? .white : .primary)
+        let payments = eventDates[day] ?? []
 
-            if let categories = eventDates[day] {
-                HStack(spacing: 2) {
-                    ForEach(categories.indices, id: \.self) { _ in
-                        Circle()
-                            .fill(.secondary.opacity(0.45))
-                            .frame(width: 5, height: 5)
-                    }
+        return Button {
+            if selectedDay == day { selectedDay = nil } else { selectedDay = day }
+        } label: {
+            ZStack {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(PayDayColor.accent, lineWidth: 1.5)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5)
+                                .fill(PayDayColor.accent.opacity(0.06))
+                        )
                 }
-            } else {
-                Color.clear.frame(height: 5)
+                VStack(spacing: 2) {
+                    Text(String(format: "%02d", day))
+                        .font(.payDayMono(13, weight: isToday ? .bold : .medium))
+                        .foregroundStyle(dayColor(isToday: isToday, isSunday: isSunday))
+                    paymentMarker(count: payments.count)
+                }
             }
+            .frame(maxWidth: .infinity, minHeight: 38)
         }
-        .frame(maxWidth: .infinity)
-        .aspectRatio(1, contentMode: .fit)
-        .contentShape(Rectangle())
-        .onTapGesture { selectedDay = day }
+        .buttonStyle(.plain)
+    }
+
+    private func dayColor(isToday: Bool, isSunday: Bool) -> Color {
+        if isToday { return PayDayColor.accent }
+        if isSunday { return PayDayColor.sunday }
+        return PayDayColor.text
+    }
+
+    @ViewBuilder
+    private func paymentMarker(count: Int) -> some View {
+        switch count {
+        case 0:
+            Color.clear.frame(height: 4)
+        case 1:
+            Circle()
+                .fill(PayDayColor.accent)
+                .frame(width: 4, height: 4)
+        default:
+            Rectangle()
+                .fill(PayDayColor.accent)
+                .frame(width: 16, height: 2)
+        }
     }
 }
