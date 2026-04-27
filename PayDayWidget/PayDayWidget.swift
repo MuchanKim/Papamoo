@@ -9,6 +9,7 @@ struct SubscriptionEntry: TimelineEntry {
     let subscriptions: [WidgetSub]
     let monthlyTotal: Decimal
     let totalCount: Int
+    let baseCurrency: String
 }
 
 struct WidgetSub: Identifiable {
@@ -16,6 +17,7 @@ struct WidgetSub: Identifiable {
     let name: String
     let category: String
     let amount: Decimal
+    let currencyCode: String
     let nextPaymentDate: Date
     let daysUntil: Int
 }
@@ -25,13 +27,14 @@ struct PayDayTimelineProvider: TimelineProvider {
         SubscriptionEntry(
             date: .now,
             subscriptions: [
-                WidgetSub(name: "Netflix", category: "streaming", amount: 17000, nextPaymentDate: .now, daysUntil: 2),
-                WidgetSub(name: "Claude", category: "ai", amount: 28000, nextPaymentDate: .now, daysUntil: 5),
-                WidgetSub(name: "Spotify", category: "streaming", amount: 10900, nextPaymentDate: .now, daysUntil: 8),
-                WidgetSub(name: "Notion", category: "productivity", amount: 12000, nextPaymentDate: .now, daysUntil: 12),
+                WidgetSub(name: "Netflix", category: "streaming", amount: 17000, currencyCode: "KRW", nextPaymentDate: .now, daysUntil: 2),
+                WidgetSub(name: "Claude", category: "ai", amount: 28000, currencyCode: "KRW", nextPaymentDate: .now, daysUntil: 5),
+                WidgetSub(name: "Spotify", category: "streaming", amount: 10900, currencyCode: "KRW", nextPaymentDate: .now, daysUntil: 8),
+                WidgetSub(name: "Notion", category: "productivity", amount: 12000, currencyCode: "KRW", nextPaymentDate: .now, daysUntil: 12),
             ],
             monthlyTotal: 95200,
-            totalCount: 7
+            totalCount: 7,
+            baseCurrency: "KRW"
         )
     }
 
@@ -47,7 +50,11 @@ struct PayDayTimelineProvider: TimelineProvider {
 
     private func loadEntry() -> SubscriptionEntry {
         do {
-            let container = try ModelContainer(for: Subscription.self)
+            let config = ModelConfiguration(
+                groupContainer: .identifier("group.com.moolab.PayDay"),
+                cloudKitDatabase: .none
+            )
+            let container = try ModelContainer(for: Subscription.self, configurations: config)
             let context = ModelContext(container)
             let descriptor = FetchDescriptor<Subscription>()
             let subs = try context.fetch(descriptor)
@@ -60,15 +67,17 @@ struct PayDayTimelineProvider: TimelineProvider {
                         name: sub.name,
                         category: sub.category.rawValue,
                         amount: sub.amount,
+                        currencyCode: sub.currencyCode,
                         nextPaymentDate: sub.nextPaymentDate,
                         daysUntil: sub.daysUntilNextPayment
                     )
                 }
 
             let total = subs.reduce(Decimal.zero) { $0 + $1.monthlyAmount }
-            return SubscriptionEntry(date: .now, subscriptions: Array(widgetSubs), monthlyTotal: total, totalCount: subs.count)
+            let baseCurrency = UserDefaults(suiteName: "group.com.moolab.PayDay")?.string(forKey: "baseCurrency") ?? "KRW"
+            return SubscriptionEntry(date: .now, subscriptions: Array(widgetSubs), monthlyTotal: total, totalCount: subs.count, baseCurrency: baseCurrency)
         } catch {
-            return SubscriptionEntry(date: .now, subscriptions: [], monthlyTotal: 0, totalCount: 0)
+            return SubscriptionEntry(date: .now, subscriptions: [], monthlyTotal: 0, totalCount: 0, baseCurrency: "KRW")
         }
     }
 }
@@ -133,7 +142,7 @@ private struct SmallDdayView: View {
                     .font(.system(size: 38, weight: .heavy))
                     .foregroundStyle(brandColor)
                     .monospacedDigit()
-                Text(next.amount, format: .currency(code: "KRW").precision(.fractionLength(0)))
+                Text(next.amount, format: .currency(code: next.currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                     .font(.headline)
                     .monospacedDigit()
                 Text(next.name)
@@ -175,7 +184,7 @@ private struct SmallTotalView: View {
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
             Spacer()
-            Text(entry.monthlyTotal, format: .currency(code: "KRW").precision(.fractionLength(0)))
+            Text(entry.monthlyTotal, format: .currency(code: entry.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))
                 .font(.system(size: 28, weight: .bold))
                 .monospacedDigit()
                 .minimumScaleFactor(0.6)
@@ -238,7 +247,7 @@ private struct MediumUpcomingView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .frame(minWidth: 44, alignment: .trailing)
-                    Text(sub.amount, format: .currency(code: "KRW").precision(.fractionLength(0)))
+                    Text(sub.amount, format: .currency(code: sub.currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .monospacedDigit()

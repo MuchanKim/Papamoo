@@ -51,6 +51,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D111D9F92F9FA18700253ADA /* PayDayWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PayDayWidgetExtension.entitlements; sourceTree = "<group>"; };
 		D1E08ECA2F9DF6D600283B24 /* PayDay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PayDay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1E08ED72F9DF6D700283B24 /* PayDayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PayDayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1E08EE12F9DF6D700283B24 /* PayDayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PayDayUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -150,6 +151,7 @@
 		D1E08EC12F9DF6D600283B24 = {
 			isa = PBXGroup;
 			children = (
+				D111D9F92F9FA18700253ADA /* PayDayWidgetExtension.entitlements */,
 				D1E08ECC2F9DF6D600283B24 /* PayDay */,
 				D1E08EDA2F9DF6D700283B24 /* PayDayTests */,
 				D1E08EE42F9DF6D700283B24 /* PayDayUITests */,
@@ -693,6 +695,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PayDayWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
@@ -700,7 +703,7 @@
 				INFOPLIST_FILE = PayDayWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PayDayWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -724,6 +727,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PayDayWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
@@ -731,7 +735,7 @@
 				INFOPLIST_FILE = PayDayWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PayDayWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
