@@ -9,45 +9,43 @@ struct SubscriptionRow: View {
         ExchangeRateManager.shared.convertToBase(amount: subscription.amount, from: subscription.currencyCode)
     }
 
+    private var dateString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter.string(from: subscription.nextPaymentDate)
+    }
+
     var body: some View {
-        HStack(spacing: 12) {
-            ServiceIconView(category: subscription.category, iconName: subscription.iconName)
-
-            subscriptionInfo
-
-            Spacer()
-
-            amountSection
-
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundStyle(.quaternary)
-        }
-    }
-
-    private var subscriptionInfo: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(subscription.name)
-                .font(.body)
-                .fontWeight(.medium)
-            Text(subscription.nextPaymentDate, format: .dateTime.month(.abbreviated).day())
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var amountSection: some View {
-        VStack(alignment: .trailing, spacing: 4) {
-            Text(displayAmount, format: .currency(code: baseCurrency).presentation(.narrow).precision(.fractionLength(0)))
-                .font(.body)
-                .fontWeight(.semibold)
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(subscription.name)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(PayDayColor.text)
+                Text(dateString)
+                    .font(.payDayDate)
+                    .foregroundStyle(PayDayColor.textMuted)
+                    .tracking(0.4)
+            }
+            Spacer(minLength: 0)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text(
+                    displayAmount,
+                    format: .currency(code: baseCurrency)
+                        .presentation(.narrow)
+                        .precision(.fractionLength(0))
+                )
+                .font(.payDayAmount)
+                .foregroundStyle(PayDayColor.text)
                 .monospacedDigit()
-                .foregroundStyle(showDday ? PayDayColor.brand : .primary)
-
-            if showDday {
-                DdayBadge(days: subscription.daysUntilNextPayment)
+                if showDday {
+                    Text("D-\(subscription.daysUntilNextPayment)")
+                        .font(.payDayMeta)
+                        .foregroundStyle(PayDayColor.accent)
+                        .tracking(0.3)
+                }
             }
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 9)
     }
 }
