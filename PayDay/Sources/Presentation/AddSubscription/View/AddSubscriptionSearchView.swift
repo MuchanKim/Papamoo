@@ -65,7 +65,7 @@ struct AddSubscriptionSearchView: View {
                             ServiceIconView(category: service.category, iconName: service.iconName)
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(service.name).font(.body).foregroundStyle(.primary)
-                                Text("\(String(localized: service.category.displayName)) · \(service.defaultAmount, format: .currency(code: "KRW").precision(.fractionLength(0)))/mo")
+                                Text("\(String(localized: service.category.displayName)) · \(viewModel.presetDisplayAmount(service), format: .currency(code: viewModel.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))/mo")
                                     .font(.footnote).foregroundStyle(.tertiary)
                             }
                             Spacer()

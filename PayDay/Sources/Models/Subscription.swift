@@ -11,8 +11,6 @@ final class Subscription {
     var category: SubscriptionCategory
     var note: String
     var iconName: String?
-    var isRemindOneDayBefore: Bool
-    var isRemindThreeDaysBefore: Bool
 
     init(
         name: String,
@@ -22,9 +20,7 @@ final class Subscription {
         firstPaymentDate: Date,
         category: SubscriptionCategory = .other,
         note: String = "",
-        iconName: String? = nil,
-        isRemindOneDayBefore: Bool = true,
-        isRemindThreeDaysBefore: Bool = false
+        iconName: String? = nil
     ) {
         self.name = name
         self.amount = amount
@@ -34,8 +30,6 @@ final class Subscription {
         self.category = category
         self.note = note
         self.iconName = iconName
-        self.isRemindOneDayBefore = isRemindOneDayBefore
-        self.isRemindThreeDaysBefore = isRemindThreeDaysBefore
     }
 
     var nextPaymentDate: Date {

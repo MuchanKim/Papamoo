@@ -112,7 +112,7 @@ struct HomeView: View {
 
     private func subscriptionCard(for subscription: Subscription, showDday: Bool = false) -> some View {
         Button { coordinator.selectSubscription(subscription) } label: {
-            SubscriptionRow(subscription: subscription, showDday: showDday)
+            SubscriptionRow(subscription: subscription, baseCurrency: viewModel.baseCurrency, showDday: showDday)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
         }

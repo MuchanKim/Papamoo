@@ -3,6 +3,7 @@ import SwiftUI
 struct MonthlyTotalBar: View {
     let monthName: String
     let total: Decimal
+    let currencyCode: String
 
     var body: some View {
         HStack {
@@ -10,7 +11,7 @@ struct MonthlyTotalBar: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Spacer()
-            Text(total, format: .currency(code: "KRW").precision(.fractionLength(0)))
+            Text(total, format: .currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                 .font(.title3)
                 .fontWeight(.semibold)
                 .monospacedDigit()

@@ -9,7 +9,6 @@ struct AddSubscriptionDetailView: View {
             VStack(spacing: 0) {
                 serviceHeader
                 planSection
-                remindersSection
                 noteSection
                 addButton
             }
@@ -110,23 +109,6 @@ struct AddSubscriptionDetailView: View {
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 11)
-            }
-            .background(.background, in: RoundedRectangle(cornerRadius: 16))
-            .padding(.horizontal, 16)
-        }
-    }
-
-    private var remindersSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Reminders").font(.footnote).fontWeight(.semibold).foregroundStyle(.tertiary).padding(.leading, 20).padding(.top, 20)
-            VStack(spacing: 0) {
-                Toggle("D-1 reminder", isOn: $viewModel.isRemindOneDayBefore)
-                    .padding(.horizontal, 16).padding(.vertical, 11)
-                    .tint(PayDayColor.brand)
-                Divider().padding(.leading, 16)
-                Toggle("D-3 reminder", isOn: $viewModel.isRemindThreeDaysBefore)
-                    .padding(.horizontal, 16).padding(.vertical, 11)
-                    .tint(PayDayColor.brand)
             }
             .background(.background, in: RoundedRectangle(cornerRadius: 16))
             .padding(.horizontal, 16)

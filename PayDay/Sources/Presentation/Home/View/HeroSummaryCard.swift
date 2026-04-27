@@ -57,7 +57,7 @@ struct HeroSummaryCard: View {
                 .textCase(.uppercase)
                 .tracking(0.5)
 
-            Text(remainingAmount, format: .currency(code: currencyCode).precision(.fractionLength(0)))
+            Text(remainingAmount, format: .currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                 .font(.system(size: 36, weight: .bold))
                 .foregroundStyle(.white)
                 .monospacedDigit()
@@ -75,7 +75,7 @@ struct HeroSummaryCard: View {
 
     private var paidTotalLine: some View {
         HStack(spacing: 0) {
-            Text(paidAmount, format: .currency(code: currencyCode).precision(.fractionLength(0)))
+            Text(paidAmount, format: .currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                 .foregroundStyle(.white.opacity(0.50))
             Text(" \(String(localized: "paid"))")
                 .foregroundStyle(.white.opacity(0.50))
@@ -83,7 +83,7 @@ struct HeroSummaryCard: View {
             Text(" \u{00B7} ")
                 .foregroundStyle(.white.opacity(0.20))
 
-            Text(totalAmount, format: .currency(code: currencyCode).precision(.fractionLength(0)))
+            Text(totalAmount, format: .currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                 .foregroundStyle(.white.opacity(0.50))
             Text(" \(String(localized: "total"))")
                 .foregroundStyle(.white.opacity(0.50))
@@ -108,7 +108,7 @@ struct HeroSummaryCard: View {
                     .tracking(0.5)
             }
 
-            Text(totalAmount, format: .currency(code: currencyCode).precision(.fractionLength(0)))
+            Text(totalAmount, format: .currency(code: currencyCode).presentation(.narrow).precision(.fractionLength(0)))
                 .font(.system(size: 36, weight: .bold))
                 .foregroundStyle(.white)
                 .monospacedDigit()

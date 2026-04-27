@@ -24,7 +24,7 @@ final class AppCoordinator {
     }
 
     func makeSettingsViewModel() -> SettingsViewModel {
-        SettingsViewModel()
+        SettingsViewModel(modelContext: modelContext)
     }
 
     func makeAddSubscriptionViewModel() -> AddSubscriptionViewModel {

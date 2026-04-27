@@ -20,8 +20,12 @@ struct CalendarView: View {
 
                 Spacer()
 
-                MonthlyTotalBar(monthName: viewModel.monthName, total: viewModel.monthTotal)
-                    .padding(.bottom, 12)
+                MonthlyTotalBar(
+                    monthName: viewModel.monthName,
+                    total: viewModel.monthTotal,
+                    currencyCode: viewModel.baseCurrency
+                )
+                .padding(.bottom, 12)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Calendar")
@@ -75,7 +79,7 @@ struct CalendarView: View {
 
             VStack(spacing: 6) {
                 ForEach(viewModel.selectedDaySubscriptions, id: \.persistentModelID) { sub in
-                    SubscriptionRow(subscription: sub)
+                    SubscriptionRow(subscription: sub, baseCurrency: viewModel.baseCurrency)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .background(.background, in: RoundedRectangle(cornerRadius: 14))

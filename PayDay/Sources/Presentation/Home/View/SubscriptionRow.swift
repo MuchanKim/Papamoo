@@ -2,7 +2,12 @@ import SwiftUI
 
 struct SubscriptionRow: View {
     let subscription: Subscription
+    let baseCurrency: String
     var showDday: Bool = false
+
+    private var displayAmount: Decimal {
+        ExchangeRateManager.shared.convertToBase(amount: subscription.amount, from: subscription.currencyCode)
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -34,7 +39,7 @@ struct SubscriptionRow: View {
 
     private var amountSection: some View {
         VStack(alignment: .trailing, spacing: 4) {
-            Text(subscription.amount, format: .currency(code: subscription.currencyCode).precision(.fractionLength(0)))
+            Text(displayAmount, format: .currency(code: baseCurrency).presentation(.narrow).precision(.fractionLength(0)))
                 .font(.body)
                 .fontWeight(.semibold)
                 .monospacedDigit()

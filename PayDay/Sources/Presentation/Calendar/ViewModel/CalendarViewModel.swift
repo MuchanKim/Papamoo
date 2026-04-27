@@ -4,6 +4,7 @@ import SwiftData
 @Observable
 final class CalendarViewModel {
     private let context: ModelContext
+    private let exchangeRate = ExchangeRateManager.shared
     private(set) var subscriptions: [Subscription] = []
     var displayedMonth: Int
     var displayedYear: Int
@@ -14,6 +15,8 @@ final class CalendarViewModel {
         self.displayedMonth = Calendar.current.component(.month, from: .now)
         self.displayedYear = Calendar.current.component(.year, from: .now)
     }
+
+    var baseCurrency: String { exchangeRate.baseCurrency }
 
     var monthName: String {
         let components = DateComponents(year: displayedYear, month: displayedMonth)
@@ -55,7 +58,9 @@ final class CalendarViewModel {
                 return calendar.component(.month, from: nextDate) == displayedMonth
                     && calendar.component(.year, from: nextDate) == displayedYear
             }
-            .reduce(0) { $0 + $1.amount }
+            .reduce(0) { total, sub in
+                total + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
+            }
     }
 
     func fetch() {

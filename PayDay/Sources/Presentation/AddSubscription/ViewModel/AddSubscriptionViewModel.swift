@@ -4,19 +4,25 @@ import SwiftData
 @Observable
 final class AddSubscriptionViewModel {
     private let context: ModelContext
+    private let exchangeRate = ExchangeRateManager.shared
 
     var searchText = ""
     var selectedCategory: SubscriptionCategory?
     var selectedPreset: PresetService?
 
+    var baseCurrency: String { exchangeRate.baseCurrency }
+
+    /// Preset prices are stored in KRW; convert to the user's base currency for display.
+    func presetDisplayAmount(_ preset: PresetService) -> Decimal {
+        exchangeRate.convertToBase(amount: preset.defaultAmount, from: "KRW")
+    }
+
     var name = ""
     var amount: Decimal = 0
-    var currencyCode = "KRW"
+    var currencyCode: String = ExchangeRateManager.shared.baseCurrency
     var billingCycle: BillingCycle = .monthly
     var firstPaymentDate: Date = .now
     var category: SubscriptionCategory = .other
-    var isRemindOneDayBefore = true
-    var isRemindThreeDaysBefore = false
     var note = ""
 
     init(context: ModelContext) {
@@ -38,8 +44,9 @@ final class AddSubscriptionViewModel {
     func selectPreset(_ preset: PresetService) {
         selectedPreset = preset
         name = preset.name
-        amount = preset.defaultAmount
         category = preset.category
+        // Preset prices are KRW-based; only auto-fill when base currency matches, otherwise let the user enter the local price.
+        amount = currencyCode == "KRW" ? preset.defaultAmount : 0
     }
 
     func save() -> Bool {
@@ -51,9 +58,7 @@ final class AddSubscriptionViewModel {
             firstPaymentDate: firstPaymentDate,
             category: category,
             note: note,
-            iconName: selectedPreset?.iconName,
-            isRemindOneDayBefore: isRemindOneDayBefore,
-            isRemindThreeDaysBefore: isRemindThreeDaysBefore
+            iconName: selectedPreset?.iconName
         )
         context.insert(subscription)
         do {

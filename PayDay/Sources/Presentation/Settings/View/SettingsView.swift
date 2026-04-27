@@ -12,7 +12,34 @@ struct SettingsView: View {
                 aboutSection
             }
             .navigationTitle("Settings")
+            .alert(
+                Text(verbatim: alertTitle),
+                isPresented: $viewModel.showRestartAlert
+            ) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(verbatim: alertMessage)
+            }
         }
+    }
+
+    /// Bundle for the language the user just picked — the running process is still on the previous locale,
+    /// so the restart alert needs to be looked up explicitly against the chosen language.
+    private var alertBundle: Bundle {
+        let code = viewModel.appLanguage
+        guard code != "system",
+              let path = Bundle.main.path(forResource: code, ofType: "lproj"),
+              let bundle = Bundle(path: path)
+        else { return .main }
+        return bundle
+    }
+
+    private var alertTitle: String {
+        alertBundle.localizedString(forKey: "Restart required", value: nil, table: nil)
+    }
+
+    private var alertMessage: String {
+        alertBundle.localizedString(forKey: "Please restart PayDay to apply the new language.", value: nil, table: nil)
     }
 
     private var notificationsSection: some View {
@@ -34,9 +61,10 @@ struct SettingsView: View {
     }
 
     private var preferencesSection: some View {
-        Section("Preferences") {
-            Picker(selection: $viewModel.currencyCode) {
-                ForEach(viewModel.supportedCurrencies, id: \.self) { code in
+        @Bindable var exchangeRate = ExchangeRateManager.shared
+        return Section("Preferences") {
+            Picker(selection: $exchangeRate.baseCurrency) {
+                ForEach(exchangeRate.supportedCurrencies, id: \.self) { code in
                     Text(viewModel.currencyDisplayName(for: code)).tag(code)
                 }
             } label: {
