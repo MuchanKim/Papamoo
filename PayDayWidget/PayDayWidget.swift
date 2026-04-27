@@ -2,6 +2,27 @@ import WidgetKit
 import SwiftUI
 import SwiftData
 
+// MARK: - Widget tokens (mirror of app DesignTokens)
+
+private enum WidgetColor {
+    static let background = Color(red: 0.039, green: 0.039, blue: 0.039)
+    static let text = Color.white
+    static let muted = Color(red: 0.322, green: 0.322, blue: 0.322)
+    static let accent = Color(red: 0.980, green: 0.800, blue: 0.082)
+}
+
+private extension Font {
+    static func widgetMono(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        let psName: String = switch weight {
+        case .bold, .heavy, .black: "IBMPlexMono-Bold"
+        case .semibold: "IBMPlexMono-SemiBold"
+        case .medium: "IBMPlexMono-Medium"
+        default: "IBMPlexMono-Regular"
+        }
+        return .custom(psName, size: size)
+    }
+}
+
 // MARK: - Timeline
 
 struct SubscriptionEntry: TimelineEntry {
@@ -82,31 +103,23 @@ struct PayDayTimelineProvider: TimelineProvider {
     }
 }
 
-// MARK: - Widget Icon
+// MARK: - Helpers
 
-private struct WidgetIcon: View {
-    let category: String
-    let size: CGFloat
-
-    var body: some View {
-        let systemName: String = switch category {
-        case "streaming": "play.fill"
-        case "ai": "sparkle"
-        case "productivity": "doc.text.fill"
-        default: "clock"
-        }
-        return RoundedRectangle(cornerRadius: size * 0.225)
-            .fill(Color(.tertiarySystemFill))
-            .frame(width: size, height: size)
-            .overlay {
-                Image(systemName: systemName)
-                    .font(.system(size: size * 0.35, weight: .medium))
-                    .foregroundStyle(.secondary)
-            }
+private func currencySymbol(for code: String) -> String {
+    switch code {
+    case "KRW": "₩"
+    case "USD": "$"
+    case "JPY": "¥"
+    default: code
     }
 }
 
-private let brandColor = Color(red: 49/255, green: 130/255, blue: 246/255)
+private func amountString(_ value: Decimal) -> String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.maximumFractionDigits = 0
+    return formatter.string(for: value) ?? "0"
+}
 
 // MARK: - Small D-day Widget
 
@@ -116,7 +129,7 @@ struct SmallDdayWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: PayDayTimelineProvider()) { entry in
             SmallDdayView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
         }
         .configurationDisplayName("Next Payment")
         .description("Shows your next upcoming payment.")
@@ -129,30 +142,48 @@ private struct SmallDdayView: View {
 
     var body: some View {
         if let next = entry.subscriptions.first {
-            VStack(alignment: .leading) {
-                HStack {
-                    WidgetIcon(category: next.category, size: 28)
-                    Spacer()
-                    Text(next.nextPaymentDate, format: .dateTime.month(.abbreviated).day())
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
+            VStack(alignment: .leading, spacing: 0) {
+                Text("PAYDAY")
+                    .font(.widgetMono(9, weight: .bold))
+                    .tracking(1.4)
+                    .foregroundStyle(WidgetColor.muted)
                 Spacer()
-                Text("D-\(next.daysUntil)")
-                    .font(.system(size: 38, weight: .heavy))
-                    .foregroundStyle(brandColor)
-                    .monospacedDigit()
-                Text(next.amount, format: .currency(code: next.currencyCode).presentation(.narrow).precision(.fractionLength(0)))
-                    .font(.headline)
-                    .monospacedDigit()
-                Text(next.name)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    Text("D-")
+                        .font(.widgetMono(28, weight: .bold))
+                        .foregroundStyle(WidgetColor.accent)
+                    Text("\(next.daysUntil)")
+                        .font(.widgetMono(28, weight: .bold))
+                        .foregroundStyle(WidgetColor.text)
+                        .monospacedDigit()
+                }
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    Text(currencySymbol(for: next.currencyCode))
+                        .font(.widgetMono(13, weight: .bold))
+                        .foregroundStyle(WidgetColor.accent)
+                    Text(amountString(next.amount))
+                        .font(.widgetMono(13, weight: .bold))
+                        .foregroundStyle(WidgetColor.text)
+                        .monospacedDigit()
+                }
+                .padding(.top, 2)
+                Text(next.name.uppercased())
+                    .font(.widgetMono(9, weight: .bold))
+                    .tracking(0.8)
+                    .foregroundStyle(WidgetColor.muted)
+                    .padding(.top, 1)
+                Rectangle()
+                    .fill(WidgetColor.accent)
+                    .frame(height: 2)
+                    .padding(.top, 6)
             }
         } else {
-            Text("No subscriptions")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            VStack(alignment: .leading) {
+                Text("NO SUBSCRIPTIONS")
+                    .font(.widgetMono(9, weight: .bold))
+                    .tracking(1.0)
+                    .foregroundStyle(WidgetColor.muted)
+            }
         }
     }
 }
@@ -165,7 +196,7 @@ struct SmallTotalWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: PayDayTimelineProvider()) { entry in
             SmallTotalView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
         }
         .configurationDisplayName("Monthly Total")
         .description("Shows your total monthly spending.")
@@ -177,28 +208,39 @@ private struct SmallTotalView: View {
     let entry: SubscriptionEntry
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(entry.date, format: .dateTime.month(.wide))
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+        VStack(alignment: .leading, spacing: 0) {
+            Text(monthLabel(entry.date))
+                .font(.widgetMono(9, weight: .bold))
+                .tracking(1.4)
+                .foregroundStyle(WidgetColor.muted)
             Spacer()
-            Text(entry.monthlyTotal, format: .currency(code: entry.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))
-                .font(.system(size: 28, weight: .bold))
-                .monospacedDigit()
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-            Text("across \(entry.totalCount) services")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            if let next = entry.subscriptions.first {
-                Text("\(next.nextPaymentDate, format: .dateTime.month(.abbreviated).day()) — \(next.name)")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-                    .padding(.top, 4)
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text(currencySymbol(for: entry.baseCurrency))
+                    .font(.widgetMono(22, weight: .bold))
+                    .foregroundStyle(WidgetColor.accent)
+                Text(amountString(entry.monthlyTotal))
+                    .font(.widgetMono(22, weight: .bold))
+                    .foregroundStyle(WidgetColor.text)
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
             }
+            Text("ACROSS \(entry.totalCount) SERVICES")
+                .font(.widgetMono(9, weight: .bold))
+                .tracking(0.8)
+                .foregroundStyle(WidgetColor.muted)
+                .padding(.top, 4)
+            Rectangle()
+                .fill(WidgetColor.accent)
+                .frame(height: 2)
+                .padding(.top, 8)
         }
+    }
+
+    private func monthLabel(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM"
+        return "PAYDAY · \(formatter.string(from: date).uppercased())"
     }
 }
 
@@ -210,7 +252,7 @@ struct MediumUpcomingWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: PayDayTimelineProvider()) { entry in
             MediumUpcomingView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(WidgetColor.background, for: .widget)
         }
         .configurationDisplayName("Upcoming Payments")
         .description("Shows your next 4 upcoming payments.")
@@ -224,37 +266,52 @@ private struct MediumUpcomingView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("Upcoming")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
+                Text("UPCOMING")
+                    .font(.widgetMono(9, weight: .bold))
+                    .tracking(1.4)
+                    .foregroundStyle(WidgetColor.muted)
                 Spacer()
-                if let first = entry.subscriptions.first, let last = entry.subscriptions.last {
-                    Text("\(first.nextPaymentDate, format: .dateTime.month(.abbreviated).day()) — \(last.nextPaymentDate, format: .dateTime.month(.abbreviated).day())")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                Text("PAYDAY")
+                    .font(.widgetMono(9, weight: .bold))
+                    .tracking(1.4)
+                    .foregroundStyle(WidgetColor.muted)
             }
-            Spacer(minLength: 8)
+            Rectangle()
+                .fill(WidgetColor.accent)
+                .frame(height: 2)
+                .padding(.top, 6)
+                .padding(.bottom, 6)
             ForEach(entry.subscriptions.prefix(4)) { sub in
-                HStack(spacing: 8) {
-                    WidgetIcon(category: sub.category, size: 22)
+                HStack(alignment: .firstTextBaseline) {
                     Text(sub.name)
-                        .font(.footnote)
-                        .fontWeight(.medium)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(WidgetColor.text)
                         .lineLimit(1)
                     Spacer()
-                    Text(sub.nextPaymentDate, format: .dateTime.month(.abbreviated).day())
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .frame(minWidth: 44, alignment: .trailing)
-                    Text(sub.amount, format: .currency(code: sub.currencyCode).presentation(.narrow).precision(.fractionLength(0)))
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .monospacedDigit()
-                        .frame(minWidth: 64, alignment: .trailing)
+                    Text(formattedDate(sub.nextPaymentDate))
+                        .font(.widgetMono(9, weight: .regular))
+                        .foregroundStyle(WidgetColor.muted)
+                        .tracking(0.4)
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(currencySymbol(for: sub.currencyCode))
+                            .font(.widgetMono(11, weight: .bold))
+                            .foregroundStyle(WidgetColor.accent)
+                        Text(amountString(sub.amount))
+                            .font(.widgetMono(11, weight: .bold))
+                            .foregroundStyle(WidgetColor.text)
+                            .monospacedDigit()
+                    }
+                    .frame(minWidth: 60, alignment: .trailing)
                 }
                 .padding(.vertical, 2)
             }
+            Spacer(minLength: 0)
         }
+    }
+
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM.dd"
+        return formatter.string(from: date)
     }
 }
