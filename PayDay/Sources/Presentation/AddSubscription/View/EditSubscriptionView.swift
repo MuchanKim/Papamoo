@@ -23,11 +23,15 @@ struct EditSubscriptionView: View {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button {
                         viewModel.update(subscription)
                         dismiss()
+                    } label: {
+                        Text("SAVE")
+                            .font(.payDayMono(13, weight: .bold))
+                            .tracking(0.8)
+                            .foregroundStyle(PayDayColor.accent)
                     }
-                    .fontWeight(.semibold)
                 }
             }
         }
@@ -51,11 +55,13 @@ struct EditSubscriptionView: View {
                     Spacer()
                     HStack(spacing: 4) {
                         Text(ExchangeRateManager.shared.currencySymbol(for: subscription.currencyCode))
-                            .foregroundStyle(.secondary)
+                            .font(.payDayAmount)
+                            .foregroundStyle(PayDayColor.accent)
                         TextField("0", value: $subscription.amount, format: .number.precision(.fractionLength(0)))
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
-                            .fontWeight(.semibold).monospacedDigit()
+                            .font(.payDayAmount)
+                            .monospacedDigit()
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 11)

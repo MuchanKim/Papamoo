@@ -61,22 +61,23 @@ struct AddSubscriptionSearchView: View {
                     Button {
                         viewModel.selectPreset(service)
                     } label: {
-                        HStack(spacing: 12) {
-                            ServiceIconView(category: service.category, iconName: service.iconName)
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(service.name).font(.body).foregroundStyle(.primary)
-                                Text("\(String(localized: service.category.displayName)) · \(viewModel.presetDisplayAmount(service), format: .currency(code: viewModel.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))/mo")
-                                    .font(.footnote).foregroundStyle(.tertiary)
+                        HStack(alignment: .top, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(service.name)
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundStyle(PayDayColor.text)
+                                Text("\(String(localized: service.category.displayName).uppercased()) · \(viewModel.presetDisplayAmount(service), format: .currency(code: viewModel.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))/MO")
+                                    .font(.payDayMeta)
+                                    .foregroundStyle(PayDayColor.textMuted)
+                                    .tracking(0.6)
                             }
                             Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption).fontWeight(.semibold).foregroundStyle(.quaternary)
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 11)
                     }
                     if index < viewModel.filteredServices.count - 1 {
-                        Divider().padding(.leading, 68)
+                        Divider().padding(.leading, 16)
                     }
                 }
             }

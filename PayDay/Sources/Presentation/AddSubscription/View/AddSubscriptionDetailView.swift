@@ -18,12 +18,16 @@ struct AddSubscriptionDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
+                Button {
                     if viewModel.save() {
                         coordinator.dismissAddSubscription()
                     }
+                } label: {
+                    Text("SAVE")
+                        .font(.payDayMono(13, weight: .bold))
+                        .tracking(0.8)
+                        .foregroundStyle(PayDayColor.accent)
                 }
-                .fontWeight(.semibold)
                 .disabled(!viewModel.isFormValid)
             }
         }
@@ -53,11 +57,12 @@ struct AddSubscriptionDetailView: View {
                     Spacer()
                     HStack(spacing: 4) {
                         Text(ExchangeRateManager.shared.currencySymbol(for: viewModel.currencyCode))
-                            .foregroundStyle(.secondary)
+                            .font(.payDayAmount)
+                            .foregroundStyle(PayDayColor.accent)
                         TextField("0", value: $viewModel.amount, format: .number.precision(.fractionLength(0)))
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
-                            .fontWeight(.semibold)
+                            .font(.payDayAmount)
                             .monospacedDigit()
                     }
                 }
@@ -132,14 +137,13 @@ struct AddSubscriptionDetailView: View {
                 coordinator.dismissAddSubscription()
             }
         } label: {
-            Text("Add subscription")
-                .font(.headline)
-                .fontWeight(.bold)
-                .foregroundStyle(.white)
+            Text("ADD SUBSCRIPTION")
+                .font(.payDayMono(13, weight: .bold))
+                .tracking(1.0)
+                .foregroundStyle(PayDayColor.background)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 17)
-                .background(PayDayColor.brand, in: RoundedRectangle(cornerRadius: 16))
-                .shadow(color: PayDayColor.brand.opacity(0.3), radius: 14, y: 4)
+                .padding(.vertical, 16)
+                .background(PayDayColor.accent, in: RoundedRectangle(cornerRadius: 12))
         }
         .disabled(!viewModel.isFormValid)
         .padding(.horizontal, 16)
