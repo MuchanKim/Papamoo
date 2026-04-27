@@ -18,6 +18,7 @@ build/
 CLAUDE.md
 docs/superpowers/
 .claude/
+.superpowers/
 
 # Design mockups (dev only)
 docs/*.html
