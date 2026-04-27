@@ -4,25 +4,23 @@ struct HomeView: View {
     @Bindable var coordinator: AppCoordinator
     var viewModel: HomeViewModel
 
+    @State private var isShowingExchangeRate = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 0) {
-                    heroSection
+                VStack(alignment: .leading, spacing: 0) {
+                    topNav
+                    megaAmount
+                    metaLine
+                    yellowRuler
                     nextPaymentSection
                     upcomingSection
                 }
                 .padding(.bottom, 16)
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("My Subs")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { coordinator.showAddSubscription() } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
+            .background(PayDayColor.background.ignoresSafeArea())
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $coordinator.isShowingAddSheet, onDismiss: {
                 viewModel.fetch()
             }) {
@@ -39,86 +37,126 @@ struct HomeView: View {
                     viewModel: coordinator.makeAddSubscriptionViewModel()
                 )
             }
+            .sheet(isPresented: $isShowingExchangeRate, onDismiss: {
+                viewModel.fetch()
+            }) {
+                ExchangeRateSheetView()
+                    .presentationDetents([.medium])
+            }
             .onAppear { viewModel.fetch() }
         }
     }
 
-    // MARK: - Hero
-
-    @State private var isShowingExchangeRate = false
-
-    private var heroSection: some View {
-        VStack(spacing: 6) {
-            HeroSummaryCard(
-                remainingAmount: viewModel.remainingThisMonth,
-                paidAmount: viewModel.paidThisMonth,
-                totalAmount: viewModel.monthlyTotal,
-                currencyCode: viewModel.baseCurrency
-            )
-
-            if viewModel.hasMultipleCurrencies {
-                Button { isShowingExchangeRate = true } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "yensign.arrow.trianglehead.counterclockwise.rotate.90")
-                            .font(.system(size: 10))
-                        Text("Exchange rates")
-                            .font(.caption2)
-                    }
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.horizontal, 4)
-                }
+    private var topNav: some View {
+        HStack {
+            Text("PAYDAY · \(monthName())")
+                .font(.payDayMeta)
+                .foregroundStyle(PayDayColor.textMuted)
+                .tracking(1.4)
+            Spacer()
+            Button { coordinator.showAddSubscription() } label: {
+                Text("+")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(PayDayColor.accent)
             }
         }
         .padding(.horizontal, 16)
-        .padding(.top, 4)
-        .sheet(isPresented: $isShowingExchangeRate, onDismiss: {
-            viewModel.fetch()
-        }) {
-            ExchangeRateSheetView()
-                .presentationDetents([.medium])
-        }
+        .padding(.top, 8)
     }
 
-    // MARK: - Next Payment
+    private var megaAmount: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Text(currencySymbol(for: viewModel.baseCurrency))
+                .font(.payDayDisplay)
+                .foregroundStyle(PayDayColor.accent)
+            Text(amountString(viewModel.remainingThisMonth))
+                .font(.payDayDisplay)
+                .foregroundStyle(PayDayColor.text)
+                .monospacedDigit()
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+    }
+
+    private var metaLine: some View {
+        Text("REMAINING · \(amountString(viewModel.paidThisMonth)) PAID · \(amountString(viewModel.monthlyTotal)) TOTAL")
+            .font(.payDayMeta)
+            .foregroundStyle(PayDayColor.textMuted)
+            .tracking(0.4)
+            .padding(.horizontal, 16)
+            .padding(.top, 4)
+    }
+
+    private var yellowRuler: some View {
+        Rectangle()
+            .fill(PayDayColor.ruler)
+            .frame(height: 2)
+            .padding(.horizontal, 16)
+            .padding(.top, 18)
+            .padding(.bottom, 14)
+    }
 
     @ViewBuilder
     private var nextPaymentSection: some View {
         if let nextPayment = viewModel.nextPayment {
-            VStack(alignment: .leading, spacing: 0) {
-                SectionHeaderView(title: "Next payment")
-                subscriptionCard(for: nextPayment, showDday: true)
+            sectionLabel("NEXT PAYMENT")
+            Button { coordinator.selectSubscription(nextPayment) } label: {
+                SubscriptionRow(
+                    subscription: nextPayment,
+                    baseCurrency: viewModel.baseCurrency,
+                    showDday: true
+                )
             }
+            .buttonStyle(.plain)
+            Rectangle()
+                .fill(PayDayColor.dividerSoft)
+                .frame(height: 1)
+                .padding(.horizontal, 16)
         }
     }
-
-    // MARK: - Upcoming
 
     @ViewBuilder
     private var upcomingSection: some View {
         if !viewModel.upcomingSubscriptions.isEmpty {
-            VStack(alignment: .leading, spacing: 0) {
-                SectionHeaderView(title: "Upcoming")
-                VStack(spacing: 6) {
-                    ForEach(viewModel.upcomingSubscriptions, id: \.persistentModelID) { sub in
-                        subscriptionCard(for: sub)
-                    }
+            sectionLabel("UPCOMING")
+            ForEach(viewModel.upcomingSubscriptions, id: \.persistentModelID) { sub in
+                Button { coordinator.selectSubscription(sub) } label: {
+                    SubscriptionRow(subscription: sub, baseCurrency: viewModel.baseCurrency)
                 }
+                .buttonStyle(.plain)
             }
         }
     }
 
-    // MARK: - Shared Card Builder
+    private func sectionLabel(_ text: String) -> some View {
+        Text(text)
+            .font(.payDayMeta)
+            .foregroundStyle(PayDayColor.textMuted)
+            .tracking(1.4)
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 4)
+    }
 
-    private func subscriptionCard(for subscription: Subscription, showDday: Bool = false) -> some View {
-        Button { coordinator.selectSubscription(subscription) } label: {
-            SubscriptionRow(subscription: subscription, baseCurrency: viewModel.baseCurrency, showDday: showDday)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+    private func currencySymbol(for code: String) -> String {
+        switch code {
+        case "KRW": "₩"
+        case "USD": "$"
+        case "JPY": "¥"
+        default: code
         }
-        .buttonStyle(.plain)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.3), radius: 8, y: 2)
-        .padding(.horizontal, 16)
+    }
+
+    private func amountString(_ value: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        return formatter.string(for: value) ?? "0"
+    }
+
+    private func monthName() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM"
+        return formatter.string(from: .now).uppercased()
     }
 }
