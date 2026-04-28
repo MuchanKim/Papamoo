@@ -61,7 +61,12 @@ struct AddSubscriptionSearchView: View {
                     Button {
                         viewModel.selectPreset(service)
                     } label: {
-                        HStack(alignment: .top, spacing: 12) {
+                        HStack(alignment: .center, spacing: 12) {
+                            ServiceIconView(
+                                category: service.category,
+                                iconName: service.iconName,
+                                size: 40
+                            )
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(service.name)
                                     .font(.system(size: 17, weight: .semibold))
@@ -74,10 +79,10 @@ struct AddSubscriptionSearchView: View {
                             Spacer()
                         }
                         .padding(.horizontal, 18)
-                        .padding(.vertical, 14)
+                        .padding(.vertical, 12)
                     }
                     if index < viewModel.filteredServices.count - 1 {
-                        Divider().padding(.leading, 16)
+                        Divider().padding(.leading, 70)
                     }
                 }
             }

@@ -16,7 +16,12 @@ struct SubscriptionRow: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .center, spacing: 12) {
+            ServiceIconView(
+                category: subscription.category,
+                iconName: subscription.iconName,
+                size: 40
+            )
             VStack(alignment: .leading, spacing: 4) {
                 Text(subscription.name)
                     .font(.system(size: 17, weight: .semibold))
