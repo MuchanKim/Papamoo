@@ -20,25 +20,18 @@ struct CalendarView: View {
 
                     if viewModel.selectedDay == nil {
                         MonthlyTotalBar(
-                            monthName: "\(monthLabel()) Total",
+                            monthName: String(localized: "\(monthLabel()) Total"),
                             total: viewModel.monthTotal,
                             currencyCode: viewModel.baseCurrency
                         )
                         .padding(.top, 14)
                     } else {
                         MonthlyTotalBar(
-                            monthName: "\(monthLabel()) \(viewModel.selectedDay ?? 0) · Selected",
+                            monthName: String(localized: "PAYMENTS ON THIS DAY"),
                             total: selectedDayTotal,
                             currencyCode: viewModel.baseCurrency
                         )
                         .padding(.top, 14)
-                        Text("PAYMENTS ON THIS DAY")
-                            .font(.payDayMeta)
-                            .foregroundStyle(PayDayColor.textMuted)
-                            .tracking(1.4)
-                            .padding(.horizontal, 18)
-                            .padding(.top, 12)
-                            .padding(.bottom, 4)
                         ForEach(viewModel.selectedDaySubscriptions, id: \.persistentModelID) { sub in
                             SubscriptionRow(subscription: sub, baseCurrency: viewModel.baseCurrency)
                         }
