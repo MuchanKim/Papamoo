@@ -55,10 +55,9 @@ struct HomeView: View {
     }
 
     private var topNav: some View {
-        Text("PAYDAY · \(monthName())")
-            .font(.payDayMeta)
-            .foregroundStyle(PayDayColor.textMuted)
-            .tracking(1.4)
+        Text(monthName())
+            .font(.payDayMono(24, weight: .bold))
+            .foregroundStyle(PayDayColor.text)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 18)
             .padding(.top, 4)
@@ -141,7 +140,7 @@ struct HomeView: View {
 
     private func monthName() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM"
-        return formatter.string(from: .now).uppercased()
+        formatter.dateFormat = "MMMM"
+        return formatter.string(from: .now)
     }
 }
