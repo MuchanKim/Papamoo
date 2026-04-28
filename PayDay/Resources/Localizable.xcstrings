@@ -147,7 +147,6 @@
       }
     },
     "%@ Total" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {

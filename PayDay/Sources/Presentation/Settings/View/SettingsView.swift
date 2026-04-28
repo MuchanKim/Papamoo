@@ -102,7 +102,7 @@ struct SettingsView: View {
             Link(destination: URL(string: "https://apps.apple.com")!) {
                 Label("Rate the app", systemImage: "heart.fill")
             }
-            Link(destination: URL(string: "mailto:devmutopia@gmail.com")!) {
+            Link(destination: URL(string: "mailto:hello@moolab.io?subject=PayDay%20문의")!) {
                 Label("Contact support", systemImage: "envelope.fill")
             }
         }
