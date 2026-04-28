@@ -60,7 +60,6 @@ struct MonthGridView: View {
     private func dayCell(for day: Int) -> some View {
         let columnIndex = (day + firstWeekday - 2) % 7
         let isSunday = columnIndex == 0
-        let isToday = todayDay == day
         let isSelected = selectedDay == day
         let payments = eventDates[day] ?? []
 
@@ -78,20 +77,14 @@ struct MonthGridView: View {
                 }
                 VStack(spacing: 4) {
                     Text(String(format: "%02d", day))
-                        .font(.payDayMono(16, weight: isToday ? .bold : .medium))
-                        .foregroundStyle(dayColor(isToday: isToday, isSunday: isSunday))
+                        .font(.payDayMono(16, weight: .medium))
+                        .foregroundStyle(isSunday ? PayDayColor.sunday : PayDayColor.text)
                     paymentMarker(count: payments.count)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 48)
         }
         .buttonStyle(.plain)
-    }
-
-    private func dayColor(isToday: Bool, isSunday: Bool) -> Color {
-        if isToday { return PayDayColor.accent }
-        if isSunday { return PayDayColor.sunday }
-        return PayDayColor.text
     }
 
     @ViewBuilder
