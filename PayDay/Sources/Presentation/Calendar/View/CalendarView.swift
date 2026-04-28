@@ -7,8 +7,8 @@ struct CalendarView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    topNav
-                    monthTitle
+                    countdownHero
+                    monthLineWithArrows
                     yellowRuler
                     MonthGridView(
                         displayedMonth: viewModel.displayedMonth,
@@ -20,20 +20,14 @@ struct CalendarView: View {
 
                     if viewModel.selectedDay == nil {
                         MonthlyTotalBar(
-                            monthName: "\(monthNameFull()) Total",
+                            monthName: "\(monthLabel()) Total",
                             total: viewModel.monthTotal,
                             currencyCode: viewModel.baseCurrency
                         )
                         .padding(.top, 14)
-                        Text("TAP A DAY TO SEE PAYMENTS")
-                            .font(.payDayMeta)
-                            .foregroundStyle(PayDayColor.textMuted)
-                            .tracking(1.4)
-                            .padding(.horizontal, 18)
-                            .padding(.top, 12)
                     } else {
                         MonthlyTotalBar(
-                            monthName: "\(monthNameFull()) \(viewModel.selectedDay ?? 0) · Selected",
+                            monthName: "\(monthLabel()) \(viewModel.selectedDay ?? 0) · Selected",
                             total: selectedDayTotal,
                             currencyCode: viewModel.baseCurrency
                         )
@@ -59,40 +53,71 @@ struct CalendarView: View {
         }
     }
 
-    private var topNav: some View {
-        HStack {
-            Button { viewModel.changeMonth(by: -1) } label: {
-                Text("‹")
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(PayDayColor.accent)
-            }
-            Spacer()
-            Text("CALENDAR")
-                .font(.payDayMeta)
+    // MARK: - Countdown Hero
+
+    @ViewBuilder
+    private var countdownHero: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("NEXT PAYMENT IN")
+                .font(.payDayMono(12, weight: .bold))
+                .tracking(1.6)
                 .foregroundStyle(PayDayColor.textMuted)
-                .tracking(1.4)
-            Spacer()
-            Button { viewModel.changeMonth(by: 1) } label: {
-                Text("›")
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(PayDayColor.accent)
+            if let next = viewModel.nextPayment {
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Text("\(next.daysUntilNextPayment)")
+                        .font(.payDayMono(48, weight: .bold))
+                        .foregroundStyle(PayDayColor.accent)
+                        .monospacedDigit()
+                    Text("DAYS")
+                        .font(.payDayMono(16, weight: .bold))
+                        .tracking(1.4)
+                        .foregroundStyle(PayDayColor.textSubtle)
+                }
+                .padding(.top, 2)
+                Text("\(next.name.uppercased()) · \(currencySymbol(for: viewModel.baseCurrency))\(amountString(displayAmount(next)))")
+                    .font(.payDayMono(11, weight: .bold))
+                    .tracking(1.0)
+                    .foregroundStyle(PayDayColor.textMuted)
+                    .padding(.top, 2)
+            } else {
+                Text("—")
+                    .font(.payDayMono(48, weight: .bold))
+                    .foregroundStyle(PayDayColor.textMuted)
+                    .padding(.top, 2)
+                Text("NO SUBSCRIPTIONS")
+                    .font(.payDayMono(11, weight: .bold))
+                    .tracking(1.0)
+                    .foregroundStyle(PayDayColor.textMuted)
+                    .padding(.top, 2)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 18)
         .padding(.top, 12)
     }
 
-    private var monthTitle: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(monthNameFull())
-                .font(.payDayTitle)
-                .foregroundStyle(PayDayColor.text)
-            Text(String(viewModel.displayedYear))
-                .font(.payDayTitle)
+    private var monthLineWithArrows: some View {
+        HStack {
+            Text(monthLabel().uppercased() + " \(viewModel.displayedYear)")
+                .font(.payDayMono(13, weight: .bold))
+                .tracking(1.4)
                 .foregroundStyle(PayDayColor.textMuted)
+            Spacer()
+            HStack(spacing: 22) {
+                Button { viewModel.changeMonth(by: -1) } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(PayDayColor.accent)
+                }
+                Button { viewModel.changeMonth(by: 1) } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(PayDayColor.accent)
+                }
+            }
         }
         .padding(.horizontal, 18)
-        .padding(.top, 6)
+        .padding(.top, 14)
     }
 
     private var yellowRuler: some View {
@@ -100,7 +125,7 @@ struct CalendarView: View {
             .fill(PayDayColor.ruler)
             .frame(height: 2)
             .padding(.horizontal, 18)
-            .padding(.top, 14)
+            .padding(.top, 10)
             .padding(.bottom, 12)
     }
 
@@ -110,11 +135,31 @@ struct CalendarView: View {
         }
     }
 
-    private func monthNameFull() -> String {
+    private func displayAmount(_ sub: Subscription) -> Decimal {
+        ExchangeRateManager.shared.convertToBase(amount: sub.amount, from: sub.currencyCode)
+    }
+
+    private func monthLabel() -> String {
         let components = DateComponents(year: viewModel.displayedYear, month: viewModel.displayedMonth)
         let date = Calendar.current.date(from: components)!
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM"
         return formatter.string(from: date)
+    }
+
+    private func currencySymbol(for code: String) -> String {
+        switch code {
+        case "KRW": "₩"
+        case "USD": "$"
+        case "JPY": "¥"
+        default: code
+        }
+    }
+
+    private func amountString(_ value: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        return formatter.string(for: value) ?? "0"
     }
 }

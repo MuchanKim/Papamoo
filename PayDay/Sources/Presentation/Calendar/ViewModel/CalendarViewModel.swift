@@ -18,6 +18,11 @@ final class CalendarViewModel {
 
     var baseCurrency: String { exchangeRate.baseCurrency }
 
+    /// 가장 가까운 다음 결제. countdown hero 표시용.
+    var nextPayment: Subscription? {
+        subscriptions.sorted { $0.nextPaymentDate < $1.nextPaymentDate }.first
+    }
+
     var monthName: String {
         let components = DateComponents(year: displayedYear, month: displayedMonth)
         let date = Calendar.current.date(from: components)!
