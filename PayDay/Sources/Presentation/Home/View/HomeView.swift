@@ -14,7 +14,6 @@ struct HomeView: View {
                     megaAmount
                     metaLine
                     yellowRuler
-                    nextPaymentSection
                     upcomingSection
                 }
                 .padding(.bottom, 16)
@@ -97,31 +96,17 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private var nextPaymentSection: some View {
-        if let nextPayment = viewModel.nextPayment {
-            sectionLabel("NEXT PAYMENT")
-            Button { coordinator.selectSubscription(nextPayment) } label: {
-                SubscriptionRow(
-                    subscription: nextPayment,
-                    baseCurrency: viewModel.baseCurrency,
-                    showDday: true
-                )
-            }
-            .buttonStyle(.plain)
-            Rectangle()
-                .fill(PayDayColor.dividerSoft)
-                .frame(height: 1)
-                .padding(.horizontal, 18)
-        }
-    }
-
-    @ViewBuilder
     private var upcomingSection: some View {
         if !viewModel.upcomingSubscriptions.isEmpty {
             sectionLabel("UPCOMING")
-            ForEach(viewModel.upcomingSubscriptions, id: \.persistentModelID) { sub in
+            ForEach(Array(viewModel.upcomingSubscriptions.enumerated()), id: \.element.persistentModelID) { index, sub in
                 Button { coordinator.selectSubscription(sub) } label: {
-                    SubscriptionRow(subscription: sub, baseCurrency: viewModel.baseCurrency)
+                    SubscriptionRow(
+                        subscription: sub,
+                        baseCurrency: viewModel.baseCurrency,
+                        showDday: index == 0,
+                        showAccent: index == 0
+                    )
                 }
                 .buttonStyle(.plain)
             }
