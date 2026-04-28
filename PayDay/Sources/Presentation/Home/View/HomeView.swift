@@ -104,8 +104,7 @@ struct HomeView: View {
                     SubscriptionRow(
                         subscription: sub,
                         baseCurrency: viewModel.baseCurrency,
-                        showDday: index == 0,
-                        showAccent: index == 0
+                        showDday: index == 0
                     )
                 }
                 .buttonStyle(.plain)

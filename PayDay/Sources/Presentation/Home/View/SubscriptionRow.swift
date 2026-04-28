@@ -4,7 +4,6 @@ struct SubscriptionRow: View {
     let subscription: Subscription
     let baseCurrency: String
     var showDday: Bool = false
-    var showAccent: Bool = false
 
     private var displayAmount: Decimal {
         ExchangeRateManager.shared.convertToBase(amount: subscription.amount, from: subscription.currencyCode)
@@ -53,12 +52,5 @@ struct SubscriptionRow: View {
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 12)
-        .overlay(alignment: .leading) {
-            if showAccent {
-                Rectangle()
-                    .fill(PayDayColor.accent)
-                    .frame(width: 3)
-            }
-        }
     }
 }
