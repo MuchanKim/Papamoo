@@ -56,11 +56,12 @@ struct HomeView: View {
 
     private var topNav: some View {
         Text(monthName())
-            .font(.payDayMono(24, weight: .bold))
-            .foregroundStyle(PayDayColor.text)
+            .font(.payDayMono(13, weight: .bold))
+            .tracking(1.4)
+            .foregroundStyle(PayDayColor.textMuted)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 18)
-            .padding(.top, 4)
+            .padding(.top, 12)
     }
 
     private var megaAmount: some View {
@@ -140,7 +141,7 @@ struct HomeView: View {
 
     private func monthName() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM"
-        return formatter.string(from: .now)
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: .now).uppercased()
     }
 }
