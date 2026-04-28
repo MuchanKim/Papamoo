@@ -19,7 +19,15 @@ struct HomeView: View {
                 .padding(.bottom, 16)
             }
             .background(PayDayColor.background.ignoresSafeArea())
-            .toolbar(.hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { coordinator.showAddSubscription() } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundStyle(PayDayColor.accent)
+                    }
+                }
+            }
             .sheet(isPresented: $coordinator.isShowingAddSheet, onDismiss: {
                 viewModel.fetch()
             }) {
@@ -47,20 +55,13 @@ struct HomeView: View {
     }
 
     private var topNav: some View {
-        HStack {
-            Text("PAYDAY · \(monthName())")
-                .font(.payDayMeta)
-                .foregroundStyle(PayDayColor.textMuted)
-                .tracking(1.4)
-            Spacer()
-            Button { coordinator.showAddSubscription() } label: {
-                Text("+")
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(PayDayColor.accent)
-            }
-        }
-        .padding(.horizontal, 18)
-        .padding(.top, 12)
+        Text("PAYDAY · \(monthName())")
+            .font(.payDayMeta)
+            .foregroundStyle(PayDayColor.textMuted)
+            .tracking(1.4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 18)
+            .padding(.top, 4)
     }
 
     private var megaAmount: some View {
