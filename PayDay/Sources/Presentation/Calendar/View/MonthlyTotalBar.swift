@@ -16,16 +16,16 @@ struct MonthlyTotalBar: View {
                 Spacer()
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
                     Text(currencySymbol(for: currencyCode))
-                        .font(.payDayMono(20, weight: .bold))
+                        .font(.payDayMono(26, weight: .bold))
                         .foregroundStyle(PayDayColor.accent)
                     Text(amountString(total))
-                        .font(.payDayMono(20, weight: .bold))
+                        .font(.payDayMono(26, weight: .bold))
                         .foregroundStyle(PayDayColor.text)
                         .monospacedDigit()
                 }
             }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 18)
+            .padding(.vertical, 14)
+            .padding(.horizontal, 20)
             Rectangle().fill(PayDayColor.dividerSoft).frame(height: 1)
         }
     }

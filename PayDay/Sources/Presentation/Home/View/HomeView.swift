@@ -56,12 +56,12 @@ struct HomeView: View {
             Spacer()
             Button { coordinator.showAddSubscription() } label: {
                 Text("+")
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.system(size: 28, weight: .semibold))
                     .foregroundStyle(PayDayColor.accent)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
+        .padding(.horizontal, 18)
+        .padding(.top, 12)
     }
 
     private var megaAmount: some View {
@@ -74,8 +74,8 @@ struct HomeView: View {
                 .foregroundStyle(PayDayColor.text)
                 .monospacedDigit()
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
+        .padding(.horizontal, 18)
+        .padding(.top, 16)
     }
 
     private var metaLine: some View {
@@ -83,17 +83,17 @@ struct HomeView: View {
             .font(.payDayMeta)
             .foregroundStyle(PayDayColor.textMuted)
             .tracking(0.4)
-            .padding(.horizontal, 16)
-            .padding(.top, 4)
+            .padding(.horizontal, 18)
+            .padding(.top, 8)
     }
 
     private var yellowRuler: some View {
         Rectangle()
             .fill(PayDayColor.ruler)
             .frame(height: 2)
-            .padding(.horizontal, 16)
-            .padding(.top, 18)
-            .padding(.bottom, 14)
+            .padding(.horizontal, 18)
+            .padding(.top, 22)
+            .padding(.bottom, 18)
     }
 
     @ViewBuilder
@@ -111,7 +111,7 @@ struct HomeView: View {
             Rectangle()
                 .fill(PayDayColor.dividerSoft)
                 .frame(height: 1)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 18)
         }
     }
 
@@ -133,9 +133,9 @@ struct HomeView: View {
             .font(.payDayMeta)
             .foregroundStyle(PayDayColor.textMuted)
             .tracking(1.4)
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
-            .padding(.bottom, 4)
+            .padding(.horizontal, 18)
+            .padding(.top, 12)
+            .padding(.bottom, 6)
     }
 
     private func currencySymbol(for code: String) -> String {

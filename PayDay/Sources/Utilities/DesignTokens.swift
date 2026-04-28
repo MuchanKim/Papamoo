@@ -39,18 +39,18 @@ extension Font {
         return .custom(psName, size: size)
     }
 
-    /// Home main amount — mono 700, 36pt.
-    static let payDayDisplay = Font.payDayMono(36, weight: .bold)
+    /// Home main amount — mono 700, 56pt.
+    static let payDayDisplay = Font.payDayMono(56, weight: .bold)
 
-    /// Calendar month, large numbers — mono 700, 28pt.
-    static let payDayTitle = Font.payDayMono(28, weight: .bold)
+    /// Calendar month, large numbers — mono 700, 38pt.
+    static let payDayTitle = Font.payDayMono(38, weight: .bold)
 
-    /// List row amount — mono 700, 13pt.
-    static let payDayAmount = Font.payDayMono(13, weight: .bold)
+    /// List row amount — mono 700, 17pt.
+    static let payDayAmount = Font.payDayMono(17, weight: .bold)
 
-    /// Section labels (caps) — mono 700, 9pt.
-    static let payDayMeta = Font.payDayMono(9, weight: .bold)
+    /// Section labels (caps) — mono 700, 12pt.
+    static let payDayMeta = Font.payDayMono(12, weight: .bold)
 
-    /// Dates — mono 400, 9pt.
-    static let payDayDate = Font.payDayMono(9, weight: .regular)
+    /// Dates — mono 400, 12pt.
+    static let payDayDate = Font.payDayMono(12, weight: .regular)
 }

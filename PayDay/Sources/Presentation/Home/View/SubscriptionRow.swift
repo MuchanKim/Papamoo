@@ -17,9 +17,9 @@ struct SubscriptionRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(subscription.name)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(PayDayColor.text)
                 Text(dateString)
                     .font(.payDayDate)
@@ -27,7 +27,7 @@ struct SubscriptionRow: View {
                     .tracking(0.4)
             }
             Spacer(minLength: 0)
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Text(
                     displayAmount,
                     format: .currency(code: baseCurrency)
@@ -45,7 +45,7 @@ struct SubscriptionRow: View {
                 }
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 9)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 12)
     }
 }

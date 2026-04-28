@@ -63,7 +63,7 @@ struct CalendarView: View {
         HStack {
             Button { viewModel.changeMonth(by: -1) } label: {
                 Text("‹")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 24, weight: .semibold))
                     .foregroundStyle(PayDayColor.accent)
             }
             Spacer()
@@ -74,12 +74,12 @@ struct CalendarView: View {
             Spacer()
             Button { viewModel.changeMonth(by: 1) } label: {
                 Text("›")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 24, weight: .semibold))
                     .foregroundStyle(PayDayColor.accent)
             }
         }
         .padding(.horizontal, 18)
-        .padding(.top, 8)
+        .padding(.top, 12)
     }
 
     private var monthTitle: some View {

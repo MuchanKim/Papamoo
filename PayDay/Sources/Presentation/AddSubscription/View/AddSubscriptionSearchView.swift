@@ -62,9 +62,9 @@ struct AddSubscriptionSearchView: View {
                         viewModel.selectPreset(service)
                     } label: {
                         HStack(alignment: .top, spacing: 12) {
-                            VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(service.name)
-                                    .font(.system(size: 13, weight: .semibold))
+                                    .font(.system(size: 17, weight: .semibold))
                                     .foregroundStyle(PayDayColor.text)
                                 Text("\(String(localized: service.category.displayName).uppercased()) · \(viewModel.presetDisplayAmount(service), format: .currency(code: viewModel.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))/MO")
                                     .font(.payDayMeta)
@@ -73,8 +73,8 @@ struct AddSubscriptionSearchView: View {
                             }
                             Spacer()
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 11)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 14)
                     }
                     if index < viewModel.filteredServices.count - 1 {
                         Divider().padding(.leading, 16)

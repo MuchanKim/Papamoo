@@ -37,24 +37,24 @@ struct MonthGridView: View {
             LazyVGrid(columns: columns, spacing: 0) {
                 ForEach(weekdays, id: \.self) { day in
                     Text(day)
-                        .font(.payDayMono(10, weight: .bold))
+                        .font(.payDayMono(12, weight: .bold))
                         .foregroundStyle(day == "SUN" ? PayDayColor.sunday : PayDayColor.textMuted)
                         .tracking(0.6)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, 6)
                 }
             }
 
-            LazyVGrid(columns: columns, spacing: 2) {
+            LazyVGrid(columns: columns, spacing: 4) {
                 ForEach(0..<(firstWeekday - 1), id: \.self) { _ in
-                    Color.clear.frame(height: 38)
+                    Color.clear.frame(height: 48)
                 }
                 ForEach(1...daysInMonth, id: \.self) { day in
                     dayCell(for: day)
                 }
             }
         }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 14)
     }
 
     private func dayCell(for day: Int) -> some View {
@@ -76,14 +76,14 @@ struct MonthGridView: View {
                                 .fill(PayDayColor.accent.opacity(0.06))
                         )
                 }
-                VStack(spacing: 2) {
+                VStack(spacing: 4) {
                     Text(String(format: "%02d", day))
-                        .font(.payDayMono(13, weight: isToday ? .bold : .medium))
+                        .font(.payDayMono(16, weight: isToday ? .bold : .medium))
                         .foregroundStyle(dayColor(isToday: isToday, isSunday: isSunday))
                     paymentMarker(count: payments.count)
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: 38)
+            .frame(maxWidth: .infinity, minHeight: 48)
         }
         .buttonStyle(.plain)
     }
