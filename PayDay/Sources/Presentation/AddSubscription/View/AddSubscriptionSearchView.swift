@@ -91,7 +91,7 @@ struct AddSubscriptionSearchView: View {
                     Image(systemName: "plus").fontWeight(.semibold)
                     Text("Add custom service").fontWeight(.semibold)
                 }
-                .foregroundStyle(PayDayColor.brand)
+                .foregroundStyle(PayDayColor.accent)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
                 .background(.background, in: RoundedRectangle(cornerRadius: 16))

@@ -25,12 +25,6 @@ enum PayDayColor {
 
     /// 일요일 일자 — 한국 캘린더 관습.
     static let sunday = Color(red: 0.863, green: 0.149, blue: 0.149) // #DC2626
-
-    // MARK: - Deprecated aliases (cleanup task에서 제거 예정)
-
-    static let brand = accent
-    static let brandPressed = accent
-    static let brandTint = accent.opacity(0.12)
 }
 
 extension Font {

@@ -57,7 +57,7 @@ struct SettingsView: View {
                 Label("Time", systemImage: "clock")
             }
         }
-        .tint(PayDayColor.brand)
+        .tint(PayDayColor.accent)
     }
 
     private var preferencesSection: some View {
