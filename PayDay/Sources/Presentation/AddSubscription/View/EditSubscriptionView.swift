@@ -32,6 +32,7 @@ struct EditSubscriptionView: View {
                             .tracking(0.8)
                             .foregroundStyle(PayDayColor.accent)
                     }
+                    .disabled(!subscription.isValid)
                 }
             }
         }

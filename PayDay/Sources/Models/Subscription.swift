@@ -59,4 +59,10 @@ final class Subscription {
         case .yearly: amount / 12
         }
     }
+
+    static func isValid(name: String, amount: Decimal) -> Bool {
+        !name.isEmpty && amount > 0
+    }
+
+    var isValid: Bool { Self.isValid(name: name, amount: amount) }
 }

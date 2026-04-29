@@ -44,7 +44,7 @@ final class AddSubscriptionViewModel {
     }
 
     var isFormValid: Bool {
-        !name.isEmpty && amount > 0
+        Subscription.isValid(name: name, amount: amount)
     }
 
     func selectPreset(_ preset: PresetService) {
