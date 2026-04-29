@@ -42,8 +42,4 @@ final class AppCoordinator {
     func selectSubscription(_ subscription: Subscription) {
         selectedSubscription = subscription
     }
-
-    func dismissSubscriptionDetail() {
-        selectedSubscription = nil
-    }
 }

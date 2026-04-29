@@ -10,11 +10,4 @@ enum BillingCycle: String, Codable, CaseIterable {
         case .yearly: "Yearly"
         }
     }
-
-    var monthMultiplier: Int {
-        switch self {
-        case .monthly: 1
-        case .yearly: 12
-        }
-    }
 }

@@ -49,19 +49,9 @@ final class HomeViewModel {
         monthlyTotal - paidThisMonth
     }
 
-    var nextPayment: Subscription? {
-        sortedByNextPayment.first
-    }
-
     var upcomingSubscriptions: [Subscription] {
         sortedByNextPayment
     }
-
-    /// 구독 중 기준 통화가 아닌 것이 있는지.
-    var hasMultipleCurrencies: Bool {
-        subscriptions.contains { $0.currencyCode != exchangeRate.baseCurrency }
-    }
-
 
     func fetch() {
         let descriptor = FetchDescriptor<Subscription>(

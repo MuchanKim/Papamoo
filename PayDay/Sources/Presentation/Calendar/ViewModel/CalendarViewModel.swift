@@ -23,12 +23,6 @@ final class CalendarViewModel {
         subscriptions.sorted { $0.nextPaymentDate < $1.nextPaymentDate }.first
     }
 
-    var monthName: String {
-        let components = DateComponents(year: displayedYear, month: displayedMonth)
-        let date = Calendar.current.date(from: components)!
-        return date.formatted(.dateTime.month(.wide))
-    }
-
     var eventDates: [Int: [SubscriptionCategory]] {
         var result: [Int: [SubscriptionCategory]] = [:]
         for sub in subscriptions {
