@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
     <key>UIAppFonts</key>
     <array>
         <string>IBMPlexMono-Regular.ttf</string>
@@ -9,5 +11,10 @@
         <string>IBMPlexMono-SemiBold.ttf</string>
         <string>IBMPlexMono-Bold.ttf</string>
     </array>
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIColorName</key>
+        <string>LaunchBackground</string>
+    </dict>
 </dict>
 </plist>
