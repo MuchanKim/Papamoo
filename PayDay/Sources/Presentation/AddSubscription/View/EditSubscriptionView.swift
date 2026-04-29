@@ -117,10 +117,11 @@ struct EditSubscriptionView: View {
     private var noteSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Note").font(.footnote).fontWeight(.semibold).foregroundStyle(.tertiary).padding(.leading, 20).padding(.top, 20)
-            TextField("Optional", text: $subscription.note, axis: .vertical)
-                .lineLimit(3...)
-                .padding(14)
-                .background(.background, in: RoundedRectangle(cornerRadius: 16))
+            TextField("Optional. Add a note for context — e.g., shared with family, promo until Dec.", text: $subscription.note, axis: .vertical)
+                .lineLimit(4...)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+                .background(PayDayColor.surface, in: RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal, 16)
         }
     }
