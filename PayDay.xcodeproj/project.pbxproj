@@ -78,6 +78,11 @@
 		D1E099162F9E17CA00283B24 /* Exceptions for "PayDay" folder in "PayDayWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Resources/Fonts/IBMPlexMono-Bold.ttf",
+				"Resources/Fonts/IBMPlexMono-Medium.ttf",
+				"Resources/Fonts/IBMPlexMono-Regular.ttf",
+				"Resources/Fonts/IBMPlexMono-SemiBold.ttf",
+				Resources/Fonts/OFL.txt,
 				Resources/Localizable.xcstrings,
 			);
 			target = D1E098A52F9E0F6300283B24 /* PayDayWidgetExtension */;

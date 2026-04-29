@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import WidgetKit
 
 @Observable
 final class AddSubscriptionViewModel {
@@ -64,6 +65,7 @@ final class AddSubscriptionViewModel {
         do {
             try context.save()
             NotificationManager.scheduleNotifications(for: subscription)
+            WidgetCenter.shared.reloadAllTimelines()
             return true
         } catch {
             return false
@@ -74,11 +76,13 @@ final class AddSubscriptionViewModel {
         NotificationManager.removeNotifications(for: subscription)
         NotificationManager.scheduleNotifications(for: subscription)
         try? context.save()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func delete(_ subscription: Subscription) {
         NotificationManager.removeNotifications(for: subscription)
         context.delete(subscription)
         try? context.save()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

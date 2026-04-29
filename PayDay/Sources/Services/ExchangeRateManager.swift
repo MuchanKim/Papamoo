@@ -1,4 +1,5 @@
 import Foundation
+import WidgetKit
 
 extension UserDefaults {
     static let appGroup = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
@@ -28,6 +29,7 @@ final class ExchangeRateManager {
             if let data = try? JSONEncoder().encode(ratesFromUSD) {
                 UserDefaults.appGroup.set(data, forKey: ratesKey)
             }
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 
@@ -36,7 +38,10 @@ final class ExchangeRateManager {
     }
 
     var baseCurrency: String {
-        didSet { UserDefaults.appGroup.set(baseCurrency, forKey: baseCurrencyKey) }
+        didSet {
+            UserDefaults.appGroup.set(baseCurrency, forKey: baseCurrencyKey)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     var supportedCurrencies: [String] { ["KRW", "USD", "JPY"] }
