@@ -41,7 +41,7 @@ final class SettingsViewModel {
     var appLanguage: String {
         didSet {
             UserDefaults.appGroup.set(appLanguage, forKey: "appLanguage")
-            Self.applyAppleLanguagesOverride(for: appLanguage)
+            LanguagePreference.apply(appLanguage)
             showRestartAlert = true
         }
     }
@@ -68,16 +68,6 @@ final class SettingsViewModel {
         self.notificationHour = defaults.object(forKey: "notificationHour") as? Int ?? 9
         self.weekStartsOnMonday = defaults.object(forKey: "weekStartsOnMonday") as? Bool ?? true
         self.appLanguage = defaults.string(forKey: "appLanguage") ?? "system"
-    }
-
-    /// Syncs the system-level `AppleLanguages` UserDefaults (which iOS reads from the standard suite at process start)
-    /// with the user's pick. Effective from the next cold launch — current process keeps the locale it was started with.
-    static func applyAppleLanguagesOverride(for code: String) {
-        if code == "system" {
-            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
-        } else {
-            UserDefaults.standard.set([code], forKey: "AppleLanguages")
-        }
     }
 
     func currencyDisplayName(for code: String) -> String {

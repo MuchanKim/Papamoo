@@ -7,9 +7,7 @@ struct PayDayApp: App {
 
     init() {
         // 1.0에서 appLanguage만 저장하고 AppleLanguages는 동기화하지 않은 빌드 대비 — 다음 launch에 반영
-        SettingsViewModel.applyAppleLanguagesOverride(
-            for: UserDefaults.appGroup.string(forKey: "appLanguage") ?? "system"
-        )
+        LanguagePreference.apply(UserDefaults.appGroup.string(forKey: "appLanguage") ?? "system")
 
         let config = ModelConfiguration(
             groupContainer: .identifier(AppGroup.identifier),
