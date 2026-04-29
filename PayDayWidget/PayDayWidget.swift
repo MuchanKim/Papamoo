@@ -261,15 +261,15 @@ private struct SmallTotalView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(WidgetColor.muted)
                 .lineLimit(1)
-            HStack(alignment: .firstTextBaseline, spacing: 0) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(currencySymbol(for: entry.baseCurrency))
-                    .font(.widgetMono(26, weight: .bold))
+                    .font(.widgetMono(18, weight: .bold))
                     .foregroundStyle(WidgetColor.accent)
                 Text(amountString(entry.remainingThisMonth))
                     .font(.widgetMono(26, weight: .bold))
                     .foregroundStyle(WidgetColor.text)
                     .monospacedDigit()
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(0.7)
                     .lineLimit(1)
             }
             .padding(.top, 2)
