@@ -1,0 +1,813 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D1E098A92F9E0F6300283B24 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E098A82F9E0F6300283B24 /* WidgetKit.framework */; };
+		D1E098AB2F9E0F6300283B24 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */; };
+		D1E098BA2F9E0F6500283B24 /* PapamooWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D1E08ED82F9DF6D700283B24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1E08EC22F9DF6D600283B24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1E08EC92F9DF6D600283B24;
+			remoteInfo = Papamoo;
+		};
+		D1E08EE22F9DF6D700283B24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1E08EC22F9DF6D600283B24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1E08EC92F9DF6D600283B24;
+			remoteInfo = Papamoo;
+		};
+		D1E098B82F9E0F6500283B24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1E08EC22F9DF6D600283B24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1E098A52F9E0F6300283B24;
+			remoteInfo = PapamooWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D1E098BF2F9E0F6500283B24 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D1E098BA2F9E0F6500283B24 /* PapamooWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D111D9F92F9FA18700253ADA /* PapamooWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PapamooWidgetExtension.entitlements; sourceTree = "<group>"; };
+		D1E08ECA2F9DF6D600283B24 /* Papamoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papamoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1E08ED72F9DF6D700283B24 /* PapamooTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapamooTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1E08EE12F9DF6D700283B24 /* PapamooUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapamooUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapamooWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1E098A82F9E0F6300283B24 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D1E098BB2F9E0F6500283B24 /* Exceptions for "PapamooWidget" folder in "PapamooWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
+		};
+		D1E098C32F9E15DC00283B24 /* Exceptions for "Papamoo" folder in "Papamoo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D1E08EC92F9DF6D600283B24 /* Papamoo */;
+		};
+		D1E099162F9E17CA00283B24 /* Exceptions for "Papamoo" folder in "PapamooWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Resources/Fonts/IBMPlexMono-Bold.ttf",
+				"Resources/Fonts/IBMPlexMono-Medium.ttf",
+				"Resources/Fonts/IBMPlexMono-Regular.ttf",
+				"Resources/Fonts/IBMPlexMono-SemiBold.ttf",
+				Resources/Fonts/OFL.txt,
+				Resources/Localizable.xcstrings,
+			);
+			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D1E08ECC2F9DF6D600283B24 /* Papamoo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D1E098C32F9E15DC00283B24 /* Exceptions for "Papamoo" folder in "Papamoo" target */,
+				D1E099162F9E17CA00283B24 /* Exceptions for "Papamoo" folder in "PapamooWidgetExtension" target */,
+			);
+			path = Papamoo;
+			sourceTree = "<group>";
+		};
+		D1E08EDA2F9DF6D700283B24 /* PapamooTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PapamooTests;
+			sourceTree = "<group>";
+		};
+		D1E08EE42F9DF6D700283B24 /* PapamooUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PapamooUITests;
+			sourceTree = "<group>";
+		};
+		D1E098AC2F9E0F6300283B24 /* PapamooWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D1E098BB2F9E0F6500283B24 /* Exceptions for "PapamooWidget" folder in "PapamooWidgetExtension" target */,
+			);
+			path = PapamooWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D1E08EC72F9DF6D600283B24 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E08ED42F9DF6D700283B24 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E08EDE2F9DF6D700283B24 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E098A32F9E0F6300283B24 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1E098AB2F9E0F6300283B24 /* SwiftUI.framework in Frameworks */,
+				D1E098A92F9E0F6300283B24 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D1E08EC12F9DF6D600283B24 = {
+			isa = PBXGroup;
+			children = (
+				D111D9F92F9FA18700253ADA /* PapamooWidgetExtension.entitlements */,
+				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
+				D1E08EDA2F9DF6D700283B24 /* PapamooTests */,
+				D1E08EE42F9DF6D700283B24 /* PapamooUITests */,
+				D1E098AC2F9E0F6300283B24 /* PapamooWidget */,
+				D1E098A72F9E0F6300283B24 /* Frameworks */,
+				D1E08ECB2F9DF6D600283B24 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D1E08ECB2F9DF6D600283B24 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D1E08ECA2F9DF6D600283B24 /* Papamoo.app */,
+				D1E08ED72F9DF6D700283B24 /* PapamooTests.xctest */,
+				D1E08EE12F9DF6D700283B24 /* PapamooUITests.xctest */,
+				D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D1E098A72F9E0F6300283B24 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D1E098A82F9E0F6300283B24 /* WidgetKit.framework */,
+				D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D1E08EC92F9DF6D600283B24 /* Papamoo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1E08EEB2F9DF6D700283B24 /* Build configuration list for PBXNativeTarget "Papamoo" */;
+			buildPhases = (
+				D1E08EC62F9DF6D600283B24 /* Sources */,
+				D1E08EC72F9DF6D600283B24 /* Frameworks */,
+				D1E08EC82F9DF6D600283B24 /* Resources */,
+				D1E098BF2F9E0F6500283B24 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1E098B92F9E0F6500283B24 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
+			);
+			name = Papamoo;
+			packageProductDependencies = (
+			);
+			productName = Papamoo;
+			productReference = D1E08ECA2F9DF6D600283B24 /* Papamoo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D1E08ED62F9DF6D700283B24 /* PapamooTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1E08EEE2F9DF6D700283B24 /* Build configuration list for PBXNativeTarget "PapamooTests" */;
+			buildPhases = (
+				D1E08ED32F9DF6D700283B24 /* Sources */,
+				D1E08ED42F9DF6D700283B24 /* Frameworks */,
+				D1E08ED52F9DF6D700283B24 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1E08ED92F9DF6D700283B24 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D1E08EDA2F9DF6D700283B24 /* PapamooTests */,
+			);
+			name = PapamooTests;
+			packageProductDependencies = (
+			);
+			productName = PapamooTests;
+			productReference = D1E08ED72F9DF6D700283B24 /* PapamooTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D1E08EE02F9DF6D700283B24 /* PapamooUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1E08EF12F9DF6D700283B24 /* Build configuration list for PBXNativeTarget "PapamooUITests" */;
+			buildPhases = (
+				D1E08EDD2F9DF6D700283B24 /* Sources */,
+				D1E08EDE2F9DF6D700283B24 /* Frameworks */,
+				D1E08EDF2F9DF6D700283B24 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1E08EE32F9DF6D700283B24 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				D1E08EE42F9DF6D700283B24 /* PapamooUITests */,
+			);
+			name = PapamooUITests;
+			packageProductDependencies = (
+			);
+			productName = PapamooUITests;
+			productReference = D1E08EE12F9DF6D700283B24 /* PapamooUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1E098BC2F9E0F6500283B24 /* Build configuration list for PBXNativeTarget "PapamooWidgetExtension" */;
+			buildPhases = (
+				D1E098A22F9E0F6300283B24 /* Sources */,
+				D1E098A32F9E0F6300283B24 /* Frameworks */,
+				D1E098A42F9E0F6300283B24 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D1E098AC2F9E0F6300283B24 /* PapamooWidget */,
+			);
+			name = PapamooWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = PapamooWidgetExtension;
+			productReference = D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D1E08EC22F9DF6D600283B24 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					D1E08EC92F9DF6D600283B24 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					D1E08ED62F9DF6D700283B24 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = D1E08EC92F9DF6D600283B24;
+					};
+					D1E08EE02F9DF6D700283B24 = {
+						CreatedOnToolsVersion = 26.4;
+						TestTargetID = D1E08EC92F9DF6D600283B24;
+					};
+					D1E098A52F9E0F6300283B24 = {
+						CreatedOnToolsVersion = 26.4;
+					};
+				};
+			};
+			buildConfigurationList = D1E08EC52F9DF6D600283B24 /* Build configuration list for PBXProject "Papamoo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ko,
+				ja,
+			);
+			mainGroup = D1E08EC12F9DF6D600283B24;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = D1E08ECB2F9DF6D600283B24 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D1E08EC92F9DF6D600283B24 /* Papamoo */,
+				D1E08ED62F9DF6D700283B24 /* PapamooTests */,
+				D1E08EE02F9DF6D700283B24 /* PapamooUITests */,
+				D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D1E08EC82F9DF6D600283B24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E08ED52F9DF6D700283B24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E08EDF2F9DF6D700283B24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E098A42F9E0F6300283B24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D1E08EC62F9DF6D600283B24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E08ED32F9DF6D700283B24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E08EDD2F9DF6D700283B24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1E098A22F9E0F6300283B24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D1E08ED92F9DF6D700283B24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1E08EC92F9DF6D600283B24 /* Papamoo */;
+			targetProxy = D1E08ED82F9DF6D700283B24 /* PBXContainerItemProxy */;
+		};
+		D1E08EE32F9DF6D700283B24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1E08EC92F9DF6D600283B24 /* Papamoo */;
+			targetProxy = D1E08EE22F9DF6D700283B24 /* PBXContainerItemProxy */;
+		};
+		D1E098B92F9E0F6500283B24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
+			targetProxy = D1E098B82F9E0F6500283B24 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D1E08EE92F9DF6D700283B24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D1E08EEA2F9DF6D700283B24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D1E08EEC2F9DF6D700283B24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Papamoo/Papamoo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Papamoo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.Papamoo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D1E08EED2F9DF6D700283B24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Papamoo/Papamoo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Papamoo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.Papamoo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D1E08EEF2F9DF6D700283B24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.PapamooTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Papamoo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Papamoo";
+			};
+			name = Debug;
+		};
+		D1E08EF02F9DF6D700283B24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.PapamooTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Papamoo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Papamoo";
+			};
+			name = Release;
+		};
+		D1E08EF22F9DF6D700283B24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.PapamooUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Papamoo;
+			};
+			name = Debug;
+		};
+		D1E08EF32F9DF6D700283B24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.PapamooUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Papamoo;
+			};
+			name = Release;
+		};
+		D1E098BD2F9E0F6500283B24 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PapamooWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PapamooWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Papamoo Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.Papamoo.PapamooWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D1E098BE2F9E0F6500283B24 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = PapamooWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PapamooWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Papamoo Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.Papamoo.PapamooWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D1E08EC52F9DF6D600283B24 /* Build configuration list for PBXProject "Papamoo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1E08EE92F9DF6D700283B24 /* Debug */,
+				D1E08EEA2F9DF6D700283B24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1E08EEB2F9DF6D700283B24 /* Build configuration list for PBXNativeTarget "Papamoo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1E08EEC2F9DF6D700283B24 /* Debug */,
+				D1E08EED2F9DF6D700283B24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1E08EEE2F9DF6D700283B24 /* Build configuration list for PBXNativeTarget "PapamooTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1E08EEF2F9DF6D700283B24 /* Debug */,
+				D1E08EF02F9DF6D700283B24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1E08EF12F9DF6D700283B24 /* Build configuration list for PBXNativeTarget "PapamooUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1E08EF22F9DF6D700283B24 /* Debug */,
+				D1E08EF32F9DF6D700283B24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1E098BC2F9E0F6500283B24 /* Build configuration list for PBXNativeTarget "PapamooWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1E098BD2F9E0F6500283B24 /* Debug */,
+				D1E098BE2F9E0F6500283B24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D1E08EC22F9DF6D600283B24 /* Project object */;
+}
