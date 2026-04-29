@@ -105,12 +105,12 @@ struct HomeView: View {
     private var upcomingSection: some View {
         if !viewModel.upcomingSubscriptions.isEmpty {
             sectionLabel("UPCOMING")
-            ForEach(Array(viewModel.upcomingSubscriptions.enumerated()), id: \.element.persistentModelID) { index, sub in
+            ForEach(viewModel.upcomingSubscriptions, id: \.persistentModelID) { sub in
                 Button { coordinator.selectSubscription(sub) } label: {
                     SubscriptionRow(
                         subscription: sub,
                         baseCurrency: viewModel.baseCurrency,
-                        showDday: index == 0
+                        showDday: sub.daysUntilNextPayment <= 3
                     )
                 }
                 .buttonStyle(.plain)

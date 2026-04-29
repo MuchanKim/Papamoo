@@ -47,9 +47,12 @@ struct SubscriptionRow: View {
                 }
                 if showDday {
                     Text("D-\(subscription.daysUntilNextPayment)")
-                        .font(.payDayMeta)
-                        .foregroundStyle(PayDayColor.accent)
-                        .tracking(0.3)
+                        .font(.payDayMono(10, weight: .bold))
+                        .tracking(0.4)
+                        .foregroundStyle(PayDayColor.background)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 3)
+                        .background(PayDayColor.accent, in: RoundedRectangle(cornerRadius: 5))
                 }
             }
         }
