@@ -26,10 +26,13 @@ struct PayDayApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(coordinator: AppCoordinator(modelContext: modelContainer.mainContext))
-                .task {
-                    _ = await NotificationManager.requestAuthorization()
-                }
+            ContentView(
+                coordinator: AppCoordinator(),
+                factory: ViewModelFactory(modelContext: modelContainer.mainContext)
+            )
+            .task {
+                _ = await NotificationManager.requestAuthorization()
+            }
         }
         .modelContainer(modelContainer)
     }

@@ -2,20 +2,35 @@ import SwiftUI
 
 struct ContentView: View {
     @Bindable var coordinator: AppCoordinator
+    let factory: ViewModelFactory
+    @State private var homeViewModel: HomeViewModel
+    @State private var calendarViewModel: CalendarViewModel
+    @State private var settingsViewModel: SettingsViewModel
+
+    init(coordinator: AppCoordinator, factory: ViewModelFactory) {
+        self.coordinator = coordinator
+        self.factory = factory
+        // SwiftUI @State가 view identity 기반으로 인스턴스 lifecycle 관리.
+        // factory에서 한 번 생성, 이후 탭 전환에도 같은 인스턴스 유지 → 빈 데이터 깜빡임 없음.
+        _homeViewModel = State(wrappedValue: factory.makeHomeViewModel())
+        _calendarViewModel = State(wrappedValue: factory.makeCalendarViewModel())
+        _settingsViewModel = State(wrappedValue: factory.makeSettingsViewModel())
+    }
 
     var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             Tab("My Subs", systemImage: "creditcard.fill", value: .home) {
                 HomeView(
                     coordinator: coordinator,
-                    viewModel: coordinator.makeHomeViewModel()
+                    viewModel: homeViewModel,
+                    factory: factory
                 )
             }
             Tab("Calendar", systemImage: "calendar", value: .calendar) {
-                CalendarView(viewModel: coordinator.makeCalendarViewModel())
+                CalendarView(viewModel: calendarViewModel)
             }
             Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
-                SettingsView(viewModel: coordinator.makeSettingsViewModel())
+                SettingsView(viewModel: settingsViewModel)
             }
         }
         .tint(.white)

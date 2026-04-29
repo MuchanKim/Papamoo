@@ -1,8 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     @Bindable var coordinator: AppCoordinator
     var viewModel: HomeViewModel
+    let factory: ViewModelFactory
 
     @State private var isShowingExchangeRate = false
 
@@ -33,7 +35,7 @@ struct HomeView: View {
             }) {
                 AddSubscriptionSearchView(
                     coordinator: coordinator,
-                    viewModel: coordinator.makeAddSubscriptionViewModel()
+                    viewModel: factory.makeAddSubscriptionViewModel()
                 )
             }
             .sheet(item: $coordinator.selectedSubscription, onDismiss: {
@@ -41,7 +43,7 @@ struct HomeView: View {
             }) { subscription in
                 EditSubscriptionView(
                     subscription: subscription,
-                    viewModel: coordinator.makeAddSubscriptionViewModel()
+                    viewModel: factory.makeAddSubscriptionViewModel()
                 )
             }
             .sheet(isPresented: $isShowingExchangeRate, onDismiss: {

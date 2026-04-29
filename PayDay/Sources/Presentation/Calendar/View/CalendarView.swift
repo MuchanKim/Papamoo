@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 struct CalendarView: View {
     @Bindable var viewModel: CalendarViewModel

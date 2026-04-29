@@ -1,6 +1,6 @@
 import SwiftUI
-import SwiftData
 
+/// Navigation 상태만 보유. ViewModel 생성은 ViewModelFactory가 담당.
 @Observable
 final class AppCoordinator {
     enum Tab { case home, calendar, settings }
@@ -8,28 +8,6 @@ final class AppCoordinator {
     var selectedTab: Tab = .home
     var isShowingAddSheet = false
     var selectedSubscription: Subscription?
-
-    let modelContext: ModelContext
-
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-    }
-
-    func makeHomeViewModel() -> HomeViewModel {
-        HomeViewModel(context: modelContext)
-    }
-
-    func makeCalendarViewModel() -> CalendarViewModel {
-        CalendarViewModel(context: modelContext)
-    }
-
-    func makeSettingsViewModel() -> SettingsViewModel {
-        SettingsViewModel(modelContext: modelContext)
-    }
-
-    func makeAddSubscriptionViewModel() -> AddSubscriptionViewModel {
-        AddSubscriptionViewModel(context: modelContext)
-    }
 
     func showAddSubscription() {
         isShowingAddSheet = true
