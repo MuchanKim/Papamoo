@@ -153,15 +153,6 @@ struct PayDayTimelineProvider: TimelineProvider {
 
 // MARK: - Helpers
 
-private func currencySymbol(for code: String) -> String {
-    switch code {
-    case "KRW": "₩"
-    case "USD": "$"
-    case "JPY": "¥"
-    default: code
-    }
-}
-
 private func amountString(_ value: Decimal) -> String {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
@@ -205,14 +196,15 @@ private struct SmallDdayView: View {
                         .foregroundStyle(WidgetColor.text)
                         .monospacedDigit()
                 }
-                HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Text(currencySymbol(for: next.currencyCode))
-                        .font(.widgetMono(13, weight: .bold))
-                        .foregroundStyle(WidgetColor.accent)
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text(amountString(next.amount))
                         .font(.widgetMono(13, weight: .bold))
                         .foregroundStyle(WidgetColor.text)
                         .monospacedDigit()
+                    Text(next.currencyCode)
+                        .font(.widgetMono(9, weight: .bold))
+                        .tracking(0.6)
+                        .foregroundStyle(WidgetColor.accent)
                 }
                 .padding(.top, 2)
                 Text(next.name.uppercased())
@@ -261,16 +253,17 @@ private struct SmallTotalView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(WidgetColor.muted)
                 .lineLimit(1)
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(currencySymbol(for: entry.baseCurrency))
-                    .font(.widgetMono(18, weight: .bold))
-                    .foregroundStyle(WidgetColor.accent)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text(amountString(entry.remainingThisMonth))
-                    .font(.widgetMono(26, weight: .bold))
+                    .font(.widgetMono(28, weight: .bold))
                     .foregroundStyle(WidgetColor.text)
                     .monospacedDigit()
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.6)
                     .lineLimit(1)
+                Text(entry.baseCurrency)
+                    .font(.widgetMono(11, weight: .bold))
+                    .tracking(1.0)
+                    .foregroundStyle(WidgetColor.accent)
             }
             .padding(.top, 2)
             Text("\(entry.totalCount) subscriptions")
@@ -293,14 +286,16 @@ private struct SmallTotalView: View {
                         .foregroundStyle(WidgetColor.text)
                         .lineLimit(1)
                     HStack(alignment: .firstTextBaseline) {
-                        HStack(spacing: 0) {
-                            Text(currencySymbol(for: next.currencyCode))
-                                .foregroundStyle(WidgetColor.accent)
+                        HStack(spacing: 3) {
                             Text(amountString(next.amount))
                                 .foregroundStyle(WidgetColor.text)
                                 .monospacedDigit()
+                                .font(.widgetMono(11, weight: .semibold))
+                            Text(next.currencyCode)
+                                .font(.widgetMono(8, weight: .bold))
+                                .tracking(0.5)
+                                .foregroundStyle(WidgetColor.accent)
                         }
-                        .font(.widgetMono(11, weight: .semibold))
                         Spacer()
                         Text("D-\(next.daysUntil)")
                             .font(.widgetMono(11, weight: .bold))
@@ -368,16 +363,17 @@ private struct MediumUpcomingView: View {
                         .font(.widgetMono(9, weight: .regular))
                         .foregroundStyle(WidgetColor.muted)
                         .tracking(0.4)
-                    HStack(alignment: .firstTextBaseline, spacing: 0) {
-                        Text(currencySymbol(for: sub.currencyCode))
-                            .font(.widgetMono(11, weight: .bold))
-                            .foregroundStyle(WidgetColor.accent)
+                    HStack(alignment: .firstTextBaseline, spacing: 3) {
                         Text(amountString(sub.amount))
                             .font(.widgetMono(11, weight: .bold))
                             .foregroundStyle(WidgetColor.text)
                             .monospacedDigit()
+                        Text(sub.currencyCode)
+                            .font(.widgetMono(8, weight: .bold))
+                            .tracking(0.5)
+                            .foregroundStyle(WidgetColor.accent)
                     }
-                    .frame(minWidth: 60, alignment: .trailing)
+                    .frame(minWidth: 70, alignment: .trailing)
                 }
                 .padding(.vertical, 2)
             }
