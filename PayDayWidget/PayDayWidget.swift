@@ -94,12 +94,42 @@ struct PayDayTimelineProvider: TimelineProvider {
                     )
                 }
 
-            let total = subs.reduce(Decimal.zero) { $0 + $1.monthlyAmount }
-            let baseCurrency = UserDefaults(suiteName: "group.com.moolab.PayDay")?.string(forKey: "baseCurrency") ?? "KRW"
+            let groupDefaults = UserDefaults(suiteName: "group.com.moolab.PayDay")
+            let baseCurrency = groupDefaults?.string(forKey: "baseCurrency") ?? "KRW"
+            let rates = loadRates(from: groupDefaults)
+            let total = subs.reduce(Decimal.zero) { acc, sub in
+                acc + convertToBase(amount: sub.monthlyAmount, from: sub.currencyCode, to: baseCurrency, rates: rates)
+            }
             return SubscriptionEntry(date: .now, subscriptions: Array(widgetSubs), monthlyTotal: total, totalCount: subs.count, baseCurrency: baseCurrency)
         } catch {
             return SubscriptionEntry(date: .now, subscriptions: [], monthlyTotal: 0, totalCount: 0, baseCurrency: "KRW")
         }
+    }
+
+    private func loadRates(from defaults: UserDefaults?) -> [String: Double] {
+        let fallback: [String: Double] = ["KRW": 1380, "JPY": 150]
+        guard let data = defaults?.data(forKey: "exchangeRatesFromUSD"),
+              let decoded = try? JSONDecoder().decode([String: Double].self, from: data)
+        else { return fallback }
+        return decoded
+    }
+
+    private func convertToBase(amount: Decimal, from code: String, to base: String, rates: [String: Double]) -> Decimal {
+        guard code != base else { return amount }
+        let krw: Decimal
+        switch code {
+        case "KRW": krw = amount
+        case "USD": krw = amount * Decimal(rates["KRW"] ?? 1380)
+        case "JPY":
+            let krwRate = rates["KRW"] ?? 1380
+            let jpyRate = rates["JPY"] ?? 150
+            krw = amount * Decimal(krwRate / jpyRate)
+        default: krw = amount
+        }
+        guard base != "KRW" else { return krw }
+        let baseRate = rates[base] ?? 1
+        let krwRate = rates["KRW"] ?? 1380
+        return krw * Decimal(baseRate / krwRate)
     }
 }
 
