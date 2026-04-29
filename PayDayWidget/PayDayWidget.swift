@@ -29,6 +29,7 @@ struct SubscriptionEntry: TimelineEntry {
     let date: Date
     let subscriptions: [WidgetSub]
     let monthlyTotal: Decimal
+    let remainingThisMonth: Decimal
     let totalCount: Int
     let baseCurrency: String
 }
@@ -54,6 +55,7 @@ struct PayDayTimelineProvider: TimelineProvider {
                 WidgetSub(name: "Notion", category: "productivity", amount: 12000, currencyCode: "KRW", nextPaymentDate: .now, daysUntil: 12),
             ],
             monthlyTotal: 95200,
+            remainingThisMonth: 68200,
             totalCount: 7,
             baseCurrency: "KRW"
         )
@@ -100,9 +102,25 @@ struct PayDayTimelineProvider: TimelineProvider {
             let total = subs.reduce(Decimal.zero) { acc, sub in
                 acc + convertToBase(amount: sub.monthlyAmount, from: sub.currencyCode, to: baseCurrency, rates: rates)
             }
-            return SubscriptionEntry(date: .now, subscriptions: Array(widgetSubs), monthlyTotal: total, totalCount: subs.count, baseCurrency: baseCurrency)
+            // paidThisMonth: nextPaymentDate가 다음 달 이후 → 이번 달 결제 완료
+            let calendar = Calendar.current
+            let now = Date.now
+            let currentMonth = calendar.component(.month, from: now)
+            let currentYear = calendar.component(.year, from: now)
+            let paid = subs
+                .filter { sub in
+                    let next = sub.nextPaymentDate
+                    let nm = calendar.component(.month, from: next)
+                    let ny = calendar.component(.year, from: next)
+                    return ny > currentYear || (ny == currentYear && nm > currentMonth)
+                }
+                .reduce(Decimal.zero) { acc, sub in
+                    acc + convertToBase(amount: sub.amount, from: sub.currencyCode, to: baseCurrency, rates: rates)
+                }
+            let remaining = total - paid
+            return SubscriptionEntry(date: .now, subscriptions: Array(widgetSubs), monthlyTotal: total, remainingThisMonth: remaining, totalCount: subs.count, baseCurrency: baseCurrency)
         } catch {
-            return SubscriptionEntry(date: .now, subscriptions: [], monthlyTotal: 0, totalCount: 0, baseCurrency: "KRW")
+            return SubscriptionEntry(date: .now, subscriptions: [], monthlyTotal: 0, remainingThisMonth: 0, totalCount: 0, baseCurrency: "KRW")
         }
     }
 
@@ -239,38 +257,66 @@ private struct SmallTotalView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(monthLabel(entry.date))
-                .font(.widgetMono(9, weight: .bold))
-                .tracking(1.4)
+            Text("\(monthName(entry.date)) · \(String(localized: "remaining"))")
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(WidgetColor.muted)
-            Spacer()
+                .lineLimit(1)
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Text(currencySymbol(for: entry.baseCurrency))
-                    .font(.widgetMono(22, weight: .bold))
+                    .font(.widgetMono(26, weight: .bold))
                     .foregroundStyle(WidgetColor.accent)
-                Text(amountString(entry.monthlyTotal))
-                    .font(.widgetMono(22, weight: .bold))
+                Text(amountString(entry.remainingThisMonth))
+                    .font(.widgetMono(26, weight: .bold))
                     .foregroundStyle(WidgetColor.text)
                     .monospacedDigit()
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)
             }
-            Text("ACROSS \(entry.totalCount) SERVICES")
-                .font(.widgetMono(9, weight: .bold))
-                .tracking(0.8)
+            .padding(.top, 2)
+            Text("\(entry.totalCount) subscriptions")
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(WidgetColor.muted)
                 .padding(.top, 4)
             Rectangle()
-                .fill(WidgetColor.accent)
-                .frame(height: 2)
-                .padding(.top, 8)
+                .fill(WidgetColor.muted.opacity(0.3))
+                .frame(height: 1)
+                .padding(.vertical, 8)
+            if let next = entry.subscriptions.first {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Next")
+                        .font(.system(size: 9, weight: .bold))
+                        .tracking(0.6)
+                        .foregroundStyle(WidgetColor.muted)
+                        .textCase(.uppercase)
+                    Text(next.name)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(WidgetColor.text)
+                        .lineLimit(1)
+                    HStack(alignment: .firstTextBaseline) {
+                        HStack(spacing: 0) {
+                            Text(currencySymbol(for: next.currencyCode))
+                                .foregroundStyle(WidgetColor.accent)
+                            Text(amountString(next.amount))
+                                .foregroundStyle(WidgetColor.text)
+                                .monospacedDigit()
+                        }
+                        .font(.widgetMono(11, weight: .semibold))
+                        Spacer()
+                        Text("D-\(next.daysUntil)")
+                            .font(.widgetMono(11, weight: .bold))
+                            .foregroundStyle(WidgetColor.accent)
+                    }
+                    .padding(.top, 1)
+                }
+            }
+            Spacer(minLength: 0)
         }
     }
 
-    private func monthLabel(_ date: Date) -> String {
+    private func monthName(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM"
-        return "PAYDAY · \(formatter.string(from: date).uppercased())"
+        formatter.dateFormat = "MMMM"
+        return formatter.string(from: date)
     }
 }
 
