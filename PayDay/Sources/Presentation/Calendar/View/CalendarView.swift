@@ -28,7 +28,7 @@ struct CalendarView: View {
                     } else {
                         MonthlyTotalBar(
                             monthName: String(localized: "PAYMENTS ON THIS DAY"),
-                            total: selectedDayTotal,
+                            total: viewModel.selectedDayTotal,
                             currencyCode: viewModel.baseCurrency
                         )
                         .padding(.top, 14)
@@ -67,7 +67,7 @@ struct CalendarView: View {
                         .foregroundStyle(PayDayColor.textSubtle)
                 }
                 .padding(.top, 2)
-                Text("\(next.name.uppercased()) · \(currencySymbol(for: viewModel.baseCurrency))\(amountString(displayAmount(next)))")
+                Text("\(next.name.uppercased()) · \(CurrencyFormatter.symbol(for: viewModel.baseCurrency))\(CurrencyFormatter.amountString(viewModel.nextPaymentDisplayAmount))")
                     .font(.payDayMono(11, weight: .bold))
                     .tracking(1.0)
                     .foregroundStyle(PayDayColor.textMuted)
@@ -122,37 +122,11 @@ struct CalendarView: View {
             .padding(.bottom, 12)
     }
 
-    private var selectedDayTotal: Decimal {
-        viewModel.selectedDaySubscriptions.reduce(Decimal.zero) { total, sub in
-            total + ExchangeRateManager.shared.convertToBase(amount: sub.amount, from: sub.currencyCode)
-        }
-    }
-
-    private func displayAmount(_ sub: Subscription) -> Decimal {
-        ExchangeRateManager.shared.convertToBase(amount: sub.amount, from: sub.currencyCode)
-    }
-
     private func monthLabel() -> String {
         let components = DateComponents(year: viewModel.displayedYear, month: viewModel.displayedMonth)
         let date = Calendar.current.date(from: components)!
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM"
         return formatter.string(from: date)
-    }
-
-    private func currencySymbol(for code: String) -> String {
-        switch code {
-        case "KRW": "₩"
-        case "USD": "$"
-        case "JPY": "¥"
-        default: code
-        }
-    }
-
-    private func amountString(_ value: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 0
-        return formatter.string(for: value) ?? "0"
     }
 }

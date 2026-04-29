@@ -66,10 +66,10 @@ struct HomeView: View {
 
     private var megaAmount: some View {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
-            Text(currencySymbol(for: viewModel.baseCurrency))
+            Text(CurrencyFormatter.symbol(for: viewModel.baseCurrency))
                 .font(.payDayDisplay)
                 .foregroundStyle(PayDayColor.accent)
-            Text(amountString(viewModel.remainingThisMonth))
+            Text(CurrencyFormatter.amountString(viewModel.remainingThisMonth))
                 .font(.payDayDisplay)
                 .foregroundStyle(PayDayColor.text)
                 .monospacedDigit()
@@ -79,7 +79,7 @@ struct HomeView: View {
     }
 
     private var metaLine: some View {
-        Text("REMAINING · \(amountString(viewModel.paidThisMonth)) PAID · \(amountString(viewModel.monthlyTotal)) TOTAL")
+        Text("REMAINING · \(CurrencyFormatter.amountString(viewModel.paidThisMonth)) PAID · \(CurrencyFormatter.amountString(viewModel.monthlyTotal)) TOTAL")
             .font(.payDayMeta)
             .foregroundStyle(PayDayColor.textMuted)
             .tracking(0.4)
@@ -121,22 +121,6 @@ struct HomeView: View {
             .padding(.horizontal, 18)
             .padding(.top, 12)
             .padding(.bottom, 6)
-    }
-
-    private func currencySymbol(for code: String) -> String {
-        switch code {
-        case "KRW": "₩"
-        case "USD": "$"
-        case "JPY": "¥"
-        default: code
-        }
-    }
-
-    private func amountString(_ value: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 0
-        return formatter.string(for: value) ?? "0"
     }
 
     private func monthName() -> String {

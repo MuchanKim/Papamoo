@@ -9,6 +9,8 @@ struct SubscriptionRow: View {
         ExchangeRateManager.shared.convertToBase(amount: subscription.amount, from: subscription.currencyCode)
     }
 
+
+
     private var dateString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"

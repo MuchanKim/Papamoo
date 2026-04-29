@@ -15,10 +15,10 @@ struct MonthlyTotalBar: View {
                     .tracking(1.0)
                 Spacer()
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Text(currencySymbol(for: currencyCode))
+                    Text(CurrencyFormatter.symbol(for: currencyCode))
                         .font(.payDayMono(26, weight: .bold))
                         .foregroundStyle(PayDayColor.accent)
-                    Text(amountString(total))
+                    Text(CurrencyFormatter.amountString(total))
                         .font(.payDayMono(26, weight: .bold))
                         .foregroundStyle(PayDayColor.text)
                         .monospacedDigit()
@@ -28,21 +28,5 @@ struct MonthlyTotalBar: View {
             .padding(.horizontal, 20)
             Rectangle().fill(PayDayColor.dividerSoft).frame(height: 1)
         }
-    }
-
-    private func currencySymbol(for code: String) -> String {
-        switch code {
-        case "KRW": "₩"
-        case "USD": "$"
-        case "JPY": "¥"
-        default: code
-        }
-    }
-
-    private func amountString(_ value: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 0
-        return formatter.string(for: value) ?? "0"
     }
 }

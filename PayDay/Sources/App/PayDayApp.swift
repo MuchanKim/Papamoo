@@ -12,7 +12,7 @@ struct PayDayApp: App {
         )
 
         let config = ModelConfiguration(
-            groupContainer: .identifier("group.com.moolab.PayDay"),
+            groupContainer: .identifier(AppGroup.identifier),
             cloudKitDatabase: .none  // CloudKit은 container provisioning 완료 후 .automatic으로 변경
         )
         do {

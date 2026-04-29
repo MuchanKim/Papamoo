@@ -1,7 +1,7 @@
 import Foundation
 
 extension UserDefaults {
-    static let appGroup = UserDefaults(suiteName: "group.com.moolab.PayDay") ?? .standard
+    static let appGroup = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
 }
 
 @Observable

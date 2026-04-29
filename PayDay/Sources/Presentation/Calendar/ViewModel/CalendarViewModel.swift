@@ -23,6 +23,19 @@ final class CalendarViewModel {
         subscriptions.sorted { $0.nextPaymentDate < $1.nextPaymentDate }.first
     }
 
+    /// 가장 가까운 결제의 base currency 환산 금액.
+    var nextPaymentDisplayAmount: Decimal {
+        guard let next = nextPayment else { return 0 }
+        return exchangeRate.convertToBase(amount: next.amount, from: next.currencyCode)
+    }
+
+    /// 선택된 일자의 결제 합계 (base currency 환산).
+    var selectedDayTotal: Decimal {
+        selectedDaySubscriptions.reduce(Decimal.zero) { total, sub in
+            total + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
+        }
+    }
+
     var eventDates: [Int: [SubscriptionCategory]] {
         var result: [Int: [SubscriptionCategory]] = [:]
         for sub in subscriptions {
