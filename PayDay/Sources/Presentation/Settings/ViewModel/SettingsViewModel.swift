@@ -4,6 +4,14 @@ import SwiftData
 @Observable
 final class SettingsViewModel {
     private let modelContext: ModelContext
+    private let exchangeRate = ExchangeRateManager.shared
+
+    var baseCurrency: String {
+        get { exchangeRate.baseCurrency }
+        set { exchangeRate.baseCurrency = newValue }
+    }
+
+    var supportedCurrencies: [String] { exchangeRate.supportedCurrencies }
 
     var isRemindOneDayBefore: Bool {
         didSet {

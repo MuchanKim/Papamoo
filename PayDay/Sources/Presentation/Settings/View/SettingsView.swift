@@ -61,10 +61,9 @@ struct SettingsView: View {
     }
 
     private var preferencesSection: some View {
-        @Bindable var exchangeRate = ExchangeRateManager.shared
-        return Section("Preferences") {
-            Picker(selection: $exchangeRate.baseCurrency) {
-                ForEach(exchangeRate.supportedCurrencies, id: \.self) { code in
+        Section("Preferences") {
+            Picker(selection: $viewModel.baseCurrency) {
+                ForEach(viewModel.supportedCurrencies, id: \.self) { code in
                     Text(viewModel.currencyDisplayName(for: code)).tag(code)
                 }
             } label: {
