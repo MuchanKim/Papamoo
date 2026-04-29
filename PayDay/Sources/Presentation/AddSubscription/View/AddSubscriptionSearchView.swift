@@ -71,7 +71,7 @@ struct AddSubscriptionSearchView: View {
                                 Text(service.name)
                                     .font(.system(size: 17, weight: .semibold))
                                     .foregroundStyle(PayDayColor.text)
-                                Text("\(String(localized: service.category.displayName).uppercased()) · \(viewModel.presetDisplayAmount(service), format: .currency(code: viewModel.baseCurrency).presentation(.narrow).precision(.fractionLength(0)))/MO")
+                                Text("\(String(localized: service.category.displayName).uppercased()) · \(CurrencyFormatter.amountString(viewModel.presetDisplayAmount(service))) \(viewModel.baseCurrency)/MO")
                                     .font(.payDayMeta)
                                     .foregroundStyle(PayDayColor.textMuted)
                                     .tracking(0.6)

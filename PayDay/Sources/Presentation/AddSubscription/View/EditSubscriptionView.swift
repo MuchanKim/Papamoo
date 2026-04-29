@@ -54,14 +54,15 @@ struct EditSubscriptionView: View {
                     Text("Amount")
                     Spacer()
                     HStack(spacing: 4) {
-                        Text(ExchangeRateManager.shared.currencySymbol(for: subscription.currencyCode))
-                            .font(.payDayAmount)
-                            .foregroundStyle(PayDayColor.accent)
                         TextField("0", value: $subscription.amount, format: .number.precision(.fractionLength(0)))
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
                             .font(.payDayAmount)
                             .monospacedDigit()
+                        Text(subscription.currencyCode)
+                            .font(.payDayMono(10, weight: .bold))
+                            .tracking(0.6)
+                            .foregroundStyle(PayDayColor.accent)
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 11)

@@ -14,14 +14,15 @@ struct MonthlyTotalBar: View {
                     .foregroundStyle(PayDayColor.textMuted)
                     .tracking(1.0)
                 Spacer()
-                HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    Text(CurrencyFormatter.symbol(for: currencyCode))
-                        .font(.payDayMono(26, weight: .bold))
-                        .foregroundStyle(PayDayColor.accent)
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(CurrencyFormatter.amountString(total))
                         .font(.payDayMono(26, weight: .bold))
                         .foregroundStyle(PayDayColor.text)
                         .monospacedDigit()
+                    Text(currencyCode)
+                        .font(.payDayMono(11, weight: .bold))
+                        .tracking(0.8)
+                        .foregroundStyle(PayDayColor.accent)
                 }
             }
             .padding(.vertical, 14)

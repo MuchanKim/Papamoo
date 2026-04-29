@@ -67,7 +67,7 @@ struct CalendarView: View {
                         .foregroundStyle(PayDayColor.textSubtle)
                 }
                 .padding(.top, 2)
-                Text("\(next.name.uppercased()) · \(CurrencyFormatter.symbol(for: viewModel.baseCurrency))\(CurrencyFormatter.amountString(viewModel.nextPaymentDisplayAmount))")
+                Text("\(next.name.uppercased()) · \(CurrencyFormatter.amountString(viewModel.nextPaymentDisplayAmount)) \(viewModel.baseCurrency)")
                     .font(.payDayMono(11, weight: .bold))
                     .tracking(1.0)
                     .foregroundStyle(PayDayColor.textMuted)

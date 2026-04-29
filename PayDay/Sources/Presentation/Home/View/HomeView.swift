@@ -65,14 +65,17 @@ struct HomeView: View {
     }
 
     private var megaAmount: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 0) {
-            Text(CurrencyFormatter.symbol(for: viewModel.baseCurrency))
-                .font(.payDayDisplay)
-                .foregroundStyle(PayDayColor.accent)
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(CurrencyFormatter.amountString(viewModel.remainingThisMonth))
                 .font(.payDayDisplay)
                 .foregroundStyle(PayDayColor.text)
                 .monospacedDigit()
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+            Text(viewModel.baseCurrency)
+                .font(.payDayMono(20, weight: .bold))
+                .tracking(1.0)
+                .foregroundStyle(PayDayColor.accent)
         }
         .padding(.horizontal, 18)
         .padding(.top, 16)

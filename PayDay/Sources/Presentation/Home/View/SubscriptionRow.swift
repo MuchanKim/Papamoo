@@ -34,16 +34,17 @@ struct SubscriptionRow: View {
                     .tracking(0.4)
             }
             Spacer(minLength: 0)
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(
-                    displayAmount,
-                    format: .currency(code: baseCurrency)
-                        .presentation(.narrow)
-                        .precision(.fractionLength(0))
-                )
-                .font(.payDayAmount)
-                .foregroundStyle(PayDayColor.text)
-                .monospacedDigit()
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text(CurrencyFormatter.amountString(displayAmount))
+                        .font(.payDayAmount)
+                        .foregroundStyle(PayDayColor.text)
+                        .monospacedDigit()
+                    Text(baseCurrency)
+                        .font(.payDayMono(10, weight: .bold))
+                        .tracking(0.6)
+                        .foregroundStyle(PayDayColor.accent)
+                }
                 if showDday {
                     Text("D-\(subscription.daysUntilNextPayment)")
                         .font(.payDayMeta)
