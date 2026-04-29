@@ -75,8 +75,8 @@ struct AddSubscriptionDetailView: View {
                     Text("Currency")
                     Spacer()
                     Picker("Currency", selection: $viewModel.currencyCode) {
-                        ForEach(ExchangeRateManager.shared.supportedCurrencies, id: \.self) { code in
-                            Text("\(code) (\(ExchangeRateManager.shared.currencySymbol(for: code)))").tag(code)
+                        ForEach(viewModel.supportedCurrencies, id: \.self) { code in
+                            Text(viewModel.currencyLabel(for: code)).tag(code)
                         }
                     }
                     .onChange(of: viewModel.currencyCode) { viewModel.amount = 0 }

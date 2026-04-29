@@ -12,6 +12,11 @@ final class AddSubscriptionViewModel {
     var selectedPreset: PresetService?
 
     var baseCurrency: String { exchangeRate.baseCurrency }
+    var supportedCurrencies: [String] { exchangeRate.supportedCurrencies }
+
+    func currencyLabel(for code: String) -> String {
+        "\(code) (\(exchangeRate.currencySymbol(for: code)))"
+    }
 
     /// Preset prices are stored in KRW; convert to the user's base currency for display.
     func presetDisplayAmount(_ preset: PresetService) -> Decimal {
