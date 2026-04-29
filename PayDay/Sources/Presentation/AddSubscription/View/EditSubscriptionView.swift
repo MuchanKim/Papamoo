@@ -130,12 +130,18 @@ struct EditSubscriptionView: View {
             viewModel.delete(subscription)
             dismiss()
         } label: {
-            Text("Delete subscription")
-                .font(.body)
-                .foregroundStyle(.red)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
+            HStack(spacing: 8) {
+                Image(systemName: "trash")
+                Text("Delete subscription")
+            }
+            .font(.system(size: 16, weight: .semibold))
+            .foregroundStyle(.red)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .background(PayDayColor.surface, in: RoundedRectangle(cornerRadius: 12))
         }
+        .padding(.horizontal, 16)
         .padding(.top, 24)
     }
 }
