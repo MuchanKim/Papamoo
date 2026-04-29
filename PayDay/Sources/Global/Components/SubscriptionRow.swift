@@ -37,7 +37,7 @@ struct SubscriptionRow: View {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text(CurrencyFormatter.amountString(displayAmount))
-                        .font(.payDayAmount)
+                        .font(.payDayMono(20, weight: .bold))
                         .foregroundStyle(PayDayColor.text)
                         .monospacedDigit()
                     Text(baseCurrency)
@@ -56,7 +56,10 @@ struct SubscriptionRow: View {
                 }
             }
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(PayDayColor.surface, in: RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 4)
     }
 }

@@ -5,6 +5,9 @@ enum PayDayColor {
     /// 메인 화면 배경 (거의 검정).
     static let background = Color(red: 0.039, green: 0.039, blue: 0.039) // #0A0A0A
 
+    /// 카드/리스트 row surface — background보다 살짝 밝은 회색.
+    static let surface = Color(red: 0.078, green: 0.078, blue: 0.078) // #141414
+
     /// 주요 텍스트.
     static let text = Color.white
 
