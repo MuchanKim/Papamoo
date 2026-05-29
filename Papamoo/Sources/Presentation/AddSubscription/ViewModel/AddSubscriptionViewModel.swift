@@ -78,9 +78,9 @@ final class AddSubscriptionViewModel {
     }
 
     func update(_ subscription: Subscription) {
+        guard (try? context.save()) != nil else { return }
         NotificationManager.removeNotifications(for: subscription)
         NotificationManager.scheduleNotifications(for: subscription)
-        try? context.save()
         WidgetCenter.shared.reloadAllTimelines()
     }
 

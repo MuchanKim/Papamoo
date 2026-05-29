@@ -28,10 +28,10 @@ struct NotificationManager {
 
     static func removeNotifications(for subscription: Subscription) {
         let center = UNUserNotificationCenter.current()
-        let id = subscription.persistentModelID.hashValue
+        let id = notificationIdentifier(for: subscription)
         center.removePendingNotificationRequests(withIdentifiers: [
-            "payday-d1-\(id)",
-            "payday-d3-\(id)",
+            requestIdentifier(daysBefore: 1, subscriptionID: id),
+            requestIdentifier(daysBefore: 3, subscriptionID: id),
         ])
     }
 
@@ -52,11 +52,12 @@ struct NotificationManager {
         hour: Int
     ) {
         let calendar = Calendar.current
-        guard let notifyDate = calendar.date(
-            byAdding: .day, value: -daysBefore, to: subscription.nextPaymentDate
+        guard let notifyDate = notificationDate(
+            for: subscription.nextPaymentDate,
+            daysBefore: daysBefore,
+            hour: hour,
+            calendar: calendar
         ) else { return }
-
-        guard notifyDate > .now else { return }
 
         let content = UNMutableNotificationContent()
         content.title = "Papamoo"
@@ -64,15 +65,47 @@ struct NotificationManager {
         content.sound = .default
 
         var components = calendar.dateComponents([.year, .month, .day], from: notifyDate)
-        components.hour = hour
+        components.hour = calendar.component(.hour, from: notifyDate)
+        components.minute = calendar.component(.minute, from: notifyDate)
+        components.second = calendar.component(.second, from: notifyDate)
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-        let id = subscription.persistentModelID.hashValue
+        let id = notificationIdentifier(for: subscription)
         let request = UNNotificationRequest(
-            identifier: "payday-d\(daysBefore)-\(id)",
+            identifier: requestIdentifier(daysBefore: daysBefore, subscriptionID: id),
             content: content,
             trigger: trigger
         )
         center.add(request)
+    }
+
+    nonisolated static func notificationDate(
+        for nextPaymentDate: Date,
+        daysBefore: Int,
+        hour: Int,
+        calendar: Calendar = .current,
+        now: Date = .now
+    ) -> Date? {
+        guard let reminderDay = calendar.date(
+            byAdding: .day,
+            value: -daysBefore,
+            to: nextPaymentDate
+        ) else { return nil }
+
+        var components = calendar.dateComponents([.year, .month, .day], from: reminderDay)
+        components.hour = hour
+        components.minute = 0
+        components.second = 0
+
+        guard let fireDate = calendar.date(from: components), fireDate > now else { return nil }
+        return fireDate
+    }
+
+    private static func notificationIdentifier(for subscription: Subscription) -> String {
+        String(describing: subscription.persistentModelID)
+    }
+
+    private static func requestIdentifier(daysBefore: Int, subscriptionID: String) -> String {
+        "payday-d\(daysBefore)-\(subscriptionID)"
     }
 }

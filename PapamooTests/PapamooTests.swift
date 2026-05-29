@@ -37,4 +37,72 @@ struct SubscriptionTests {
         #expect(categories.contains(.ai))
         #expect(categories.contains(.productivity))
     }
+
+    @Test func notificationDateUsesConfiguredHourBeforeFilteringPastDates() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let nextPaymentDate = calendar.date(from: DateComponents(
+            timeZone: calendar.timeZone,
+            year: 2026,
+            month: 5,
+            day: 29,
+            hour: 0
+        ))!
+        let now = calendar.date(from: DateComponents(
+            timeZone: calendar.timeZone,
+            year: 2026,
+            month: 5,
+            day: 28,
+            hour: 12
+        ))!
+
+        let notificationDate = NotificationManager.notificationDate(
+            for: nextPaymentDate,
+            daysBefore: 1,
+            hour: 21,
+            calendar: calendar,
+            now: now
+        )
+
+        #expect(notificationDate == calendar.date(from: DateComponents(
+            timeZone: calendar.timeZone,
+            year: 2026,
+            month: 5,
+            day: 28,
+            hour: 21,
+            minute: 0,
+            second: 0
+        )))
+    }
+
+    @Test func notificationDateRejectsConfiguredFireDateInThePast() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        let nextPaymentDate = calendar.date(from: DateComponents(
+            timeZone: calendar.timeZone,
+            year: 2026,
+            month: 5,
+            day: 29,
+            hour: 0
+        ))!
+        let now = calendar.date(from: DateComponents(
+            timeZone: calendar.timeZone,
+            year: 2026,
+            month: 5,
+            day: 28,
+            hour: 12
+        ))!
+
+        let notificationDate = NotificationManager.notificationDate(
+            for: nextPaymentDate,
+            daysBefore: 1,
+            hour: 9,
+            calendar: calendar,
+            now: now
+        )
+
+        #expect(notificationDate == nil)
+    }
 }
