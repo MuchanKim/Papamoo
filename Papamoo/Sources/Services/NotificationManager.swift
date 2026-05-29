@@ -64,10 +64,7 @@ struct NotificationManager {
         content.body = "\(subscription.name) 결제 D-\(daysBefore) (\(subscription.amount)원)"
         content.sound = .default
 
-        var components = calendar.dateComponents([.year, .month, .day], from: notifyDate)
-        components.hour = calendar.component(.hour, from: notifyDate)
-        components.minute = calendar.component(.minute, from: notifyDate)
-        components.second = calendar.component(.second, from: notifyDate)
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notifyDate)
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let id = notificationIdentifier(for: subscription)
