@@ -6,20 +6,26 @@ struct HomeView: View {
     @Bindable var viewModel: HomeViewModel
     let factory: ViewModelFactory
     @State private var isShowingAddActions = false
+    @State private var deletionErrorMessage = ""
+    @State private var isShowingDeletionError = false
 
     var body: some View {
         NavigationStack {
             ZStack(alignment: .topTrailing) {
-                ScrollView {
+                List {
                     VStack(alignment: .leading, spacing: 0) {
                         topNav
                         megaAmount
                         metaLine
                         yellowRuler
-                        upcomingSection
                     }
-                    .padding(.bottom, 16)
+                    .homeListRow()
+
+                    upcomingSection
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .contentMargins(.vertical, 0, for: .scrollContent)
 
                 if isShowingAddActions {
                     Color.clear
@@ -93,6 +99,11 @@ struct HomeView: View {
                 Button("확인", role: .cancel) {}
             } message: {
                 Text(viewModel.fetchErrorMessage)
+            }
+            .alert("구독을 삭제하지 못했어요", isPresented: $isShowingDeletionError) {
+                Button("확인", role: .cancel) {}
+            } message: {
+                Text(deletionErrorMessage)
             }
         }
     }
@@ -203,6 +214,7 @@ struct HomeView: View {
     private var upcomingSection: some View {
         if !viewModel.upcomingSubscriptions.isEmpty {
             upcomingHeader
+                .homeListRow()
             ForEach(viewModel.upcomingSubscriptions, id: \.persistentModelID) { sub in
                 Button { coordinator.selectSubscription(sub) } label: {
                     SubscriptionRow(
@@ -212,6 +224,28 @@ struct HomeView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .homeListRow()
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        deleteSubscription(sub)
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .accessibilityLabel("Delete subscription")
+                    .tint(.red)
+                }
+            }
+        }
+    }
+
+    private func deleteSubscription(_ subscription: Subscription) {
+        let id = subscription.persistentModelID
+        Task {
+            do {
+                try await viewModel.deleteSubscription(withID: id)
+            } catch {
+                deletionErrorMessage = error.localizedDescription
+                isShowingDeletionError = true
             }
         }
     }
@@ -259,5 +293,13 @@ struct HomeView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         return formatter.string(from: .now).uppercased()
+    }
+}
+
+private extension View {
+    func homeListRow() -> some View {
+        listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+            .listRowBackground(PapamooColor.background)
     }
 }

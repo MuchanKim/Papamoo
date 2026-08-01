@@ -20,7 +20,7 @@ final class ViewModelFactory {
     }
 
     func makeHomeViewModel() -> HomeViewModel {
-        HomeViewModel(context: modelContext)
+        HomeViewModel(context: modelContext, deletionStore: deletionStore)
     }
 
     func makeCalendarViewModel() -> CalendarViewModel {
