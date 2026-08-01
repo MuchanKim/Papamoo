@@ -36,7 +36,7 @@ struct ContentView: View {
                 SettingsView(viewModel: settingsViewModel)
             }
         }
-        .tint(.white)
+        .tint(PapamooColor.accent)
         .preferredColorScheme(.dark)
         .task(id: scenePhase) {
             guard scenePhase == .active else { return }
