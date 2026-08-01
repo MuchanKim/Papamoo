@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import Papamoo
 
+@MainActor
 struct SubscriptionTests {
     @Test func nextPaymentDateFutureStart() {
         let futureDate = Calendar.current.date(byAdding: .day, value: 10, to: .now)!
@@ -28,7 +29,7 @@ struct SubscriptionTests {
     }
 
     @Test func presetServicesNotEmpty() {
-        #expect(!PresetService.all.isEmpty)
+        #expect(PresetService.all.isEmpty == false)
     }
 
     @Test func presetServicesHaveAllCategories() {
