@@ -7,6 +7,8 @@ struct ShareSubscriptionFormView: View {
     let mode: ShareImportFormMode
 
     var body: some View {
+        @Bindable var form = viewModel.form
+
         VStack(spacing: 0) {
             ShareGrabberView()
                 .padding(.top, 10)
@@ -30,8 +32,8 @@ struct ShareSubscriptionFormView: View {
                     }
 
                     ShareServiceHeaderView(
-                        name: $viewModel.name,
-                        category: viewModel.category,
+                        name: $form.name,
+                        category: form.category,
                         iconName: viewModel.draft.iconName
                     )
 
@@ -43,16 +45,16 @@ struct ShareSubscriptionFormView: View {
                             .padding(.leading, 4)
 
                         SharePlanFieldsView(
-                            amountText: $viewModel.amountText,
-                            currencyCode: $viewModel.currencyCode,
-                            billingCycle: $viewModel.billingCycle,
-                            firstPaymentDate: $viewModel.firstPaymentDate,
-                            category: $viewModel.category,
-                            supportedCurrencies: viewModel.supportedCurrencies
+                            amountText: $form.amountText,
+                            currencyCode: $form.currencyCode,
+                            billingCycle: $form.billingCycle,
+                            firstPaymentDate: $form.firstPaymentDate,
+                            category: $form.category,
+                            supportedCurrencies: form.supportedCurrencies
                         )
                     }
 
-                    ShareNoteFieldView(note: $viewModel.note)
+                    ShareNoteFieldView(note: $form.note)
                         .padding(.top, 20)
 
                     if let image = viewModel.previewImage {
@@ -80,7 +82,7 @@ struct ShareSubscriptionFormView: View {
     }
 
     private var navigationTitle: String {
-        guard viewModel.name.isEmpty else { return viewModel.name }
+        guard viewModel.form.name.isEmpty else { return viewModel.form.name }
         let title: LocalizedStringResource = "New service"
         return String(localized: title.localized(for: locale))
     }
@@ -115,11 +117,11 @@ struct ShareSubscriptionFormView: View {
             .foregroundStyle(ShareColor.background)
             .frame(maxWidth: .infinity, minHeight: 56)
             .background(
-                viewModel.isFormValid ? ShareColor.accent : Color.secondary,
+                viewModel.form.isValid ? ShareColor.accent : Color.secondary,
                 in: RoundedRectangle(cornerRadius: 12)
             )
         }
-        .disabled(viewModel.isFormValid == false || viewModel.isSaving || viewModel.isSaved)
+        .disabled(viewModel.form.isValid == false || viewModel.isSaving || viewModel.isSaved)
         .animation(.easeInOut(duration: 0.2), value: viewModel.isSaving)
         .animation(.easeInOut(duration: 0.2), value: viewModel.isSaved)
         .accessibilityHint("Save the subscription information and close this screen.")

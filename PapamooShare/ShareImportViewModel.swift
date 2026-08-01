@@ -26,28 +26,19 @@ final class ShareImportViewModel {
     private var sourceDocumentData: Data?
     private var didLoadInput = false
 
+    let form: ShareSubscriptionFormModel
     var phase: ShareImportPhase = .loading
     var previewImage: UIImage?
     var analysisPreviewImage: UIImage?
     var cropRegion: CGRect?
     var didAttemptCrop = false
-    var draft = SubscriptionImportDraft()
-
-    var name = ""
-    var amountText = ""
-    var currencyCode: String
-    var billingCycle: BillingCycle = .monthly
-    var firstPaymentDate: Date = .now
-    var category: SubscriptionCategory = .other
-    var note = ""
+    private(set) var draft = SubscriptionImportDraft()
     var showsSourceImage = false
     var isSaving = false
     private(set) var isSaved = false
     var isShowingSaveError = false
     private(set) var analysisSource: PaymentAnalysisSource?
     private(set) var lastAnalysisErrorDescription: String?
-
-    let supportedCurrencies = ["KRW", "USD", "JPY"]
 
     var selectedPreviewImage: UIImage? {
         analysisPreviewImage ?? previewImage
@@ -63,7 +54,7 @@ final class ShareImportViewModel {
         self.recordSaver = recordSaver
         self.completionAction = completionAction
         self.cancellationAction = cancellationAction
-        self.currencyCode = UserDefaults(suiteName: AppGroup.identifier)?.string(forKey: "baseCurrency") ?? "KRW"
+        self.form = ShareSubscriptionFormModel(baseCurrency: Self.baseCurrency)
         let foundationModelService = ShareFoundationModelService()
         self.paymentAnalyzer = PaymentImportAnalyzer { lines in
             try await foundationModelService.extractPayment(from: lines)
@@ -100,20 +91,6 @@ final class ShareImportViewModel {
             completionAction: onComplete,
             cancellationAction: onCancel
         )
-    }
-
-    var isFormValid: Bool {
-        guard name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false,
-              let amount = Decimal(string: normalizedAmountText),
-              amount > 0
-        else {
-            return false
-        }
-        return true
-    }
-
-    var normalizedAmountText: String {
-        amountText.replacingOccurrences(of: ",", with: "")
     }
 
     func loadInputIfNeeded() async {
@@ -238,13 +215,7 @@ final class ShareImportViewModel {
 
     func enterManualMode() {
         draft = SubscriptionImportDraft()
-        name = ""
-        amountText = ""
-        currencyCode = UserDefaults(suiteName: AppGroup.identifier)?.string(forKey: "baseCurrency") ?? "KRW"
-        billingCycle = .monthly
-        firstPaymentDate = .now
-        category = .other
-        note = ""
+        form.reset(baseCurrency: Self.baseCurrency)
         phase = .form(.manual)
     }
 
@@ -254,8 +225,8 @@ final class ShareImportViewModel {
     }
 
     func save() {
-        guard isFormValid,
-              let amount = Decimal(string: normalizedAmountText),
+        guard form.isValid,
+              let amount = form.amount,
               isSaving == false,
               isSaved == false
         else {
@@ -263,13 +234,13 @@ final class ShareImportViewModel {
         }
 
         let record = ShareSubscriptionRecord(
-            name: name.trimmingCharacters(in: .whitespacesAndNewlines),
+            name: form.name.trimmingCharacters(in: .whitespacesAndNewlines),
             amount: amount,
-            currencyCode: currencyCode,
-            billingCycle: billingCycle,
-            firstPaymentDate: firstPaymentDate,
-            category: category,
-            note: note,
+            currencyCode: form.currencyCode,
+            billingCycle: form.billingCycle,
+            firstPaymentDate: form.firstPaymentDate,
+            category: form.category,
+            note: form.note,
             iconName: draft.iconName,
             sourceImageData: sourceDocumentData,
             sourceCropRegion: cropRegion
@@ -322,13 +293,7 @@ final class ShareImportViewModel {
     }
 
     private func applyDraftToForm() {
-        name = draft.name.value ?? ""
-        amountText = draft.amount.value.map { NSDecimalNumber(decimal: $0).stringValue } ?? ""
-        currencyCode = draft.currencyCode.value ?? currencyCode
-        billingCycle = draft.billingCycle.value ?? .monthly
-        firstPaymentDate = draft.firstPaymentDate.value ?? .now
-        category = draft.category.value ?? .other
-        note = ""
+        form.apply(draft)
     }
 
     private func discardSessionData() {
@@ -338,5 +303,9 @@ final class ShareImportViewModel {
         analysisPreviewImage = nil
         cropRegion = nil
         draft = SubscriptionImportDraft()
+    }
+
+    private static var baseCurrency: String {
+        UserDefaults(suiteName: AppGroup.identifier)?.string(forKey: "baseCurrency") ?? "KRW"
     }
 }
