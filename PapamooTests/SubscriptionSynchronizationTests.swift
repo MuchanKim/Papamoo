@@ -13,7 +13,10 @@ struct SubscriptionSynchronizationTests {
         let storeURL = directory.appending(path: "subscriptions.store")
         let appContainer = try makeContainer(storeURL: storeURL)
         let extensionContainer = try makeContainer(storeURL: storeURL)
-        let viewModel = HomeViewModel(context: appContainer.mainContext)
+        let viewModel = HomeViewModel(
+            context: appContainer.mainContext,
+            deletionStore: SubscriptionDeletionStore(modelContainer: appContainer)
+        )
 
         viewModel.fetch()
         #expect(viewModel.subscriptions.isEmpty)
@@ -42,16 +45,16 @@ struct SubscriptionSynchronizationTests {
         context.insert(remaining)
         try context.save()
 
-        let viewModel = HomeViewModel(context: context)
+        let viewModel = HomeViewModel(
+            context: context,
+            deletionStore: SubscriptionDeletionStore(modelContainer: container)
+        )
         viewModel.fetch()
         #expect(viewModel.subscriptions.count == 2)
 
         let deletedID = deleted.persistentModelID
         deleted.note = "Unsaved edit before deletion"
-        let store = SubscriptionDeletionStore(modelContainer: container)
-        try await store.delete(id: deletedID)
-        context.rollback()
-        viewModel.removeSubscription(withID: deletedID)
+        try await viewModel.deleteSubscription(withID: deletedID)
 
         #expect(viewModel.subscriptions.map(\.name) == ["Remaining"])
 

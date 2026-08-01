@@ -16,6 +16,7 @@ final class CalendarViewModel {
         self.context = context
         self.displayedMonth = Calendar.current.component(.month, from: .now)
         self.displayedYear = Calendar.current.component(.year, from: .now)
+        self.selectedDay = Calendar.current.component(.day, from: .now)
     }
 
     var baseCurrency: String { exchangeRate.baseCurrency }
@@ -27,15 +28,22 @@ final class CalendarViewModel {
         }
     }
 
-    var eventDates: [Int: [SubscriptionCategory]] {
-        var result: [Int: [SubscriptionCategory]] = [:]
+    var dailyTotals: [Int: Decimal] {
+        var result: [Int: Decimal] = [:]
         let calendar = Calendar.current
         for sub in subscriptions {
             guard let date = paymentDateInDisplayedMonth(for: sub) else { continue }
             let day = calendar.component(.day, from: date)
-            result[day, default: []].append(sub.category)
+            result[day, default: .zero] += exchangeRate.convertToBase(
+                amount: sub.amount,
+                from: sub.currencyCode
+            )
         }
         return result
+    }
+
+    var monthPaymentCount: Int {
+        subscriptions.count { paymentDateInDisplayedMonth(for: $0) != nil }
     }
 
     var selectedDaySubscriptions: [Subscription] {
@@ -47,28 +55,19 @@ final class CalendarViewModel {
         }
     }
 
-    var paidThisMonth: Decimal {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        return subscriptions.reduce(Decimal.zero) { acc, sub in
-            guard let date = paymentDateInDisplayedMonth(for: sub),
-                  calendar.startOfDay(for: date) <= today else { return acc }
-            return acc + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
-        }
-    }
-
-    var remainingThisMonth: Decimal {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        return subscriptions.reduce(Decimal.zero) { acc, sub in
-            guard let date = paymentDateInDisplayedMonth(for: sub),
-                  calendar.startOfDay(for: date) > today else { return acc }
-            return acc + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
-        }
-    }
-
     var monthTotal: Decimal {
-        paidThisMonth + remainingThisMonth
+        dailyTotals.values.reduce(.zero, +)
+    }
+
+    var selectedDate: Date? {
+        guard let selectedDay else { return nil }
+        return Calendar.current.date(
+            from: DateComponents(
+                year: displayedYear,
+                month: displayedMonth,
+                day: selectedDay
+            )
+        )
     }
 
     private func paymentDateInDisplayedMonth(for sub: Subscription) -> Date? {

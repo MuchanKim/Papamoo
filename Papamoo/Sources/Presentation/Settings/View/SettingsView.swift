@@ -11,6 +11,7 @@ struct SettingsView: View {
                 languageSection
                 aboutSection
             }
+            .tint(PapamooColor.text)
             .navigationTitle("Settings")
             .alert(
                 Text(verbatim: alertTitle),
@@ -47,9 +48,11 @@ struct SettingsView: View {
             Toggle(isOn: $viewModel.isRemindOneDayBefore) {
                 Label("Notify D-1 before payment", systemImage: "bell.fill")
             }
+            .tint(PapamooColor.accent)
             Toggle(isOn: $viewModel.isRemindThreeDaysBefore) {
                 Label("Notify D-3 before payment", systemImage: "bell.fill")
             }
+            .tint(PapamooColor.accent)
             DatePicker(
                 selection: $viewModel.notificationTime,
                 displayedComponents: .hourAndMinute
@@ -57,7 +60,6 @@ struct SettingsView: View {
                 Label("Time", systemImage: "clock")
             }
         }
-        .tint(PapamooColor.accent)
     }
 
     private var preferencesSection: some View {

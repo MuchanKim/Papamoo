@@ -4,12 +4,14 @@ import SwiftData
 @Observable
 final class HomeViewModel {
     private let context: ModelContext
+    private let deletionStore: SubscriptionDeletionStore
     private(set) var subscriptions: [Subscription] = []
     private(set) var fetchErrorMessage = ""
     var isShowingFetchError = false
 
-    init(context: ModelContext) {
+    init(context: ModelContext, deletionStore: SubscriptionDeletionStore) {
         self.context = context
+        self.deletionStore = deletionStore
     }
 
     var sortedByNextPayment: [Subscription] {
@@ -57,6 +59,14 @@ final class HomeViewModel {
 
     func removeSubscription(withID id: PersistentIdentifier) {
         subscriptions.removeAll { $0.persistentModelID == id }
+    }
+
+    func deleteSubscription(withID id: PersistentIdentifier) async throws {
+        try await deletionStore.delete(id: id)
+        context.rollback()
+        removeSubscription(withID: id)
+        NotificationManager.removeNotifications(for: id)
+        NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
     }
 
     private func hasUpcomingBillingThisMonth(_ sub: Subscription) -> Bool {
