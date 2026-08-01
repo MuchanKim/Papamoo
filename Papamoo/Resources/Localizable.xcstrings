@@ -1724,22 +1724,6 @@
         }
       }
     },
-    "Rate the app" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アプリを評価"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "앱 평가하기"
-          }
-        }
-      }
-    },
     "Refresh rates" : {
       "comment" : "A button that refreshes exchange rates.",
       "extractionState" : "stale",

@@ -100,11 +100,15 @@ struct SettingsView: View {
             } label: {
                 Label("Version", systemImage: "info.circle")
             }
-            Link(destination: URL(string: "https://apps.apple.com")!) {
-                Label("Rate the app", systemImage: "heart.fill")
-            }
             Link(destination: URL(string: "mailto:hello@moolab.io?subject=Papamoo%20문의")!) {
                 Label("Contact support", systemImage: "envelope.fill")
+            }
+            Link(destination: URL(string: "https://www.exchangerate-api.com")!) {
+                Label {
+                    Text(verbatim: "Rates By Exchange Rate API")
+                } icon: {
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                }
             }
         }
     }
