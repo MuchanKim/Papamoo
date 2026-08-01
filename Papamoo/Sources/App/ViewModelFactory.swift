@@ -44,6 +44,15 @@ final class ViewModelFactory {
         AddSubscriptionViewModel(subscriptionService: subscriptionService)
     }
 
+    func makeEditSubscriptionViewModel(
+        subscription: Subscription
+    ) -> AddSubscriptionViewModel {
+        AddSubscriptionViewModel(
+            subscriptionService: subscriptionService,
+            editing: subscription
+        )
+    }
+
     func makeImageImportViewModel(
         imageData: Data,
         onComplete: @escaping () -> Void,

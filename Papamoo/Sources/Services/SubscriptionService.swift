@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 import SwiftData
 
@@ -63,8 +64,19 @@ final class SubscriptionService {
         return subscription
     }
 
-    func saveChanges(to subscription: Subscription) throws {
-        try context.save()
+    func saveChanges(
+        to subscription: Subscription,
+        from draft: SubscriptionDraft
+    ) throws {
+        apply(draft, to: subscription)
+
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
+
         effects.removeNotifications(subscription.persistentModelID)
         effects.scheduleNotifications(subscription)
         effects.notifyStoreChanged()
@@ -76,5 +88,21 @@ final class SubscriptionService {
         context.rollback()
         effects.removeNotifications(id)
         effects.notifyStoreChanged()
+    }
+
+    private func apply(_ draft: SubscriptionDraft, to subscription: Subscription) {
+        subscription.name = draft.name
+        subscription.amount = draft.amount
+        subscription.currencyCode = draft.currencyCode
+        subscription.billingCycle = draft.billingCycle
+        subscription.firstPaymentDate = draft.firstPaymentDate
+        subscription.category = draft.category
+        subscription.note = draft.note
+        subscription.iconName = draft.iconName
+        subscription.sourceImageData = draft.sourceImageData
+        subscription.sourceCropX = draft.sourceCropRegion.map { Double($0.minX) }
+        subscription.sourceCropY = draft.sourceCropRegion.map { Double($0.minY) }
+        subscription.sourceCropWidth = draft.sourceCropRegion.map { Double($0.width) }
+        subscription.sourceCropHeight = draft.sourceCropRegion.map { Double($0.height) }
     }
 }

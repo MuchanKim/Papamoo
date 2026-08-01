@@ -84,7 +84,9 @@ struct HomeView: View {
             .sheet(item: $coordinator.selectedSubscription) { subscription in
                 EditSubscriptionView(
                     subscription: subscription,
-                    viewModel: factory.makeAddSubscriptionViewModel()
+                    viewModel: factory.makeEditSubscriptionViewModel(
+                        subscription: subscription
+                    )
                 )
             }
             .alert("구독을 삭제하지 못했어요", isPresented: $isShowingDeletionError) {

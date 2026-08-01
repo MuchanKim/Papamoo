@@ -3,8 +3,8 @@ import SwiftData
 
 struct EditSubscriptionView: View {
     @Environment(\.dismiss) private var dismiss
-    @Bindable var subscription: Subscription
-    var viewModel: AddSubscriptionViewModel
+    let subscription: Subscription
+    @Bindable var viewModel: AddSubscriptionViewModel
     @State private var isSaving = false
     @State private var isDeleting = false
     @State private var isShowingOperationError = false
@@ -24,7 +24,7 @@ struct EditSubscriptionView: View {
                 }
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(subscription.name)
+            .navigationTitle(viewModel.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -45,7 +45,7 @@ struct EditSubscriptionView: View {
                                 .foregroundStyle(PapamooColor.accent)
                         }
                     }
-                    .disabled(!subscription.isValid || isSaving || isDeleting)
+                    .disabled(!viewModel.isFormValid || isSaving || isDeleting)
                 }
             }
         }
@@ -59,9 +59,9 @@ struct EditSubscriptionView: View {
 
     private var serviceHeader: some View {
         VStack(spacing: 10) {
-            ServiceIconView(category: subscription.category, iconName: subscription.iconName, size: 72)
-            Text(subscription.name).font(.title2).fontWeight(.bold)
-            Text(subscription.category.displayName).font(.footnote).foregroundStyle(.tertiary)
+            ServiceIconView(category: viewModel.category, iconName: viewModel.iconName, size: 72)
+            Text(viewModel.name).font(.title2).fontWeight(.bold)
+            Text(viewModel.category.displayName).font(.footnote).foregroundStyle(.tertiary)
         }
         .padding(.vertical, 20)
     }
@@ -76,16 +76,16 @@ struct EditSubscriptionView: View {
                     HStack(spacing: 4) {
                         TextField(
                             "0",
-                            value: $subscription.amount,
+                            value: $viewModel.amount,
                             format: .number.precision(
-                                .fractionLength(0...CurrencyFormatter.maximumFractionDigits(for: subscription.currencyCode))
+                                .fractionLength(0...CurrencyFormatter.maximumFractionDigits(for: viewModel.currencyCode))
                             )
                         )
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .font(.papamooAmount)
                             .monospacedDigit()
-                        Text(subscription.currencyCode)
+                        Text(viewModel.currencyCode)
                             .font(.papamooMono(10, weight: .bold))
                             .tracking(0.6)
                             .foregroundStyle(PapamooColor.accent)
@@ -98,7 +98,7 @@ struct EditSubscriptionView: View {
                 HStack {
                     Text("Currency")
                     Spacer()
-                    Picker("Currency", selection: $subscription.currencyCode) {
+                    Picker("Currency", selection: $viewModel.currencyCode) {
                         ForEach(viewModel.supportedCurrencies, id: \.self) { code in
                             Text(viewModel.currencyLabel(for: code)).tag(code)
                         }
@@ -111,7 +111,7 @@ struct EditSubscriptionView: View {
                 HStack {
                     Text("Billing")
                     Spacer()
-                    Picker("Billing", selection: $subscription.billingCycle) {
+                    Picker("Billing", selection: $viewModel.billingCycle) {
                         ForEach(BillingCycle.allCases, id: \.self) { Text($0.displayName).tag($0) }
                     }.pickerStyle(.segmented).frame(width: 160)
                 }
@@ -119,7 +119,11 @@ struct EditSubscriptionView: View {
 
                 Divider().padding(.leading, 16)
 
-                DatePicker("First payment", selection: $subscription.firstPaymentDate, displayedComponents: .date)
+                DatePicker(
+                    "First payment",
+                    selection: $viewModel.firstPaymentDate,
+                    displayedComponents: .date
+                )
                     .padding(.horizontal, 16).padding(.vertical, 11)
 
                 Divider().padding(.leading, 16)
@@ -127,7 +131,7 @@ struct EditSubscriptionView: View {
                 HStack {
                     Text("Category")
                     Spacer()
-                    Picker("Category", selection: $subscription.category) {
+                    Picker("Category", selection: $viewModel.category) {
                         ForEach(SubscriptionCategory.allCases, id: \.self) { Text($0.displayName).tag($0) }
                     }
                 }
@@ -141,7 +145,11 @@ struct EditSubscriptionView: View {
     private var noteSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Note").font(.footnote).fontWeight(.semibold).foregroundStyle(.tertiary).padding(.leading, 20).padding(.top, 20)
-            TextField("Optional. Add a note for context — e.g., shared with family, promo until Dec.", text: $subscription.note, axis: .vertical)
+            TextField(
+                "Optional. Add a note for context — e.g., shared with family, promo until Dec.",
+                text: $viewModel.note,
+                axis: .vertical
+            )
                 .lineLimit(4...)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)

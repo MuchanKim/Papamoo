@@ -44,8 +44,10 @@ struct SubscriptionServiceTests {
         container.mainContext.insert(subscription)
         try container.mainContext.save()
 
-        subscription.name = "After"
-        try service.saveChanges(to: subscription)
+        try service.saveChanges(
+            to: subscription,
+            from: makeDraft(name: "After")
+        )
 
         let stored = try #require(container.mainContext.fetch(FetchDescriptor<Subscription>()).first)
         #expect(stored.name == "After")

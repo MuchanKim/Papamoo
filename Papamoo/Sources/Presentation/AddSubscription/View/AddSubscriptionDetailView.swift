@@ -30,7 +30,11 @@ struct AddSubscriptionDetailView: View {
 
     private var serviceHeader: some View {
         VStack(spacing: 10) {
-            ServiceIconView(category: viewModel.category, iconName: viewModel.selectedPreset?.iconName, size: 72)
+            ServiceIconView(
+                category: viewModel.category,
+                iconName: viewModel.iconName,
+                size: 72
+            )
             if viewModel.selectedPreset?.name.isEmpty == true {
                 TextField("Service name", text: $viewModel.name)
                     .font(.title2).fontWeight(.bold)
