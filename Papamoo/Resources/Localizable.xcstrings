@@ -1,6 +1,135 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%1$@ payment D-%2$ld (%3$@%4$@)" : {
+      "comment" : "Payment reminder body. Arguments are service name, days before payment, currency symbol, and amount.",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ の支払い D-%2$ld（%3$@%4$@）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 결제 D-%2$ld (%3$@%4$@)"
+          }
+        }
+      }
+    },
+    "Allow Notifications" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 허용"
+          }
+        }
+      }
+    },
+    "Checking notification permission…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知の許可を確認中…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한을 확인하는 중…"
+          }
+        }
+      }
+    },
+    "Notification permission status is unavailable" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知の許可状態を確認できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 권한 상태를 확인할 수 없어요"
+          }
+        }
+      }
+    },
+    "Notification settings are unavailable" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知設定を開けません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 설정을 열 수 없어요"
+          }
+        }
+      }
+    },
+    "Notifications are enabled" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知は有効です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 허용되어 있어요"
+          }
+        }
+      }
+    },
+    "Notifications are turned off in System Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定で通知がオフになっています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 설정에서 알림이 꺼져 있어요"
+          }
+        }
+      }
+    },
+    "Open Notification Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知設定を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 설정 열기"
+          }
+        }
+      }
+    },
     "—" : {
       "comment" : "A placeholder text displayed when there are no upcoming payments.",
       "extractionState" : "stale",
@@ -780,6 +909,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "구독을 저장하지 못했어요"
+          }
+        }
+      }
+    },
+    "Couldn’t update notifications" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を更新できませんでした"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림을 업데이트하지 못했어요"
           }
         }
       }

@@ -58,6 +58,10 @@ final class ViewModelFactory {
         try widgetSnapshotSynchronizer.synchronize()
     }
 
+    func synchronizeNotifications() throws {
+        try NotificationManager.rescheduleAll(in: modelContext)
+    }
+
     private func saveImportedSubscription(_ record: ShareSubscriptionRecord) throws {
         let subscription = Subscription(
             name: record.name,

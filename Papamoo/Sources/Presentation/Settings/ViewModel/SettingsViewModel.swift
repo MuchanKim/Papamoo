@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UserNotifications
 
 @Observable
 final class SettingsViewModel {
@@ -16,21 +17,21 @@ final class SettingsViewModel {
     var isRemindOneDayBefore: Bool {
         didSet {
             UserDefaults.appGroup.set(isRemindOneDayBefore, forKey: "isRemindOneDayBefore")
-            NotificationManager.rescheduleAll(in: modelContext)
+            rescheduleNotifications()
         }
     }
 
     var isRemindThreeDaysBefore: Bool {
         didSet {
             UserDefaults.appGroup.set(isRemindThreeDaysBefore, forKey: "isRemindThreeDaysBefore")
-            NotificationManager.rescheduleAll(in: modelContext)
+            rescheduleNotifications()
         }
     }
 
     var notificationHour: Int {
         didSet {
             UserDefaults.appGroup.set(notificationHour, forKey: "notificationHour")
-            NotificationManager.rescheduleAll(in: modelContext)
+            rescheduleNotifications()
         }
     }
 
@@ -47,6 +48,10 @@ final class SettingsViewModel {
     }
 
     var showRestartAlert: Bool = false
+    var isShowingNotificationSchedulingError = false
+    private(set) var notificationSchedulingErrorMessage = ""
+    private(set) var notificationAuthorizationState: NotificationAuthorizationState = .loading
+    private(set) var isRequestingNotificationAuthorization = false
 
     var notificationTime: Date {
         get {
@@ -76,6 +81,40 @@ final class SettingsViewModel {
         case "USD": "USD ($)"
         case "JPY": "JPY (¥)"
         default: code
+        }
+    }
+
+    func refreshNotificationAuthorizationState() async {
+        let status = await NotificationManager.authorizationStatus()
+        notificationAuthorizationState = NotificationAuthorizationState(status: status)
+    }
+
+    func requestNotificationAuthorization() async {
+        guard isRequestingNotificationAuthorization == false else { return }
+        isRequestingNotificationAuthorization = true
+        defer { isRequestingNotificationAuthorization = false }
+
+        do {
+            let isAuthorized = try await NotificationManager.requestAuthorization()
+            await refreshNotificationAuthorizationState()
+            guard isAuthorized else { return }
+            try NotificationManager.rescheduleAll(in: modelContext)
+            isShowingNotificationSchedulingError = false
+        } catch is CancellationError {
+            return
+        } catch {
+            notificationSchedulingErrorMessage = error.localizedDescription
+            isShowingNotificationSchedulingError = true
+        }
+    }
+
+    private func rescheduleNotifications() {
+        do {
+            try NotificationManager.rescheduleAll(in: modelContext)
+            isShowingNotificationSchedulingError = false
+        } catch {
+            notificationSchedulingErrorMessage = error.localizedDescription
+            isShowingNotificationSchedulingError = true
         }
     }
 }

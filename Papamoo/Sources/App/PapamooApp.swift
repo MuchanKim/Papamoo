@@ -46,7 +46,6 @@ struct PapamooApp: App {
                 factory: viewModelFactory
             )
             .task {
-                _ = await NotificationManager.requestAuthorization()
                 await ExchangeRateManager.shared.fetchIfStale()
             }
         }

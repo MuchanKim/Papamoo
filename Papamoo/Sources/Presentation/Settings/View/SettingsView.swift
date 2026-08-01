@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @Bindable var viewModel: SettingsViewModel
 
     var body: some View {
@@ -20,6 +21,18 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(verbatim: alertMessage)
+            }
+            .alert(
+                "Couldn’t update notifications",
+                isPresented: $viewModel.isShowingNotificationSchedulingError
+            ) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.notificationSchedulingErrorMessage)
+            }
+            .task(id: scenePhase) {
+                guard scenePhase == .active else { return }
+                await viewModel.refreshNotificationAuthorizationState()
             }
         }
     }
@@ -59,6 +72,7 @@ struct SettingsView: View {
             ) {
                 Label("Time", systemImage: "clock")
             }
+            NotificationAuthorizationRow(viewModel: viewModel)
         }
     }
 

@@ -44,6 +44,7 @@ struct ContentView: View {
                 try await factory.importPendingSubscriptions()
                 homeViewModel.fetch()
                 calendarViewModel.fetch()
+                try factory.synchronizeNotifications()
                 try factory.synchronizeWidgetSnapshot()
             } catch is CancellationError {
                 return
