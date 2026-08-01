@@ -1011,6 +1011,7 @@
       }
     },
     "It will appear in your subscriptions when Papamoo opens." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1753,6 +1754,7 @@
       }
     },
     "Saved" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
@@ -1764,6 +1766,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "저장했어요"
+          }
+        }
+      }
+    },
+    "SAVED" : {
+      "comment" : "The text displayed after a subscription has been saved successfully.",
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장됨"
           }
         }
       }

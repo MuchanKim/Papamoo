@@ -5,7 +5,6 @@ enum ShareImportPhase: Equatable {
     case preparingCrop
     case scanning
     case form(ShareImportFormMode)
-    case saved
     case failed(ShareFailureKind)
 }
 

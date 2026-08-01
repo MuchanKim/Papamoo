@@ -18,8 +18,6 @@ struct ShareRootView: View {
                 ShareScanningView(viewModel: viewModel)
             case let .form(mode):
                 ShareSubscriptionFormView(viewModel: viewModel, mode: mode)
-            case .saved:
-                ShareSavedView()
             case let .failed(kind):
                 ShareFailureView(viewModel: viewModel, kind: kind)
             }

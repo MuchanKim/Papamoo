@@ -39,6 +39,7 @@ final class ShareImportViewModel {
     var note = ""
     var showsSourceImage = false
     var isSaving = false
+    private(set) var isSaved = false
     var isShowingSaveError = false
     private(set) var analysisSource: PaymentAnalysisSource?
     private(set) var lastAnalysisErrorDescription: String?
@@ -210,7 +211,11 @@ final class ShareImportViewModel {
     }
 
     func save() {
-        guard isFormValid, let amount = Decimal(string: normalizedAmountText), isSaving == false else {
+        guard isFormValid,
+              let amount = Decimal(string: normalizedAmountText),
+              isSaving == false,
+              isSaved == false
+        else {
             return
         }
 
@@ -229,6 +234,7 @@ final class ShareImportViewModel {
 
         saveTask?.cancel()
         isSaving = true
+        isSaved = false
         isShowingSaveError = false
 
         saveTask = Task {
@@ -239,11 +245,11 @@ final class ShareImportViewModel {
                 try Task.checkCancellation()
 
                 isSaving = false
-                discardSessionData()
-                phase = .saved
+                isSaved = true
                 completionTask = Task {
                     do {
-                        try await Task.sleep(for: .milliseconds(650))
+                        try await Task.sleep(for: .milliseconds(700))
+                        discardSessionData()
                         extensionContext.completeRequest(returningItems: nil)
                     } catch is CancellationError {
                         return

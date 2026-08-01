@@ -86,17 +86,29 @@ struct ShareSubscriptionFormView: View {
     }
 
     private var addButtonTitle: LocalizedStringResource {
-        viewModel.isSaving ? "SAVING" : "ADD SUBSCRIPTION"
+        if viewModel.isSaved {
+            "SAVED"
+        } else if viewModel.isSaving {
+            "SAVING"
+        } else {
+            "ADD SUBSCRIPTION"
+        }
     }
 
     private var addButton: some View {
         Button(action: viewModel.save) {
             HStack(spacing: 8) {
-                if viewModel.isSaving {
+                if viewModel.isSaved {
+                    Image(systemName: "checkmark")
+                        .fontWeight(.bold)
+                        .transition(.scale.combined(with: .opacity))
+                } else if viewModel.isSaving {
                     ProgressView()
                         .tint(ShareColor.background)
+                        .transition(.scale.combined(with: .opacity))
                 }
                 Text(addButtonTitle.localized(for: locale))
+                    .contentTransition(.opacity)
             }
             .font(.papamooMono(13, weight: .bold))
             .tracking(1)
@@ -107,7 +119,9 @@ struct ShareSubscriptionFormView: View {
                 in: RoundedRectangle(cornerRadius: 12)
             )
         }
-        .disabled(viewModel.isFormValid == false || viewModel.isSaving)
+        .disabled(viewModel.isFormValid == false || viewModel.isSaving || viewModel.isSaved)
+        .animation(.easeInOut(duration: 0.2), value: viewModel.isSaving)
+        .animation(.easeInOut(duration: 0.2), value: viewModel.isSaved)
         .accessibilityHint("Save the subscription information and close the share sheet.")
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
