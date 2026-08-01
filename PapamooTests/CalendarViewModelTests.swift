@@ -30,6 +30,7 @@ struct CalendarViewModelTests {
         try context.save()
 
         let viewModel = CalendarViewModel(context: context)
+        #expect(viewModel.selectedDay == Calendar.current.component(.day, from: .now))
         viewModel.displayedYear = Calendar.current.component(.year, from: paymentDate)
         viewModel.displayedMonth = Calendar.current.component(.month, from: paymentDate)
         viewModel.fetch()

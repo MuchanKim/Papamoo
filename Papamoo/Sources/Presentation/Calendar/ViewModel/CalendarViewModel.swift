@@ -16,6 +16,7 @@ final class CalendarViewModel {
         self.context = context
         self.displayedMonth = Calendar.current.component(.month, from: .now)
         self.displayedYear = Calendar.current.component(.year, from: .now)
+        self.selectedDay = Calendar.current.component(.day, from: .now)
     }
 
     var baseCurrency: String { exchangeRate.baseCurrency }
