@@ -101,7 +101,7 @@
 			);
 			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
 		};
-		D2A000000000000000000004 /* Exceptions for "PapamooShare" folder in "PapamooShareExtension" target */ = {
+		D2A000000000000000000004 /* Exceptions for "PapamooImport" folder in "PapamooShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -118,27 +118,15 @@
 				"Resources/Fonts/IBMPlexMono-SemiBold.ttf",
 				Resources/Localizable.xcstrings,
 				Sources/Global/Components/ServiceIconView.swift,
-				Sources/Import/ImportField.swift,
-				Sources/Import/PaymentAnalysisOutcome.swift,
-				Sources/Import/PaymentDocumentType.swift,
-				Sources/Import/PaymentEmailExtractionCandidate.swift,
-				Sources/Import/PaymentEmailExtractionMapper.swift,
-				Sources/Import/PaymentImportAnalyzer.swift,
-				Sources/Import/PendingSubscriptionImport.swift,
-				Sources/Import/SubscriptionImportDraft.swift,
-				Sources/Import/SubscriptionImportInbox.swift,
-				Sources/Import/SubscriptionImportParser.swift,
 				Sources/Models/BillingCycle.swift,
-				Sources/Models/BillingSchedule.swift,
 				Sources/Models/PresetService.swift,
-				Sources/Models/Subscription.swift,
 				Sources/Models/SubscriptionCategory.swift,
 				Sources/Utilities/CurrencyFormatting.swift,
 				Sources/Utilities/DesignTokens.swift,
 			);
 			target = D2A000000000000000000001 /* PapamooShareExtension */;
 		};
-		D4A000000000000000000001 /* Exceptions for "PapamooShare" folder in "Papamoo" target */ = {
+		D4A000000000000000000001 /* Exceptions for "PapamooImport" folder in "Papamoo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -177,13 +165,13 @@
 			path = PapamooWidget;
 			sourceTree = "<group>";
 		};
-		D2A000000000000000000003 /* PapamooShare */ = {
+		D2A000000000000000000003 /* PapamooImport */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D4A000000000000000000001 /* Exceptions for "PapamooShare" folder in "Papamoo" target */,
-				D2A000000000000000000004 /* Exceptions for "PapamooShare" folder in "PapamooShareExtension" target */,
+				D4A000000000000000000001 /* Exceptions for "PapamooImport" folder in "Papamoo" target */,
+				D2A000000000000000000004 /* Exceptions for "PapamooImport" folder in "PapamooShareExtension" target */,
 			);
-			path = PapamooShare;
+			path = PapamooImport;
 			sourceTree = "<group>";
 		};
 		D3A000000000000000000001 /* PapamooShared */ = {
@@ -243,7 +231,7 @@
 				D111D9F92F9FA18700253ADA /* PapamooWidgetExtension.entitlements */,
 				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
 				D3A000000000000000000001 /* PapamooShared */,
-				D2A000000000000000000003 /* PapamooShare */,
+				D2A000000000000000000003 /* PapamooImport */,
 				D1E08EDA2F9DF6D700283B24 /* PapamooTests */,
 				D1E08EE42F9DF6D700283B24 /* PapamooUITests */,
 				D1E098AC2F9E0F6300283B24 /* PapamooWidget */,
@@ -294,7 +282,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
-				D2A000000000000000000003 /* PapamooShare */,
+				D2A000000000000000000003 /* PapamooImport */,
 				D3A000000000000000000001 /* PapamooShared */,
 			);
 			name = Papamoo;
@@ -386,7 +374,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D2A000000000000000000003 /* PapamooShare */,
+				D2A000000000000000000003 /* PapamooImport */,
+				D3A000000000000000000001 /* PapamooShared */,
 			);
 			name = PapamooShareExtension;
 			packageProductDependencies = (
@@ -900,12 +889,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = PapamooShare/PapamooShare.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PapamooImport/PapamooShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PapamooShare/Info.plist;
+				INFOPLIST_FILE = PapamooImport/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -933,12 +922,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = PapamooShare/PapamooShare.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PapamooImport/PapamooShare.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PapamooShare/Info.plist;
+				INFOPLIST_FILE = PapamooImport/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -1,9 +1,5 @@
 import Foundation
 
-nonisolated enum AppGroup {
-    static let identifier = "group.com.moolab.Papamoo"
-}
-
 /// 앱 전역 통화 포맷 헬퍼.
 enum CurrencyFormatter {
     /// 통화 코드의 narrow symbol.

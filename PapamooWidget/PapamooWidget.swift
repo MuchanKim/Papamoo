@@ -77,7 +77,7 @@ struct PapamooTimelineProvider: TimelineProvider {
         let logger = Logger(subsystem: "com.moolab.Papamoo", category: "WidgetSnapshot")
         do {
             guard let containerURL = FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier: "group.com.moolab.Papamoo"
+                forSecurityApplicationGroupIdentifier: AppGroup.identifier
             ) else {
                 logger.error("App Group container is unavailable")
                 return unavailableEntry()
