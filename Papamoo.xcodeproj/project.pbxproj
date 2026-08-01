@@ -137,6 +137,14 @@
 			);
 			target = D2A000000000000000000001 /* PapamooShareExtension */;
 		};
+		D4A000000000000000000001 /* Exceptions for "PapamooShare" folder in "Papamoo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				ShareViewController.swift,
+			);
+			target = D1E08EC92F9DF6D600283B24 /* Papamoo */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -171,6 +179,7 @@
 		D2A000000000000000000003 /* PapamooShare */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				D4A000000000000000000001 /* Exceptions for "PapamooShare" folder in "Papamoo" target */,
 				D2A000000000000000000004 /* Exceptions for "PapamooShare" folder in "PapamooShareExtension" target */,
 			);
 			path = PapamooShare;
@@ -284,6 +293,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
+				D2A000000000000000000003 /* PapamooShare */,
 				D3A000000000000000000001 /* PapamooShared */,
 			);
 			name = Papamoo;

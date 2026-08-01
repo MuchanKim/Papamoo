@@ -35,11 +35,51 @@ final class ViewModelFactory {
         AddSubscriptionViewModel(context: modelContext, deletionStore: deletionStore)
     }
 
+    func makeImageImportViewModel(
+        imageData: Data,
+        onComplete: @escaping () -> Void,
+        onCancel: @escaping () -> Void
+    ) -> ShareImportViewModel {
+        ShareImportViewModel(
+            imageData: imageData,
+            saveRecord: { record in
+                try self.saveImportedSubscription(record)
+            },
+            onComplete: onComplete,
+            onCancel: onCancel
+        )
+    }
+
     func importPendingSubscriptions() async throws {
         _ = try await pendingImportStore.importPendingSubscriptions()
     }
 
     func synchronizeWidgetSnapshot() throws {
         try widgetSnapshotSynchronizer.synchronize()
+    }
+
+    private func saveImportedSubscription(_ record: ShareSubscriptionRecord) throws {
+        let subscription = Subscription(
+            name: record.name,
+            amount: record.amount,
+            currencyCode: record.currencyCode,
+            billingCycle: record.billingCycle,
+            firstPaymentDate: record.firstPaymentDate,
+            category: record.category,
+            note: record.note,
+            iconName: record.iconName,
+            sourceImageData: record.sourceImageData,
+            sourceCropRegion: record.sourceCropRegion
+        )
+        modelContext.insert(subscription)
+
+        do {
+            try modelContext.save()
+            NotificationManager.scheduleNotifications(for: subscription)
+            NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
+        } catch {
+            modelContext.delete(subscription)
+            throw error
+        }
     }
 }

@@ -11,7 +11,10 @@ final class ShareImportViewModel {
         category: "PaymentImport"
     )
 
-    private let extensionContext: NSExtensionContext
+    private let inputLoader: () async throws -> Data
+    private let recordSaver: (ShareSubscriptionRecord) async throws -> Void
+    private let completionAction: () -> Void
+    private let cancellationAction: () -> Void
     private let ocrService = ShareOCRService()
     private let paymentAnalyzer: PaymentImportAnalyzer
     private var loadTask: Task<Void, Never>?
@@ -50,13 +53,53 @@ final class ShareImportViewModel {
         analysisPreviewImage ?? previewImage
     }
 
-    init(extensionContext: NSExtensionContext) {
-        self.extensionContext = extensionContext
+    private init(
+        inputLoader: @escaping () async throws -> Data,
+        recordSaver: @escaping (ShareSubscriptionRecord) async throws -> Void,
+        completionAction: @escaping () -> Void,
+        cancellationAction: @escaping () -> Void
+    ) {
+        self.inputLoader = inputLoader
+        self.recordSaver = recordSaver
+        self.completionAction = completionAction
+        self.cancellationAction = cancellationAction
         self.currencyCode = UserDefaults(suiteName: AppGroup.identifier)?.string(forKey: "baseCurrency") ?? "KRW"
         let foundationModelService = ShareFoundationModelService()
         self.paymentAnalyzer = PaymentImportAnalyzer { lines in
             try await foundationModelService.extractPayment(from: lines)
         }
+    }
+
+    convenience init(extensionContext: NSExtensionContext) {
+        self.init(
+            inputLoader: {
+                try await ShareImageLoader.loadData(from: extensionContext)
+            },
+            recordSaver: { record in
+                let store = ShareSubscriptionStoreFactory.makeStore()
+                try await store.save(record)
+            },
+            completionAction: {
+                extensionContext.completeRequest(returningItems: nil)
+            },
+            cancellationAction: {
+                extensionContext.cancelRequest(withError: ShareImportError.userCancelled)
+            }
+        )
+    }
+
+    convenience init(
+        imageData: Data,
+        saveRecord: @escaping (ShareSubscriptionRecord) async throws -> Void,
+        onComplete: @escaping () -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        self.init(
+            inputLoader: { imageData },
+            recordSaver: saveRecord,
+            completionAction: onComplete,
+            cancellationAction: onCancel
+        )
     }
 
     var isFormValid: Bool {
@@ -79,7 +122,7 @@ final class ShareImportViewModel {
         phase = .loading
 
         do {
-            let data = try await ShareImageLoader.loadData(from: extensionContext)
+            let data = try await inputLoader()
             let previewData = try await ShareImageProcessor.previewData(from: data)
             try Task.checkCancellation()
             guard let previewImage = UIImage(data: previewData) else {
@@ -240,8 +283,7 @@ final class ShareImportViewModel {
         saveTask = Task {
             await Task.yield()
             do {
-                let store = ShareSubscriptionStoreFactory.makeStore()
-                try await store.save(record)
+                try await recordSaver(record)
                 try Task.checkCancellation()
 
                 isSaving = false
@@ -250,12 +292,12 @@ final class ShareImportViewModel {
                     do {
                         try await Task.sleep(for: .milliseconds(700))
                         discardSessionData()
-                        extensionContext.completeRequest(returningItems: nil)
+                        completionAction()
                     } catch is CancellationError {
                         return
                     } catch {
                         let description = String(reflecting: error)
-                        Self.logger.error("Share extension completion delay failed: \(description, privacy: .public)")
+                        Self.logger.error("Import completion delay failed: \(description, privacy: .public)")
                     }
                 }
             } catch is CancellationError {
@@ -276,7 +318,7 @@ final class ShareImportViewModel {
         saveTask?.cancel()
         completionTask?.cancel()
         discardSessionData()
-        extensionContext.cancelRequest(withError: ShareImportError.userCancelled)
+        cancellationAction()
     }
 
     private func applyDraftToForm() {
