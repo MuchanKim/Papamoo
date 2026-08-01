@@ -5,13 +5,17 @@ import SwiftData
 /// AppCoordinator(navigation 책임)와 분리되어, 각자 단일 책임 원칙을 만족한다.
 final class ViewModelFactory {
     private let modelContext: ModelContext
-    private let deletionStore: SubscriptionDeletionStore
+    private let subscriptionService: SubscriptionService
     private let pendingImportStore: PendingSubscriptionImportStore
     private let widgetSnapshotSynchronizer: WidgetSnapshotSynchronizer
 
     init(modelContainer: ModelContainer, widgetSnapshotStore: WidgetSnapshotStore) {
         self.modelContext = modelContainer.mainContext
-        self.deletionStore = SubscriptionDeletionStore(modelContainer: modelContainer)
+        let deletionStore = SubscriptionDeletionStore(modelContainer: modelContainer)
+        self.subscriptionService = SubscriptionService(
+            context: modelContainer.mainContext,
+            deletionStore: deletionStore
+        )
         self.pendingImportStore = PendingSubscriptionImportStore(modelContainer: modelContainer)
         self.widgetSnapshotSynchronizer = WidgetSnapshotSynchronizer(
             context: modelContainer.mainContext,
@@ -20,7 +24,7 @@ final class ViewModelFactory {
     }
 
     func makeHomeViewModel() -> HomeViewModel {
-        HomeViewModel(context: modelContext, deletionStore: deletionStore)
+        HomeViewModel(context: modelContext, subscriptionService: subscriptionService)
     }
 
     func makeCalendarViewModel() -> CalendarViewModel {
@@ -32,7 +36,7 @@ final class ViewModelFactory {
     }
 
     func makeAddSubscriptionViewModel() -> AddSubscriptionViewModel {
-        AddSubscriptionViewModel(context: modelContext, deletionStore: deletionStore)
+        AddSubscriptionViewModel(subscriptionService: subscriptionService)
     }
 
     func makeImageImportViewModel(
@@ -43,7 +47,7 @@ final class ViewModelFactory {
         ShareImportViewModel(
             imageData: imageData,
             saveRecord: { record in
-                try self.saveImportedSubscription(record)
+                try self.subscriptionService.create(from: SubscriptionDraft(record: record))
             },
             onComplete: onComplete,
             onCancel: onCancel
@@ -61,9 +65,11 @@ final class ViewModelFactory {
     func synchronizeNotifications() throws {
         try NotificationManager.rescheduleAll(in: modelContext)
     }
+}
 
-    private func saveImportedSubscription(_ record: ShareSubscriptionRecord) throws {
-        let subscription = Subscription(
+private extension SubscriptionDraft {
+    init(record: ShareSubscriptionRecord) {
+        self.init(
             name: record.name,
             amount: record.amount,
             currencyCode: record.currencyCode,
@@ -75,15 +81,5 @@ final class ViewModelFactory {
             sourceImageData: record.sourceImageData,
             sourceCropRegion: record.sourceCropRegion
         )
-        modelContext.insert(subscription)
-
-        do {
-            try modelContext.save()
-            NotificationManager.scheduleNotifications(for: subscription)
-            NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
-        } catch {
-            modelContext.delete(subscription)
-            throw error
-        }
     }
 }

@@ -13,10 +13,7 @@ struct SubscriptionSynchronizationTests {
         let storeURL = directory.appending(path: "subscriptions.store")
         let appContainer = try makeContainer(storeURL: storeURL)
         let extensionContainer = try makeContainer(storeURL: storeURL)
-        let viewModel = HomeViewModel(
-            context: appContainer.mainContext,
-            deletionStore: SubscriptionDeletionStore(modelContainer: appContainer)
-        )
+        let viewModel = makeHomeViewModel(container: appContainer)
 
         viewModel.fetch()
         #expect(viewModel.subscriptions.isEmpty)
@@ -45,10 +42,7 @@ struct SubscriptionSynchronizationTests {
         context.insert(remaining)
         try context.save()
 
-        let viewModel = HomeViewModel(
-            context: context,
-            deletionStore: SubscriptionDeletionStore(modelContainer: container)
-        )
+        let viewModel = makeHomeViewModel(container: container)
         viewModel.fetch()
         #expect(viewModel.subscriptions.count == 2)
 
@@ -82,5 +76,18 @@ struct SubscriptionSynchronizationTests {
 
     private func makeSubscription(name: String) -> Subscription {
         Subscription(name: name, amount: 1, firstPaymentDate: .now)
+    }
+
+    private func makeHomeViewModel(container: ModelContainer) -> HomeViewModel {
+        let service = SubscriptionService(
+            context: container.mainContext,
+            deletionStore: SubscriptionDeletionStore(modelContainer: container),
+            effects: .init(
+                scheduleNotifications: { _ in },
+                removeNotifications: { _ in },
+                notifyStoreChanged: {}
+            )
+        )
+        return HomeViewModel(context: container.mainContext, subscriptionService: service)
     }
 }

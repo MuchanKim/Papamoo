@@ -3,8 +3,7 @@ import SwiftData
 
 @Observable
 final class AddSubscriptionViewModel {
-    private let context: ModelContext
-    private let deletionStore: SubscriptionDeletionStore
+    private let subscriptionService: SubscriptionService
     private let exchangeRate = ExchangeRateManager.shared
 
     var searchText = ""
@@ -31,9 +30,8 @@ final class AddSubscriptionViewModel {
     var category: SubscriptionCategory = .other
     var note = ""
 
-    init(context: ModelContext, deletionStore: SubscriptionDeletionStore) {
-        self.context = context
-        self.deletionStore = deletionStore
+    init(subscriptionService: SubscriptionService) {
+        self.subscriptionService = subscriptionService
     }
 
     var filteredServices: [PresetService] {
@@ -57,7 +55,7 @@ final class AddSubscriptionViewModel {
     }
 
     func save() throws {
-        let subscription = Subscription(
+        let draft = SubscriptionDraft(
             name: name,
             amount: amount,
             currencyCode: currencyCode,
@@ -65,31 +63,18 @@ final class AddSubscriptionViewModel {
             firstPaymentDate: firstPaymentDate,
             category: category,
             note: note,
-            iconName: selectedPreset?.iconName
+            iconName: selectedPreset?.iconName,
+            sourceImageData: nil,
+            sourceCropRegion: nil
         )
-        context.insert(subscription)
-        do {
-            try context.save()
-            NotificationManager.scheduleNotifications(for: subscription)
-            NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
-        } catch {
-            context.delete(subscription)
-            throw error
-        }
+        try subscriptionService.create(from: draft)
     }
 
     func update(_ subscription: Subscription) throws {
-        try context.save()
-        NotificationManager.removeNotifications(for: subscription)
-        NotificationManager.scheduleNotifications(for: subscription)
-        NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
+        try subscriptionService.saveChanges(to: subscription)
     }
 
     func delete(id: PersistentIdentifier) async throws {
-        try await deletionStore.delete(id: id)
-        // 편집 화면이 mainContext에 남긴 미저장 변경이 외부 컨텍스트의 삭제를 되살리지 않게 정리한다.
-        context.rollback()
-        NotificationManager.removeNotifications(for: id)
-        NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
+        try await subscriptionService.delete(id: id)
     }
 }
