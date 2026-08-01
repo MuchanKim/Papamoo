@@ -3,7 +3,8 @@ import SwiftUI
 struct MonthGridView: View {
     let displayedMonth: Int
     let displayedYear: Int
-    let eventDates: [Int: [SubscriptionCategory]]
+    let dailyTotals: [Int: Decimal]
+    let currencyCode: String
     @Binding var selectedDay: Int?
 
     private var calendar: Calendar { Calendar.current }
@@ -46,8 +47,8 @@ struct MonthGridView: View {
             }
 
             LazyVGrid(columns: columns, spacing: 4) {
-                ForEach(0..<(firstWeekday - 1), id: \.self) { _ in
-                    Color.clear.frame(height: 48)
+                ForEach((0..<(firstWeekday - 1)).map { "leading-\($0)" }, id: \.self) { _ in
+                    Color.clear.frame(height: 60)
                 }
                 ForEach(1...daysInMonth, id: \.self) { day in
                     dayCell(for: day)
@@ -61,7 +62,7 @@ struct MonthGridView: View {
         let columnIndex = (day + firstWeekday - 2) % 7
         let isSunday = columnIndex == 0
         let isSelected = selectedDay == day
-        let payments = eventDates[day] ?? []
+        let total = dailyTotals[day]
 
         return Button {
             if selectedDay == day { selectedDay = nil } else { selectedDay = day }
@@ -75,31 +76,39 @@ struct MonthGridView: View {
                                 .fill(PapamooColor.accent.opacity(0.06))
                         )
                 }
-                VStack(spacing: 4) {
-                    Text(String(format: "%02d", day))
+                VStack(spacing: 3) {
+                    Text("\(day)")
                         .font(.papamooMono(16, weight: .medium))
                         .foregroundStyle(isSunday ? PapamooColor.sunday : PapamooColor.text)
-                    paymentMarker(count: payments.count)
+                    paymentAmount(total)
                 }
+                .padding(.horizontal, 2)
             }
-            .frame(maxWidth: .infinity, minHeight: 48)
+            .frame(maxWidth: .infinity, minHeight: 60)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel(day: day, total: total))
     }
 
     @ViewBuilder
-    private func paymentMarker(count: Int) -> some View {
-        switch count {
-        case 0:
-            Color.clear.frame(height: 4)
-        case 1:
-            Circle()
-                .fill(PapamooColor.accent)
-                .frame(width: 4, height: 4)
-        default:
-            Rectangle()
-                .fill(PapamooColor.accent)
-                .frame(width: 16, height: 2)
+    private func paymentAmount(_ total: Decimal?) -> some View {
+        if let total {
+            Text(CurrencyFormatter.amountString(total, currencyCode: currencyCode))
+                .font(.papamooMono(10, weight: .bold))
+                .foregroundStyle(PapamooColor.accent)
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.55)
+                .frame(maxWidth: .infinity)
+        } else {
+            Color.clear.frame(height: 12)
         }
+    }
+
+    private func accessibilityLabel(day: Int, total: Decimal?) -> String {
+        guard let total else { return String(localized: "Day \(day)") }
+        let amount = CurrencyFormatter.amountString(total, currencyCode: currencyCode)
+        return String(localized: "Day \(day), \(amount) \(currencyCode) scheduled")
     }
 }
