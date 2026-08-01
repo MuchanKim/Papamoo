@@ -29,12 +29,12 @@ struct CalendarViewModelTests {
         context.insert(makeSubscription(name: "Second", amount: 10_000, date: paymentDate))
         try context.save()
 
-        let viewModel = CalendarViewModel(context: context)
+        let subscriptionStore = SubscriptionStore(context: context)
+        try subscriptionStore.refresh()
+        let viewModel = CalendarViewModel(subscriptionStore: subscriptionStore)
         #expect(viewModel.selectedDay == Calendar.current.component(.day, from: .now))
         viewModel.displayedYear = Calendar.current.component(.year, from: paymentDate)
         viewModel.displayedMonth = Calendar.current.component(.month, from: paymentDate)
-        viewModel.fetch()
-
         let day = Calendar.current.component(.day, from: paymentDate)
         #expect(viewModel.dailyTotals[day] == 14_900)
         #expect(viewModel.monthTotal == 14_900)

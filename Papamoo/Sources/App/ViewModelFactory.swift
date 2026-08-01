@@ -5,12 +5,14 @@ import SwiftData
 /// AppCoordinator(navigation 책임)와 분리되어, 각자 단일 책임 원칙을 만족한다.
 final class ViewModelFactory {
     private let modelContext: ModelContext
+    private let subscriptionStore: SubscriptionStore
     private let subscriptionService: SubscriptionService
     private let pendingImportStore: PendingSubscriptionImportStore
     private let widgetSnapshotSynchronizer: WidgetSnapshotSynchronizer
 
     init(modelContainer: ModelContainer, widgetSnapshotStore: WidgetSnapshotStore) {
         self.modelContext = modelContainer.mainContext
+        self.subscriptionStore = SubscriptionStore(context: modelContainer.mainContext)
         let deletionStore = SubscriptionDeletionStore(modelContainer: modelContainer)
         self.subscriptionService = SubscriptionService(
             context: modelContainer.mainContext,
@@ -24,11 +26,14 @@ final class ViewModelFactory {
     }
 
     func makeHomeViewModel() -> HomeViewModel {
-        HomeViewModel(context: modelContext, subscriptionService: subscriptionService)
+        HomeViewModel(
+            subscriptionStore: subscriptionStore,
+            subscriptionService: subscriptionService
+        )
     }
 
     func makeCalendarViewModel() -> CalendarViewModel {
-        CalendarViewModel(context: modelContext)
+        CalendarViewModel(subscriptionStore: subscriptionStore)
     }
 
     func makeSettingsViewModel() -> SettingsViewModel {
@@ -56,6 +61,10 @@ final class ViewModelFactory {
 
     func importPendingSubscriptions() async throws {
         _ = try await pendingImportStore.importPendingSubscriptions()
+    }
+
+    func refreshSubscriptions() throws {
+        try subscriptionStore.refresh()
     }
 
     func synchronizeWidgetSnapshot() throws {

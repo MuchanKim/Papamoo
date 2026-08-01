@@ -56,9 +56,7 @@ struct HomeView: View {
                     .accessibilityIdentifier("home.add-menu")
                 }
             }
-            .sheet(isPresented: $coordinator.isShowingAddSheet, onDismiss: {
-                viewModel.fetch()
-            }) {
+            .sheet(isPresented: $coordinator.isShowingAddSheet) {
                 AddSubscriptionSearchView(
                     coordinator: coordinator,
                     viewModel: factory.makeAddSubscriptionViewModel()
@@ -74,9 +72,7 @@ struct HomeView: View {
                 )
                 .ignoresSafeArea()
             }
-            .sheet(item: $coordinator.imageImportSelection, onDismiss: {
-                viewModel.fetch()
-            }) { selection in
+            .sheet(item: $coordinator.imageImportSelection) { selection in
                 ShareRootView(
                     viewModel: factory.makeImageImportViewModel(
                         imageData: selection.data,
@@ -85,20 +81,11 @@ struct HomeView: View {
                     )
                 )
             }
-            .sheet(item: $coordinator.selectedSubscription, onDismiss: {
-                viewModel.fetch()
-            }) { subscription in
+            .sheet(item: $coordinator.selectedSubscription) { subscription in
                 EditSubscriptionView(
                     subscription: subscription,
-                    viewModel: factory.makeAddSubscriptionViewModel(),
-                    onDelete: viewModel.removeSubscription(withID:)
+                    viewModel: factory.makeAddSubscriptionViewModel()
                 )
-            }
-            .onAppear { viewModel.fetch() }
-            .alert("구독 정보를 새로 고치지 못했어요", isPresented: $viewModel.isShowingFetchError) {
-                Button("확인", role: .cancel) {}
-            } message: {
-                Text(viewModel.fetchErrorMessage)
             }
             .alert("구독을 삭제하지 못했어요", isPresented: $isShowingDeletionError) {
                 Button("확인", role: .cancel) {}

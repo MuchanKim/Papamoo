@@ -29,12 +29,6 @@ struct CalendarView: View {
             }
             .background(PapamooColor.background.ignoresSafeArea())
             .toolbar(.hidden, for: .navigationBar)
-            .onAppear { viewModel.fetch() }
-            .alert("구독 정보를 새로 고치지 못했어요", isPresented: $viewModel.isShowingFetchError) {
-                Button("확인", role: .cancel) {}
-            } message: {
-                Text(viewModel.fetchErrorMessage)
-            }
         }
     }
 

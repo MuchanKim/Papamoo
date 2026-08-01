@@ -1,25 +1,25 @@
 import Foundation
-import SwiftData
 
 @Observable
 final class CalendarViewModel {
-    private let context: ModelContext
+    private let subscriptionStore: SubscriptionStore
     private let exchangeRate = ExchangeRateManager.shared
-    private(set) var subscriptions: [Subscription] = []
-    private(set) var fetchErrorMessage = ""
-    var isShowingFetchError = false
     var displayedMonth: Int
     var displayedYear: Int
     var selectedDay: Int?
 
-    init(context: ModelContext) {
-        self.context = context
+    init(subscriptionStore: SubscriptionStore) {
+        self.subscriptionStore = subscriptionStore
         self.displayedMonth = Calendar.current.component(.month, from: .now)
         self.displayedYear = Calendar.current.component(.year, from: .now)
         self.selectedDay = Calendar.current.component(.day, from: .now)
     }
 
     var baseCurrency: String { exchangeRate.baseCurrency }
+
+    private var subscriptions: [Subscription] {
+        subscriptionStore.subscriptions
+    }
 
     /// 선택된 일자의 결제 합계 (base currency 환산).
     var selectedDayTotal: Decimal {
@@ -76,19 +76,6 @@ final class CalendarViewModel {
             year: displayedYear,
             relativeTo: .now
         )
-    }
-
-    func fetch() {
-        let descriptor = FetchDescriptor<Subscription>(
-            sortBy: [SortDescriptor(\Subscription.firstPaymentDate)]
-        )
-        do {
-            subscriptions = try context.fetch(descriptor)
-            isShowingFetchError = false
-        } catch {
-            fetchErrorMessage = error.localizedDescription
-            isShowingFetchError = true
-        }
     }
 
     func changeMonth(by value: Int) {

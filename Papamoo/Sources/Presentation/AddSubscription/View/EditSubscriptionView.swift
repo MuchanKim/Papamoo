@@ -5,7 +5,6 @@ struct EditSubscriptionView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var subscription: Subscription
     var viewModel: AddSubscriptionViewModel
-    let onDelete: (PersistentIdentifier) -> Void
     @State private var isSaving = false
     @State private var isDeleting = false
     @State private var isShowingOperationError = false
@@ -201,7 +200,6 @@ struct EditSubscriptionView: View {
             await Task.yield()
             do {
                 try await viewModel.delete(id: subscriptionID)
-                onDelete(subscriptionID)
                 dismiss()
             } catch {
                 operationErrorMessage = error.localizedDescription

@@ -3,15 +3,19 @@ import SwiftData
 
 @Observable
 final class HomeViewModel {
-    private let context: ModelContext
+    private let subscriptionStore: SubscriptionStore
     private let subscriptionService: SubscriptionService
-    private(set) var subscriptions: [Subscription] = []
-    private(set) var fetchErrorMessage = ""
-    var isShowingFetchError = false
 
-    init(context: ModelContext, subscriptionService: SubscriptionService) {
-        self.context = context
+    init(
+        subscriptionStore: SubscriptionStore,
+        subscriptionService: SubscriptionService
+    ) {
+        self.subscriptionStore = subscriptionStore
         self.subscriptionService = subscriptionService
+    }
+
+    var subscriptions: [Subscription] {
+        subscriptionStore.subscriptions
     }
 
     var sortedByNextPayment: [Subscription] {
@@ -44,26 +48,8 @@ final class HomeViewModel {
         sortedByNextPayment
     }
 
-    func fetch() {
-        let descriptor = FetchDescriptor<Subscription>(
-            sortBy: [SortDescriptor(\Subscription.firstPaymentDate)]
-        )
-        do {
-            subscriptions = try context.fetch(descriptor)
-            isShowingFetchError = false
-        } catch {
-            fetchErrorMessage = error.localizedDescription
-            isShowingFetchError = true
-        }
-    }
-
-    func removeSubscription(withID id: PersistentIdentifier) {
-        subscriptions.removeAll { $0.persistentModelID == id }
-    }
-
     func deleteSubscription(withID id: PersistentIdentifier) async throws {
         try await subscriptionService.delete(id: id)
-        removeSubscription(withID: id)
     }
 
     private func hasUpcomingBillingThisMonth(_ sub: Subscription) -> Bool {

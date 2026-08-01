@@ -42,8 +42,7 @@ struct ContentView: View {
             guard scenePhase == .active else { return }
             do {
                 try await factory.importPendingSubscriptions()
-                homeViewModel.fetch()
-                calendarViewModel.fetch()
+                try factory.refreshSubscriptions()
                 try factory.synchronizeNotifications()
                 try factory.synchronizeWidgetSnapshot()
             } catch is CancellationError {
@@ -67,9 +66,13 @@ struct ContentView: View {
     }
 
     private func synchronizeVisibleData() {
-        homeViewModel.fetch()
-        calendarViewModel.fetch()
-        synchronizeWidgetSnapshot()
+        do {
+            try factory.refreshSubscriptions()
+            try factory.synchronizeWidgetSnapshot()
+        } catch {
+            synchronizationErrorMessage = error.localizedDescription
+            isShowingSynchronizationError = true
+        }
     }
 
     private func synchronizeWidgetSnapshot() {

@@ -13,16 +13,16 @@ struct SubscriptionSynchronizationTests {
         let storeURL = directory.appending(path: "subscriptions.store")
         let appContainer = try makeContainer(storeURL: storeURL)
         let extensionContainer = try makeContainer(storeURL: storeURL)
-        let viewModel = makeHomeViewModel(container: appContainer)
+        let (viewModel, subscriptionStore) = makeHomeViewModel(container: appContainer)
 
-        viewModel.fetch()
+        try subscriptionStore.refresh()
         #expect(viewModel.subscriptions.isEmpty)
 
         let extensionContext = ModelContext(extensionContainer)
         extensionContext.insert(makeSubscription(name: "Shared subscription"))
         try extensionContext.save()
 
-        viewModel.fetch()
+        try subscriptionStore.refresh()
 
         #expect(viewModel.subscriptions.map(\.name) == ["Shared subscription"])
     }
@@ -42,17 +42,18 @@ struct SubscriptionSynchronizationTests {
         context.insert(remaining)
         try context.save()
 
-        let viewModel = makeHomeViewModel(container: container)
-        viewModel.fetch()
+        let (viewModel, subscriptionStore) = makeHomeViewModel(container: container)
+        try subscriptionStore.refresh()
         #expect(viewModel.subscriptions.count == 2)
 
         let deletedID = deleted.persistentModelID
         deleted.note = "Unsaved edit before deletion"
         try await viewModel.deleteSubscription(withID: deletedID)
+        try subscriptionStore.refresh()
 
         #expect(viewModel.subscriptions.map(\.name) == ["Remaining"])
 
-        viewModel.fetch()
+        try subscriptionStore.refresh()
         #expect(viewModel.subscriptions.map(\.name) == ["Remaining"])
     }
 
@@ -78,7 +79,10 @@ struct SubscriptionSynchronizationTests {
         Subscription(name: name, amount: 1, firstPaymentDate: .now)
     }
 
-    private func makeHomeViewModel(container: ModelContainer) -> HomeViewModel {
+    private func makeHomeViewModel(
+        container: ModelContainer
+    ) -> (HomeViewModel, SubscriptionStore) {
+        let subscriptionStore = SubscriptionStore(context: container.mainContext)
         let service = SubscriptionService(
             context: container.mainContext,
             deletionStore: SubscriptionDeletionStore(modelContainer: container),
@@ -88,6 +92,10 @@ struct SubscriptionSynchronizationTests {
                 notifyStoreChanged: {}
             )
         )
-        return HomeViewModel(context: container.mainContext, subscriptionService: service)
+        let viewModel = HomeViewModel(
+            subscriptionStore: subscriptionStore,
+            subscriptionService: service
+        )
+        return (viewModel, subscriptionStore)
     }
 }
