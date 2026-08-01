@@ -1,9 +1,15 @@
 import SwiftUI
 
 struct ShareRootView: View {
-    @Bindable var viewModel: ShareImportViewModel
+    @State private var viewModel: ShareImportViewModel
+
+    init(viewModel: ShareImportViewModel) {
+        _viewModel = State(initialValue: viewModel)
+    }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
+
         Group {
             switch viewModel.phase {
             case .loading:
