@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum BillingCycle: String, Codable, CaseIterable {
+enum BillingCycle: String, Codable, CaseIterable, Sendable {
     case monthly
     case yearly
 

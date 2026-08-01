@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum SubscriptionCategory: String, Codable, CaseIterable {
+enum SubscriptionCategory: String, Codable, CaseIterable, Sendable {
     case streaming
     case ai
     case productivity

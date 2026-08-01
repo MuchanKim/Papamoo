@@ -10,6 +10,10 @@
 		D1E098A92F9E0F6300283B24 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E098A82F9E0F6300283B24 /* WidgetKit.framework */; };
 		D1E098AB2F9E0F6300283B24 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */; };
 		D1E098BA2F9E0F6500283B24 /* PapamooWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D2A00000000000000000000C /* PapamooShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D2A000000000000000000002 /* PapamooShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D2A00000000000000000000F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */; };
+		D2A000000000000000000010 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1E098A82F9E0F6300283B24 /* WidgetKit.framework */; };
+		D2A000000000000000000012 /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2A000000000000000000011 /* Vision.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +38,13 @@
 			remoteGlobalIDString = D1E098A52F9E0F6300283B24;
 			remoteInfo = PapamooWidgetExtension;
 		};
+		D2A00000000000000000000D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1E08EC22F9DF6D600283B24 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2A000000000000000000001;
+			remoteInfo = PapamooShareExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,6 +55,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				D1E098BA2F9E0F6500283B24 /* PapamooWidgetExtension.appex in Embed Foundation Extensions */,
+				D2A00000000000000000000C /* PapamooShareExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -58,6 +70,8 @@
 		D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapamooWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1E098A82F9E0F6300283B24 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		D2A000000000000000000002 /* PapamooShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PapamooShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2A000000000000000000011 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -87,6 +101,42 @@
 			);
 			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
 		};
+		D2A000000000000000000004 /* Exceptions for "PapamooShare" folder in "PapamooShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D2A000000000000000000001 /* PapamooShareExtension */;
+		};
+		D2A000000000000000000005 /* Exceptions for "Papamoo" folder in "PapamooShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Assets.xcassets,
+				"Resources/Fonts/IBMPlexMono-Bold.ttf",
+				"Resources/Fonts/IBMPlexMono-Medium.ttf",
+				"Resources/Fonts/IBMPlexMono-Regular.ttf",
+				"Resources/Fonts/IBMPlexMono-SemiBold.ttf",
+				Resources/Localizable.xcstrings,
+				Sources/Global/Components/ServiceIconView.swift,
+				Sources/Import/ImportField.swift,
+				Sources/Import/PaymentAnalysisOutcome.swift,
+				Sources/Import/PaymentDocumentType.swift,
+				Sources/Import/PaymentEmailExtractionCandidate.swift,
+				Sources/Import/PaymentEmailExtractionMapper.swift,
+				Sources/Import/PaymentImportAnalyzer.swift,
+				Sources/Import/PendingSubscriptionImport.swift,
+				Sources/Import/SubscriptionImportDraft.swift,
+				Sources/Import/SubscriptionImportInbox.swift,
+				Sources/Import/SubscriptionImportParser.swift,
+				Sources/Models/BillingCycle.swift,
+				Sources/Models/PresetService.swift,
+				Sources/Models/Subscription.swift,
+				Sources/Models/SubscriptionCategory.swift,
+				Sources/Utilities/CurrencyFormatting.swift,
+				Sources/Utilities/DesignTokens.swift,
+			);
+			target = D2A000000000000000000001 /* PapamooShareExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -95,6 +145,7 @@
 			exceptions = (
 				D1E098C32F9E15DC00283B24 /* Exceptions for "Papamoo" folder in "Papamoo" target */,
 				D1E099162F9E17CA00283B24 /* Exceptions for "Papamoo" folder in "PapamooWidgetExtension" target */,
+				D2A000000000000000000005 /* Exceptions for "Papamoo" folder in "PapamooShareExtension" target */,
 			);
 			path = Papamoo;
 			sourceTree = "<group>";
@@ -115,6 +166,19 @@
 				D1E098BB2F9E0F6500283B24 /* Exceptions for "PapamooWidget" folder in "PapamooWidgetExtension" target */,
 			);
 			path = PapamooWidget;
+			sourceTree = "<group>";
+		};
+		D2A000000000000000000003 /* PapamooShare */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D2A000000000000000000004 /* Exceptions for "PapamooShare" folder in "PapamooShareExtension" target */,
+			);
+			path = PapamooShare;
+			sourceTree = "<group>";
+		};
+		D3A000000000000000000001 /* PapamooShared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PapamooShared;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -150,6 +214,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D2A000000000000000000007 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2A00000000000000000000F /* SwiftUI.framework in Frameworks */,
+				D2A000000000000000000010 /* WidgetKit.framework in Frameworks */,
+				D2A000000000000000000012 /* Vision.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -158,6 +232,8 @@
 			children = (
 				D111D9F92F9FA18700253ADA /* PapamooWidgetExtension.entitlements */,
 				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
+				D3A000000000000000000001 /* PapamooShared */,
+				D2A000000000000000000003 /* PapamooShare */,
 				D1E08EDA2F9DF6D700283B24 /* PapamooTests */,
 				D1E08EE42F9DF6D700283B24 /* PapamooUITests */,
 				D1E098AC2F9E0F6300283B24 /* PapamooWidget */,
@@ -173,6 +249,7 @@
 				D1E08ED72F9DF6D700283B24 /* PapamooTests.xctest */,
 				D1E08EE12F9DF6D700283B24 /* PapamooUITests.xctest */,
 				D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */,
+				D2A000000000000000000002 /* PapamooShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -182,6 +259,7 @@
 			children = (
 				D1E098A82F9E0F6300283B24 /* WidgetKit.framework */,
 				D1E098AA2F9E0F6300283B24 /* SwiftUI.framework */,
+				D2A000000000000000000011 /* Vision.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -202,9 +280,11 @@
 			);
 			dependencies = (
 				D1E098B92F9E0F6500283B24 /* PBXTargetDependency */,
+				D2A00000000000000000000E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
+				D3A000000000000000000001 /* PapamooShared */,
 			);
 			name = Papamoo;
 			packageProductDependencies = (
@@ -273,12 +353,35 @@
 			);
 			fileSystemSynchronizedGroups = (
 				D1E098AC2F9E0F6300283B24 /* PapamooWidget */,
+				D3A000000000000000000001 /* PapamooShared */,
 			);
 			name = PapamooWidgetExtension;
 			packageProductDependencies = (
 			);
 			productName = PapamooWidgetExtension;
 			productReference = D1E098A62F9E0F6300283B24 /* PapamooWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D2A000000000000000000001 /* PapamooShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2A00000000000000000000B /* Build configuration list for PBXNativeTarget "PapamooShareExtension" */;
+			buildPhases = (
+				D2A000000000000000000006 /* Sources */,
+				D2A000000000000000000007 /* Frameworks */,
+				D2A000000000000000000008 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D2A000000000000000000003 /* PapamooShare */,
+			);
+			name = PapamooShareExtension;
+			packageProductDependencies = (
+			);
+			productName = PapamooShareExtension;
+			productReference = D2A000000000000000000002 /* PapamooShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -305,6 +408,9 @@
 					D1E098A52F9E0F6300283B24 = {
 						CreatedOnToolsVersion = 26.4;
 					};
+					D2A000000000000000000001 = {
+						CreatedOnToolsVersion = 26.4;
+					};
 				};
 			};
 			buildConfigurationList = D1E08EC52F9DF6D600283B24 /* Build configuration list for PBXProject "Papamoo" */;
@@ -327,6 +433,7 @@
 				D1E08ED62F9DF6D700283B24 /* PapamooTests */,
 				D1E08EE02F9DF6D700283B24 /* PapamooUITests */,
 				D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */,
+				D2A000000000000000000001 /* PapamooShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -354,6 +461,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D1E098A42F9E0F6300283B24 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A000000000000000000008 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -391,6 +505,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D2A000000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -408,6 +529,11 @@
 			isa = PBXTargetDependency;
 			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
 			targetProxy = D1E098B82F9E0F6500283B24 /* PBXContainerItemProxy */;
+		};
+		D2A00000000000000000000E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2A000000000000000000001 /* PapamooShareExtension */;
+			targetProxy = D2A00000000000000000000D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -759,6 +885,72 @@
 			};
 			name = Release;
 		};
+		D2A000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = PapamooShare/PapamooShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PapamooShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.Papamoo.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D2A00000000000000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = PapamooShare/PapamooShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = F7T7NU8578;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PapamooShare/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moolab.Papamoo.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -803,6 +995,15 @@
 			buildConfigurations = (
 				D1E098BD2F9E0F6500283B24 /* Debug */,
 				D1E098BE2F9E0F6500283B24 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2A00000000000000000000B /* Build configuration list for PBXNativeTarget "PapamooShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A000000000000000000009 /* Debug */,
+				D2A00000000000000000000A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

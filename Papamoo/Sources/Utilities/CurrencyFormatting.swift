@@ -1,6 +1,6 @@
 import Foundation
 
-enum AppGroup {
+nonisolated enum AppGroup {
     static let identifier = "group.com.moolab.Papamoo"
 }
 
