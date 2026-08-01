@@ -1,9 +1,15 @@
 import SwiftUI
+import SwiftData
 
 struct EditSubscriptionView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var subscription: Subscription
     var viewModel: AddSubscriptionViewModel
+    let onDelete: (PersistentIdentifier) -> Void
+    @State private var isSaving = false
+    @State private var isDeleting = false
+    @State private var isShowingOperationError = false
+    @State private var operationErrorMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -12,6 +18,9 @@ struct EditSubscriptionView: View {
                     serviceHeader
                     planSection
                     noteSection
+                    if let sourceImageData = subscription.sourceImageData {
+                        SubscriptionSourceDocumentView(imageData: sourceImageData)
+                    }
                     deleteButton
                 }
             }
@@ -24,17 +33,28 @@ struct EditSubscriptionView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        viewModel.update(subscription)
-                        dismiss()
+                        saveSubscription()
                     } label: {
-                        Text("SAVE")
-                            .font(.papamooMono(13, weight: .bold))
-                            .tracking(0.8)
-                            .foregroundStyle(PapamooColor.accent)
+                        if isSaving {
+                            ProgressView()
+                                .controlSize(.small)
+                                .tint(PapamooColor.accent)
+                        } else {
+                            Text("SAVE")
+                                .font(.papamooMono(13, weight: .bold))
+                                .tracking(0.8)
+                                .foregroundStyle(PapamooColor.accent)
+                        }
                     }
-                    .disabled(!subscription.isValid)
+                    .disabled(!subscription.isValid || isSaving || isDeleting)
                 }
             }
+        }
+        .interactiveDismissDisabled(isSaving || isDeleting)
+        .alert("작업을 완료하지 못했어요", isPresented: $isShowingOperationError) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(operationErrorMessage)
         }
     }
 
@@ -55,8 +75,14 @@ struct EditSubscriptionView: View {
                     Text("Amount")
                     Spacer()
                     HStack(spacing: 4) {
-                        TextField("0", value: $subscription.amount, format: .number.precision(.fractionLength(0)))
-                            .keyboardType(.numberPad)
+                        TextField(
+                            "0",
+                            value: $subscription.amount,
+                            format: .number.precision(
+                                .fractionLength(0...CurrencyFormatter.maximumFractionDigits(for: subscription.currencyCode))
+                            )
+                        )
+                            .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .font(.papamooAmount)
                             .monospacedDigit()
@@ -78,7 +104,6 @@ struct EditSubscriptionView: View {
                             Text(viewModel.currencyLabel(for: code)).tag(code)
                         }
                     }
-                    .onChange(of: subscription.currencyCode) { subscription.amount = 0 }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 11)
 
@@ -127,13 +152,16 @@ struct EditSubscriptionView: View {
     }
 
     private var deleteButton: some View {
-        Button(role: .destructive) {
-            viewModel.delete(subscription)
-            dismiss()
-        } label: {
+        Button(role: .destructive, action: deleteSubscription) {
             HStack(spacing: 8) {
-                Image(systemName: "trash")
-                Text("Delete subscription")
+                if isDeleting {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(.red)
+                } else {
+                    Image(systemName: "trash")
+                }
+                Text(isDeleting ? "Deleting…" : "Delete subscription")
             }
             .font(.system(size: 16, weight: .semibold))
             .foregroundStyle(.red)
@@ -142,7 +170,44 @@ struct EditSubscriptionView: View {
             .padding(.vertical, 14)
             .background(PapamooColor.surface, in: RoundedRectangle(cornerRadius: 12))
         }
+        .disabled(isSaving || isDeleting)
         .padding(.horizontal, 16)
         .padding(.top, 24)
+    }
+
+    private func saveSubscription() {
+        guard isSaving == false, isDeleting == false else { return }
+        isSaving = true
+
+        Task {
+            await Task.yield()
+            do {
+                try viewModel.update(subscription)
+                dismiss()
+            } catch {
+                operationErrorMessage = error.localizedDescription
+                isShowingOperationError = true
+                isSaving = false
+            }
+        }
+    }
+
+    private func deleteSubscription() {
+        guard isSaving == false, isDeleting == false else { return }
+        let subscriptionID = subscription.persistentModelID
+        isDeleting = true
+
+        Task {
+            await Task.yield()
+            do {
+                try await viewModel.delete(id: subscriptionID)
+                onDelete(subscriptionID)
+                dismiss()
+            } catch {
+                operationErrorMessage = error.localizedDescription
+                isShowingOperationError = true
+                isDeleting = false
+            }
+        }
     }
 }

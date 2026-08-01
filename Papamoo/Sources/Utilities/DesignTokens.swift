@@ -42,8 +42,8 @@ extension Font {
         return .custom(psName, size: size)
     }
 
-    /// Home main amount — mono 700, 56pt.
-    static let papamooDisplay = Font.papamooMono(56, weight: .bold)
+    /// Home main amount — mono 700, 64pt.
+    static let papamooDisplay = Font.papamooMono(64, weight: .bold)
 
     /// Calendar month, large numbers — mono 700, 38pt.
     static let papamooTitle = Font.papamooMono(38, weight: .bold)

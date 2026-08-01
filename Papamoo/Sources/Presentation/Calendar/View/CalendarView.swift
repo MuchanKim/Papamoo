@@ -8,7 +8,7 @@ struct CalendarView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    countdownHero
+                    monthlyHero
                     monthLineWithArrows
                     yellowRuler
                     MonthGridView(
@@ -19,14 +19,7 @@ struct CalendarView: View {
                     )
                     .padding(.top, 4)
 
-                    if viewModel.selectedDay == nil {
-                        MonthlyTotalBar(
-                            monthName: String(localized: "\(monthLabel()) Total"),
-                            total: viewModel.monthTotal,
-                            currencyCode: viewModel.baseCurrency
-                        )
-                        .padding(.top, 14)
-                    } else {
+                    if viewModel.selectedDay != nil {
                         MonthlyTotalBar(
                             monthName: String(localized: "PAYMENTS ON THIS DAY"),
                             total: viewModel.selectedDayTotal,
@@ -44,50 +37,57 @@ struct CalendarView: View {
             .background(PapamooColor.background.ignoresSafeArea())
             .toolbar(.hidden, for: .navigationBar)
             .onAppear { viewModel.fetch() }
+            .alert("구독 정보를 새로 고치지 못했어요", isPresented: $viewModel.isShowingFetchError) {
+                Button("확인", role: .cancel) {}
+            } message: {
+                Text(viewModel.fetchErrorMessage)
+            }
         }
     }
 
-    // MARK: - Countdown Hero
+    // MARK: - Monthly Hero
 
-    @ViewBuilder
-    private var countdownHero: some View {
+    private var monthlyHero: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("NEXT PAYMENT IN")
+            Text("\(monthLabel().uppercased()) TOTAL")
                 .font(.papamooMono(12, weight: .bold))
                 .tracking(1.6)
                 .foregroundStyle(PapamooColor.textMuted)
-            if let next = viewModel.nextPayment {
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    Text("\(next.daysUntilNextPayment)")
-                        .font(.papamooMono(48, weight: .bold))
-                        .foregroundStyle(PapamooColor.accent)
-                        .monospacedDigit()
-                    Text("DAYS")
-                        .font(.papamooMono(16, weight: .bold))
-                        .tracking(1.4)
-                        .foregroundStyle(PapamooColor.textSubtle)
-                }
-                .padding(.top, 2)
-                Text("\(next.name.uppercased()) · \(CurrencyFormatter.amountString(viewModel.nextPaymentDisplayAmount)) \(viewModel.baseCurrency)")
-                    .font(.papamooMono(11, weight: .bold))
-                    .tracking(1.0)
-                    .foregroundStyle(PapamooColor.textMuted)
-                    .padding(.top, 2)
-            } else {
-                Text("—")
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(CurrencyFormatter.amountString(viewModel.monthTotal, currencyCode: viewModel.baseCurrency))
                     .font(.papamooMono(48, weight: .bold))
-                    .foregroundStyle(PapamooColor.textMuted)
-                    .padding(.top, 2)
-                Text("NO SUBSCRIPTIONS")
-                    .font(.papamooMono(11, weight: .bold))
+                    .foregroundStyle(PapamooColor.text)
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
+                Text(viewModel.baseCurrency)
+                    .font(.papamooMono(16, weight: .bold))
                     .tracking(1.0)
-                    .foregroundStyle(PapamooColor.textMuted)
-                    .padding(.top, 2)
+                    .foregroundStyle(PapamooColor.accent)
             }
+            .padding(.top, 2)
+            HStack(spacing: 18) {
+                heroSplit(label: "PAID", value: viewModel.paidThisMonth, color: PapamooColor.textSubtle)
+                heroSplit(label: "REMAINING", value: viewModel.remainingThisMonth, color: PapamooColor.accent)
+            }
+            .padding(.top, 10)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 18)
         .padding(.top, 12)
+    }
+
+    private func heroSplit(label: String, value: Decimal, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(label)
+                .font(.papamooMono(9, weight: .bold))
+                .tracking(1.2)
+                .foregroundStyle(PapamooColor.textMuted)
+            Text(CurrencyFormatter.amountString(value, currencyCode: viewModel.baseCurrency))
+                .font(.papamooMono(16, weight: .bold))
+                .foregroundStyle(color)
+                .monospacedDigit()
+        }
     }
 
     private var monthLineWithArrows: some View {

@@ -1,11 +1,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @Bindable var coordinator: AppCoordinator
     let factory: ViewModelFactory
     @State private var homeViewModel: HomeViewModel
     @State private var calendarViewModel: CalendarViewModel
     @State private var settingsViewModel: SettingsViewModel
+    @State private var synchronizationErrorMessage = ""
+    @State private var isShowingSynchronizationError = false
 
     init(coordinator: AppCoordinator, factory: ViewModelFactory) {
         self.coordinator = coordinator
@@ -35,5 +38,45 @@ struct ContentView: View {
         }
         .tint(.white)
         .preferredColorScheme(.dark)
+        .task(id: scenePhase) {
+            guard scenePhase == .active else { return }
+            do {
+                try await factory.importPendingSubscriptions()
+                homeViewModel.fetch()
+                calendarViewModel.fetch()
+                try factory.synchronizeWidgetSnapshot()
+            } catch is CancellationError {
+                return
+            } catch {
+                synchronizationErrorMessage = error.localizedDescription
+                isShowingSynchronizationError = true
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .subscriptionStoreDidChange)) { _ in
+            synchronizeVisibleData()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .exchangeRateDidChange)) { _ in
+            synchronizeWidgetSnapshot()
+        }
+        .alert("구독 정보를 새로 고치지 못했어요", isPresented: $isShowingSynchronizationError) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(synchronizationErrorMessage)
+        }
+    }
+
+    private func synchronizeVisibleData() {
+        homeViewModel.fetch()
+        calendarViewModel.fetch()
+        synchronizeWidgetSnapshot()
+    }
+
+    private func synchronizeWidgetSnapshot() {
+        do {
+            try factory.synchronizeWidgetSnapshot()
+        } catch {
+            synchronizationErrorMessage = error.localizedDescription
+            isShowingSynchronizationError = true
+        }
     }
 }

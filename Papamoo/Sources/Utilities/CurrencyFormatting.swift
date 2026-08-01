@@ -16,11 +16,21 @@ enum CurrencyFormatter {
         }
     }
 
-    /// Decimal을 fraction 0자리 정수 문자열로.
-    static func amountString(_ value: Decimal) -> String {
+    static func maximumFractionDigits(for currencyCode: String) -> Int {
+        switch currencyCode {
+        case "KRW", "JPY": 0
+        default: 2
+        }
+    }
+
+    static func amountString(_ value: Decimal, currencyCode: String) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 0
-        return formatter.string(for: value) ?? "0"
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = maximumFractionDigits(for: currencyCode)
+        guard let result = formatter.string(from: NSDecimalNumber(decimal: value)) else {
+            preconditionFailure("Unable to format amount for currency \(currencyCode)")
+        }
+        return result
     }
 }

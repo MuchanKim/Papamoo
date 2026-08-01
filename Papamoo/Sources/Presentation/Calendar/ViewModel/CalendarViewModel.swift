@@ -6,6 +6,8 @@ final class CalendarViewModel {
     private let context: ModelContext
     private let exchangeRate = ExchangeRateManager.shared
     private(set) var subscriptions: [Subscription] = []
+    private(set) var fetchErrorMessage = ""
+    var isShowingFetchError = false
     var displayedMonth: Int
     var displayedYear: Int
     var selectedDay: Int?
@@ -18,17 +20,6 @@ final class CalendarViewModel {
 
     var baseCurrency: String { exchangeRate.baseCurrency }
 
-    /// 가장 가까운 다음 결제. countdown hero 표시용.
-    var nextPayment: Subscription? {
-        subscriptions.sorted { $0.nextPaymentDate < $1.nextPaymentDate }.first
-    }
-
-    /// 가장 가까운 결제의 base currency 환산 금액.
-    var nextPaymentDisplayAmount: Decimal {
-        guard let next = nextPayment else { return 0 }
-        return exchangeRate.convertToBase(amount: next.amount, from: next.currencyCode)
-    }
-
     /// 선택된 일자의 결제 합계 (base currency 환산).
     var selectedDayTotal: Decimal {
         selectedDaySubscriptions.reduce(Decimal.zero) { total, sub in
@@ -38,48 +29,76 @@ final class CalendarViewModel {
 
     var eventDates: [Int: [SubscriptionCategory]] {
         var result: [Int: [SubscriptionCategory]] = [:]
+        let calendar = Calendar.current
         for sub in subscriptions {
-            let nextDate = sub.nextPaymentDate
-            let calendar = Calendar.current
-            let month = calendar.component(.month, from: nextDate)
-            let year = calendar.component(.year, from: nextDate)
-            if month == displayedMonth && year == displayedYear {
-                let day = calendar.component(.day, from: nextDate)
-                result[day, default: []].append(sub.category)
-            }
+            guard let date = paymentDateInDisplayedMonth(for: sub) else { continue }
+            let day = calendar.component(.day, from: date)
+            result[day, default: []].append(sub.category)
         }
         return result
     }
 
     var selectedDaySubscriptions: [Subscription] {
         guard let selectedDay else { return [] }
+        let calendar = Calendar.current
         return subscriptions.filter { sub in
-            let calendar = Calendar.current
-            let nextDate = sub.nextPaymentDate
-            return calendar.component(.day, from: nextDate) == selectedDay
-                && calendar.component(.month, from: nextDate) == displayedMonth
-                && calendar.component(.year, from: nextDate) == displayedYear
+            guard let date = paymentDateInDisplayedMonth(for: sub) else { return false }
+            return calendar.component(.day, from: date) == selectedDay
+        }
+    }
+
+    var paidThisMonth: Decimal {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        return subscriptions.reduce(Decimal.zero) { acc, sub in
+            guard let date = paymentDateInDisplayedMonth(for: sub),
+                  calendar.startOfDay(for: date) <= today else { return acc }
+            return acc + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
+        }
+    }
+
+    var remainingThisMonth: Decimal {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        return subscriptions.reduce(Decimal.zero) { acc, sub in
+            guard let date = paymentDateInDisplayedMonth(for: sub),
+                  calendar.startOfDay(for: date) > today else { return acc }
+            return acc + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
         }
     }
 
     var monthTotal: Decimal {
-        subscriptions
-            .filter { sub in
-                let calendar = Calendar.current
-                let nextDate = sub.nextPaymentDate
-                return calendar.component(.month, from: nextDate) == displayedMonth
-                    && calendar.component(.year, from: nextDate) == displayedYear
-            }
-            .reduce(0) { total, sub in
-                total + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
-            }
+        paidThisMonth + remainingThisMonth
+    }
+
+    private func paymentDateInDisplayedMonth(for sub: Subscription) -> Date? {
+        let calendar = Calendar.current
+        let next = sub.nextPaymentDate
+        if calendar.component(.month, from: next) == displayedMonth,
+           calendar.component(.year, from: next) == displayedYear {
+            return next
+        }
+        let cycle: Calendar.Component = sub.billingCycle == .monthly ? .month : .year
+        guard let last = calendar.date(byAdding: cycle, value: -1, to: next),
+              last >= calendar.startOfDay(for: sub.firstPaymentDate) else { return nil }
+        if calendar.component(.month, from: last) == displayedMonth,
+           calendar.component(.year, from: last) == displayedYear {
+            return last
+        }
+        return nil
     }
 
     func fetch() {
         let descriptor = FetchDescriptor<Subscription>(
             sortBy: [SortDescriptor(\Subscription.firstPaymentDate)]
         )
-        subscriptions = (try? context.fetch(descriptor)) ?? []
+        do {
+            subscriptions = try context.fetch(descriptor)
+            isShowingFetchError = false
+        } catch {
+            fetchErrorMessage = error.localizedDescription
+            isShowingFetchError = true
+        }
     }
 
     func changeMonth(by value: Int) {

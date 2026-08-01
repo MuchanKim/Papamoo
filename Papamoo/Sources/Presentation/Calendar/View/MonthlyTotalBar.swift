@@ -15,7 +15,7 @@ struct MonthlyTotalBar: View {
                     .tracking(1.0)
                 Spacer()
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(CurrencyFormatter.amountString(total))
+                    Text(CurrencyFormatter.amountString(total, currencyCode: currencyCode))
                         .font(.papamooMono(26, weight: .bold))
                         .foregroundStyle(PapamooColor.text)
                         .monospacedDigit()

@@ -1,10 +1,10 @@
 import Foundation
 import SwiftData
-import WidgetKit
 
 @Observable
 final class AddSubscriptionViewModel {
     private let context: ModelContext
+    private let deletionStore: SubscriptionDeletionStore
     private let exchangeRate = ExchangeRateManager.shared
 
     var searchText = ""
@@ -31,8 +31,9 @@ final class AddSubscriptionViewModel {
     var category: SubscriptionCategory = .other
     var note = ""
 
-    init(context: ModelContext) {
+    init(context: ModelContext, deletionStore: SubscriptionDeletionStore) {
         self.context = context
+        self.deletionStore = deletionStore
     }
 
     var filteredServices: [PresetService] {
@@ -55,7 +56,7 @@ final class AddSubscriptionViewModel {
         amount = currencyCode == "KRW" ? preset.defaultAmount : 0
     }
 
-    func save() -> Bool {
+    func save() throws {
         let subscription = Subscription(
             name: name,
             amount: amount,
@@ -70,24 +71,25 @@ final class AddSubscriptionViewModel {
         do {
             try context.save()
             NotificationManager.scheduleNotifications(for: subscription)
-            WidgetCenter.shared.reloadAllTimelines()
-            return true
+            NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
         } catch {
-            return false
+            context.delete(subscription)
+            throw error
         }
     }
 
-    func update(_ subscription: Subscription) {
+    func update(_ subscription: Subscription) throws {
+        try context.save()
         NotificationManager.removeNotifications(for: subscription)
         NotificationManager.scheduleNotifications(for: subscription)
-        try? context.save()
-        WidgetCenter.shared.reloadAllTimelines()
+        NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
     }
 
-    func delete(_ subscription: Subscription) {
-        NotificationManager.removeNotifications(for: subscription)
-        context.delete(subscription)
-        try? context.save()
-        WidgetCenter.shared.reloadAllTimelines()
+    func delete(id: PersistentIdentifier) async throws {
+        try await deletionStore.delete(id: id)
+        // 편집 화면이 mainContext에 남긴 미저장 변경이 외부 컨텍스트의 삭제를 되살리지 않게 정리한다.
+        context.rollback()
+        NotificationManager.removeNotifications(for: id)
+        NotificationCenter.default.post(name: .subscriptionStoreDidChange, object: nil)
     }
 }

@@ -36,7 +36,7 @@ struct SubscriptionRow: View {
             Spacer(minLength: 0)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(CurrencyFormatter.amountString(displayAmount))
+                    Text(CurrencyFormatter.amountString(displayAmount, currencyCode: baseCurrency))
                         .font(.papamooMono(20, weight: .bold))
                         .foregroundStyle(PapamooColor.text)
                         .monospacedDigit()

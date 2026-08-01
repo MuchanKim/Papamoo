@@ -3,10 +3,8 @@ import SwiftData
 
 struct HomeView: View {
     @Bindable var coordinator: AppCoordinator
-    var viewModel: HomeViewModel
+    @Bindable var viewModel: HomeViewModel
     let factory: ViewModelFactory
-
-    @State private var isShowingExchangeRate = false
 
     var body: some View {
         NavigationStack {
@@ -43,16 +41,16 @@ struct HomeView: View {
             }) { subscription in
                 EditSubscriptionView(
                     subscription: subscription,
-                    viewModel: factory.makeAddSubscriptionViewModel()
+                    viewModel: factory.makeAddSubscriptionViewModel(),
+                    onDelete: viewModel.removeSubscription(withID:)
                 )
             }
-            .sheet(isPresented: $isShowingExchangeRate, onDismiss: {
-                viewModel.fetch()
-            }) {
-                ExchangeRateSheetView()
-                    .presentationDetents([.medium])
-            }
             .onAppear { viewModel.fetch() }
+            .alert("구독 정보를 새로 고치지 못했어요", isPresented: $viewModel.isShowingFetchError) {
+                Button("확인", role: .cancel) {}
+            } message: {
+                Text(viewModel.fetchErrorMessage)
+            }
         }
     }
 
@@ -68,7 +66,7 @@ struct HomeView: View {
 
     private var megaAmount: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(CurrencyFormatter.amountString(viewModel.remainingThisMonth))
+            Text(CurrencyFormatter.amountString(viewModel.remainingThisMonth, currencyCode: viewModel.baseCurrency))
                 .font(.papamooDisplay)
                 .foregroundStyle(PapamooColor.text)
                 .monospacedDigit()
@@ -84,7 +82,7 @@ struct HomeView: View {
     }
 
     private var metaLine: some View {
-        Text("REMAINING · \(CurrencyFormatter.amountString(viewModel.paidThisMonth)) PAID · \(CurrencyFormatter.amountString(viewModel.monthlyTotal)) TOTAL")
+        Text("REMAINING · \(CurrencyFormatter.amountString(viewModel.paidThisMonth, currencyCode: viewModel.baseCurrency)) PAID · \(CurrencyFormatter.amountString(viewModel.monthlyTotal, currencyCode: viewModel.baseCurrency)) TOTAL")
             .font(.papamooMeta)
             .foregroundStyle(PapamooColor.textMuted)
             .tracking(0.4)
@@ -104,7 +102,7 @@ struct HomeView: View {
     @ViewBuilder
     private var upcomingSection: some View {
         if !viewModel.upcomingSubscriptions.isEmpty {
-            sectionLabel("UPCOMING")
+            upcomingHeader
             ForEach(viewModel.upcomingSubscriptions, id: \.persistentModelID) { sub in
                 Button { coordinator.selectSubscription(sub) } label: {
                     SubscriptionRow(
@@ -118,14 +116,43 @@ struct HomeView: View {
         }
     }
 
-    private func sectionLabel(_ text: String) -> some View {
-        Text(text)
-            .font(.papamooMeta)
-            .foregroundStyle(PapamooColor.textMuted)
-            .tracking(1.4)
-            .padding(.horizontal, 18)
-            .padding(.top, 12)
-            .padding(.bottom, 6)
+    private var upcomingHeader: some View {
+        HStack(spacing: 8) {
+            Text("UPCOMING")
+                .font(.papamooMeta)
+                .foregroundStyle(PapamooColor.textMuted)
+                .tracking(1.4)
+            Spacer()
+            rateRefresh
+        }
+        .padding(.horizontal, 18)
+        .padding(.top, 12)
+        .padding(.bottom, 6)
+    }
+
+    private var rateRefresh: some View {
+        let manager = ExchangeRateManager.shared
+        return HStack(spacing: 6) {
+            Text("$1=₩\(manager.krwPerUSD.formatted()) · ¥\(manager.jpyPerUSD.formatted())")
+                .font(.papamooMono(9, weight: .bold))
+                .tracking(0.6)
+                .foregroundStyle(PapamooColor.textMuted)
+            Button {
+                Task { await manager.fetchLatestRates() }
+            } label: {
+                if manager.isLoading {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .tint(PapamooColor.accent)
+                        .frame(width: 12, height: 12)
+                } else {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(PapamooColor.accent)
+                }
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     private func monthName() -> String {

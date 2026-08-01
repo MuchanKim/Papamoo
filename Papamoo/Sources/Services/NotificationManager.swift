@@ -27,11 +27,15 @@ struct NotificationManager {
     }
 
     static func removeNotifications(for subscription: Subscription) {
+        removeNotifications(for: subscription.persistentModelID)
+    }
+
+    static func removeNotifications(for id: PersistentIdentifier) {
         let center = UNUserNotificationCenter.current()
-        let id = subscription.persistentModelID.hashValue
+        let identifier = id.hashValue
         center.removePendingNotificationRequests(withIdentifiers: [
-            "payday-d1-\(id)",
-            "payday-d3-\(id)",
+            "payday-d1-\(identifier)",
+            "payday-d3-\(identifier)",
         ])
     }
 

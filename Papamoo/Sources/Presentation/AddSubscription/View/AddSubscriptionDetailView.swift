@@ -3,6 +3,9 @@ import SwiftUI
 struct AddSubscriptionDetailView: View {
     @Bindable var coordinator: AppCoordinator
     @Bindable var viewModel: AddSubscriptionViewModel
+    @State private var isSaving = false
+    @State private var isShowingSaveError = false
+    @State private var saveErrorMessage = ""
 
     var body: some View {
         ScrollView {
@@ -10,26 +13,18 @@ struct AddSubscriptionDetailView: View {
                 serviceHeader
                 planSection
                 noteSection
-                addButton
             }
         }
         .background(Color(.systemGroupedBackground))
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            addButton
+        }
         .navigationTitle(viewModel.name.isEmpty ? "New service" : viewModel.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    if viewModel.save() {
-                        coordinator.dismissAddSubscription()
-                    }
-                } label: {
-                    Text("SAVE")
-                        .font(.papamooMono(13, weight: .bold))
-                        .tracking(0.8)
-                        .foregroundStyle(PapamooColor.accent)
-                }
-                .disabled(!viewModel.isFormValid)
-            }
+        .alert("구독을 저장하지 못했어요", isPresented: $isShowingSaveError) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(saveErrorMessage)
         }
     }
 
@@ -56,8 +51,14 @@ struct AddSubscriptionDetailView: View {
                     Text("Amount")
                     Spacer()
                     HStack(spacing: 4) {
-                        TextField("0", value: $viewModel.amount, format: .number.precision(.fractionLength(0)))
-                            .keyboardType(.numberPad)
+                        TextField(
+                            "0",
+                            value: $viewModel.amount,
+                            format: .number.precision(
+                                .fractionLength(0...CurrencyFormatter.maximumFractionDigits(for: viewModel.currencyCode))
+                            )
+                        )
+                            .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .font(.papamooAmount)
                             .monospacedDigit()
@@ -79,7 +80,6 @@ struct AddSubscriptionDetailView: View {
                             Text(viewModel.currencyLabel(for: code)).tag(code)
                         }
                     }
-                    .onChange(of: viewModel.currencyCode) { viewModel.amount = 0 }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 11)
 
@@ -134,22 +134,46 @@ struct AddSubscriptionDetailView: View {
     }
 
     private var addButton: some View {
-        Button {
-            if viewModel.save() {
-                coordinator.dismissAddSubscription()
+        Button(action: saveSubscription) {
+            HStack(spacing: 8) {
+                if isSaving {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(PapamooColor.background)
+                }
+                Text(addButtonTitle)
             }
-        } label: {
-            Text("ADD SUBSCRIPTION")
-                .font(.papamooMono(13, weight: .bold))
-                .tracking(1.0)
-                .foregroundStyle(PapamooColor.background)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(PapamooColor.accent, in: RoundedRectangle(cornerRadius: 12))
+            .font(.papamooMono(13, weight: .bold))
+            .tracking(1.0)
+            .foregroundStyle(PapamooColor.background)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(PapamooColor.accent, in: RoundedRectangle(cornerRadius: 12))
         }
-        .disabled(!viewModel.isFormValid)
+        .disabled(!viewModel.isFormValid || isSaving)
         .padding(.horizontal, 16)
-        .padding(.top, 24)
-        .padding(.bottom, 16)
+        .padding(.vertical, 12)
+        .background(Color(.systemGroupedBackground))
+    }
+
+    private var addButtonTitle: LocalizedStringResource {
+        isSaving ? "SAVING" : "ADD SUBSCRIPTION"
+    }
+
+    private func saveSubscription() {
+        guard isSaving == false else { return }
+        isSaving = true
+
+        Task {
+            await Task.yield()
+            do {
+                try viewModel.save()
+                coordinator.dismissAddSubscription()
+            } catch {
+                saveErrorMessage = error.localizedDescription
+                isShowingSaveError = true
+                isSaving = false
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
 import Foundation
-import WidgetKit
 
 extension UserDefaults {
     static let appGroup = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
@@ -29,7 +28,7 @@ final class ExchangeRateManager {
             if let data = try? JSONEncoder().encode(ratesFromUSD) {
                 UserDefaults.appGroup.set(data, forKey: ratesKey)
             }
-            WidgetCenter.shared.reloadAllTimelines()
+            NotificationCenter.default.post(name: .exchangeRateDidChange, object: nil)
         }
     }
 
@@ -40,7 +39,7 @@ final class ExchangeRateManager {
     var baseCurrency: String {
         didSet {
             UserDefaults.appGroup.set(baseCurrency, forKey: baseCurrencyKey)
-            WidgetCenter.shared.reloadAllTimelines()
+            NotificationCenter.default.post(name: .exchangeRateDidChange, object: nil)
         }
     }
 
@@ -122,6 +121,13 @@ final class ExchangeRateManager {
     }
 
     // MARK: - API
+
+    func fetchIfStale(maxAge: TimeInterval = 24 * 60 * 60) async {
+        if let last = lastUpdated, Date.now.timeIntervalSince(last) < maxAge {
+            return
+        }
+        await fetchLatestRates()
+    }
 
     func fetchLatestRates() async {
         isLoading = true

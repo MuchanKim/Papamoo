@@ -1,35 +1,73 @@
+import CoreGraphics
 import Foundation
 import SwiftData
 
-@Model
-final class Subscription {
-    var name: String
-    var amount: Decimal
-    var currencyCode: String
-    var billingCycle: BillingCycle
-    var firstPaymentDate: Date
-    var category: SubscriptionCategory
-    var note: String
-    var iconName: String?
+enum PapamooSchemaV2: VersionedSchema {
+    static let versionIdentifier = Schema.Version(2, 0, 0)
+    static var models: [any PersistentModel.Type] { [Subscription.self] }
 
-    init(
-        name: String,
-        amount: Decimal,
-        currencyCode: String = "KRW",
-        billingCycle: BillingCycle = .monthly,
-        firstPaymentDate: Date,
-        category: SubscriptionCategory = .other,
-        note: String = "",
-        iconName: String? = nil
-    ) {
-        self.name = name
-        self.amount = amount
-        self.currencyCode = currencyCode
-        self.billingCycle = billingCycle
-        self.firstPaymentDate = firstPaymentDate
-        self.category = category
-        self.note = note
-        self.iconName = iconName
+    @Model
+    final class Subscription {
+        var name: String
+        var amount: Decimal
+        var currencyCode: String
+        var billingCycle: BillingCycle
+        var firstPaymentDate: Date
+        var category: SubscriptionCategory
+        var note: String
+        var iconName: String?
+        @Attribute(.externalStorage) var sourceImageData: Data?
+        var sourceCropX: Double?
+        var sourceCropY: Double?
+        var sourceCropWidth: Double?
+        var sourceCropHeight: Double?
+
+        init(
+            name: String,
+            amount: Decimal,
+            currencyCode: String = "KRW",
+            billingCycle: BillingCycle = .monthly,
+            firstPaymentDate: Date,
+            category: SubscriptionCategory = .other,
+            note: String = "",
+            iconName: String? = nil,
+            sourceImageData: Data? = nil,
+            sourceCropRegion: CGRect? = nil
+        ) {
+            self.name = name
+            self.amount = amount
+            self.currencyCode = currencyCode
+            self.billingCycle = billingCycle
+            self.firstPaymentDate = firstPaymentDate
+            self.category = category
+            self.note = note
+            self.iconName = iconName
+            self.sourceImageData = sourceImageData
+            self.sourceCropX = sourceCropRegion.map { Double($0.minX) }
+            self.sourceCropY = sourceCropRegion.map { Double($0.minY) }
+            self.sourceCropWidth = sourceCropRegion.map { Double($0.width) }
+            self.sourceCropHeight = sourceCropRegion.map { Double($0.height) }
+        }
+    }
+}
+
+typealias Subscription = PapamooSchemaV2.Subscription
+
+extension Subscription {
+
+    var sourceCropRegion: CGRect? {
+        guard let sourceCropX,
+              let sourceCropY,
+              let sourceCropWidth,
+              let sourceCropHeight
+        else { return nil }
+
+        return CGRect(
+            x: CGFloat(sourceCropX),
+            y: CGFloat(sourceCropY),
+            width: CGFloat(sourceCropWidth),
+            height: CGFloat(sourceCropHeight)
+        )
     }
 
     var nextPaymentDate: Date {

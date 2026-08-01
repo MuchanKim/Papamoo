@@ -1,6 +1,6 @@
+import OSLog
 import WidgetKit
 import SwiftUI
-import SwiftData
 
 // MARK: - Widget tokens (mirror of app DesignTokens)
 
@@ -32,6 +32,7 @@ struct SubscriptionEntry: TimelineEntry {
     let remainingThisMonth: Decimal
     let totalCount: Int
     let baseCurrency: String
+    let availability: WidgetDataAvailability
 }
 
 struct WidgetSub: Identifiable {
@@ -57,12 +58,13 @@ struct PapamooTimelineProvider: TimelineProvider {
             monthlyTotal: 95200,
             remainingThisMonth: 68200,
             totalCount: 7,
-            baseCurrency: "KRW"
+            baseCurrency: "KRW",
+            availability: .available
         )
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SubscriptionEntry) -> Void) {
-        completion(placeholder(in: context))
+        completion(context.isPreview ? placeholder(in: context) : loadEntry())
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SubscriptionEntry>) -> Void) {
@@ -72,92 +74,89 @@ struct PapamooTimelineProvider: TimelineProvider {
     }
 
     private func loadEntry() -> SubscriptionEntry {
+        let logger = Logger(subsystem: "com.moolab.Papamoo", category: "WidgetSnapshot")
         do {
-            let config = ModelConfiguration(
-                groupContainer: .identifier("group.com.moolab.Papamoo"),
-                cloudKitDatabase: .none
-            )
-            let container = try ModelContainer(for: Subscription.self, configurations: config)
-            let context = ModelContext(container)
-            let descriptor = FetchDescriptor<Subscription>()
-            let subs = try context.fetch(descriptor)
+            guard let containerURL = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: "group.com.moolab.Papamoo"
+            ) else {
+                logger.error("App Group container is unavailable")
+                return unavailableEntry()
+            }
+            guard let snapshot = try WidgetSnapshotStore(containerURL: containerURL).load() else {
+                logger.error("Widget snapshot has not been created")
+                return unavailableEntry()
+            }
 
-            let widgetSubs = subs
-                .sorted { $0.nextPaymentDate < $1.nextPaymentDate }
-                .prefix(4)
-                .map { sub in
+            let subscriptions = snapshot.subscriptions.map {
                     WidgetSub(
-                        name: sub.name,
-                        category: sub.category.rawValue,
-                        amount: sub.amount,
-                        currencyCode: sub.currencyCode,
-                        nextPaymentDate: sub.nextPaymentDate,
-                        daysUntil: sub.daysUntilNextPayment
+                        name: $0.name,
+                        category: $0.category,
+                        amount: $0.amount,
+                        currencyCode: $0.currencyCode,
+                        nextPaymentDate: $0.nextPaymentDate,
+                        daysUntil: $0.daysUntil
                     )
                 }
-
-            let groupDefaults = UserDefaults(suiteName: "group.com.moolab.Papamoo")
-            let baseCurrency = groupDefaults?.string(forKey: "baseCurrency") ?? "KRW"
-            let rates = loadRates(from: groupDefaults)
-            let total = subs.reduce(Decimal.zero) { acc, sub in
-                acc + convertToBase(amount: sub.monthlyAmount, from: sub.currencyCode, to: baseCurrency, rates: rates)
-            }
-            // paidThisMonth: nextPaymentDate가 다음 달 이후 → 이번 달 결제 완료
-            let calendar = Calendar.current
-            let now = Date.now
-            let currentMonth = calendar.component(.month, from: now)
-            let currentYear = calendar.component(.year, from: now)
-            let paid = subs
-                .filter { sub in
-                    let next = sub.nextPaymentDate
-                    let nm = calendar.component(.month, from: next)
-                    let ny = calendar.component(.year, from: next)
-                    return ny > currentYear || (ny == currentYear && nm > currentMonth)
-                }
-                .reduce(Decimal.zero) { acc, sub in
-                    acc + convertToBase(amount: sub.amount, from: sub.currencyCode, to: baseCurrency, rates: rates)
-                }
-            let remaining = total - paid
-            return SubscriptionEntry(date: .now, subscriptions: Array(widgetSubs), monthlyTotal: total, remainingThisMonth: remaining, totalCount: subs.count, baseCurrency: baseCurrency)
+            return SubscriptionEntry(
+                date: snapshot.generatedAt,
+                subscriptions: subscriptions,
+                monthlyTotal: snapshot.monthlyTotal,
+                remainingThisMonth: snapshot.remainingThisMonth,
+                totalCount: snapshot.totalCount,
+                baseCurrency: snapshot.baseCurrency,
+                availability: .available
+            )
         } catch {
-            return SubscriptionEntry(date: .now, subscriptions: [], monthlyTotal: 0, remainingThisMonth: 0, totalCount: 0, baseCurrency: "KRW")
+            logger.error("Unable to load widget snapshot: \(error.localizedDescription, privacy: .public)")
+            return unavailableEntry()
         }
     }
 
-    private func loadRates(from defaults: UserDefaults?) -> [String: Double] {
-        let fallback: [String: Double] = ["KRW": 1380, "JPY": 150]
-        guard let data = defaults?.data(forKey: "exchangeRatesFromUSD"),
-              let decoded = try? JSONDecoder().decode([String: Double].self, from: data)
-        else { return fallback }
-        return decoded
-    }
-
-    private func convertToBase(amount: Decimal, from code: String, to base: String, rates: [String: Double]) -> Decimal {
-        guard code != base else { return amount }
-        let krw: Decimal
-        switch code {
-        case "KRW": krw = amount
-        case "USD": krw = amount * Decimal(rates["KRW"] ?? 1380)
-        case "JPY":
-            let krwRate = rates["KRW"] ?? 1380
-            let jpyRate = rates["JPY"] ?? 150
-            krw = amount * Decimal(krwRate / jpyRate)
-        default: krw = amount
-        }
-        guard base != "KRW" else { return krw }
-        let baseRate = rates[base] ?? 1
-        let krwRate = rates["KRW"] ?? 1380
-        return krw * Decimal(baseRate / krwRate)
+    private func unavailableEntry() -> SubscriptionEntry {
+        SubscriptionEntry(
+            date: .now,
+            subscriptions: [],
+            monthlyTotal: 0,
+            remainingThisMonth: 0,
+            totalCount: 0,
+            baseCurrency: "",
+            availability: .unavailable
+        )
     }
 }
 
 // MARK: - Helpers
 
-private func amountString(_ value: Decimal) -> String {
+private func amountString(_ value: Decimal, currencyCode: String) -> String {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
-    formatter.maximumFractionDigits = 0
-    return formatter.string(for: value) ?? "0"
+    formatter.minimumFractionDigits = 0
+    formatter.maximumFractionDigits = switch currencyCode {
+    case "KRW", "JPY": 0
+    default: 2
+    }
+    guard let result = formatter.string(from: NSDecimalNumber(decimal: value)) else {
+        preconditionFailure("Unable to format amount for currency \(currencyCode)")
+    }
+    return result
+}
+
+private struct WidgetUnavailableView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(WidgetColor.accent)
+            Text("DATA UNAVAILABLE")
+                .font(.widgetMono(9, weight: .bold))
+                .tracking(1.0)
+                .foregroundStyle(WidgetColor.text)
+            Text("OPEN PAPAMOO")
+                .font(.widgetMono(8, weight: .bold))
+                .tracking(0.8)
+                .foregroundStyle(WidgetColor.muted)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
 }
 
 // MARK: - Small D-day Widget
@@ -180,7 +179,9 @@ private struct SmallDdayView: View {
     let entry: SubscriptionEntry
 
     var body: some View {
-        if let next = entry.subscriptions.first {
+        if entry.availability == .unavailable {
+            WidgetUnavailableView()
+        } else if let next = entry.subscriptions.first {
             VStack(alignment: .leading, spacing: 0) {
                 Text("PAYDAY")
                     .font(.widgetMono(9, weight: .bold))
@@ -197,7 +198,7 @@ private struct SmallDdayView: View {
                         .monospacedDigit()
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(amountString(next.amount))
+                    Text(amountString(next.amount, currencyCode: next.currencyCode))
                         .font(.widgetMono(13, weight: .bold))
                         .foregroundStyle(WidgetColor.text)
                         .monospacedDigit()
@@ -248,13 +249,16 @@ private struct SmallTotalView: View {
     let entry: SubscriptionEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        if entry.availability == .unavailable {
+            WidgetUnavailableView()
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
             Text("\(monthName(entry.date)) · \(String(localized: "remaining"))")
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(WidgetColor.muted)
                 .lineLimit(1)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(amountString(entry.remainingThisMonth))
+                Text(amountString(entry.remainingThisMonth, currencyCode: entry.baseCurrency))
                     .font(.widgetMono(28, weight: .bold))
                     .foregroundStyle(WidgetColor.text)
                     .monospacedDigit()
@@ -287,7 +291,7 @@ private struct SmallTotalView: View {
                         .lineLimit(1)
                     HStack(alignment: .firstTextBaseline) {
                         HStack(spacing: 3) {
-                            Text(amountString(next.amount))
+                            Text(amountString(next.amount, currencyCode: next.currencyCode))
                                 .foregroundStyle(WidgetColor.text)
                                 .monospacedDigit()
                                 .font(.widgetMono(11, weight: .semibold))
@@ -305,6 +309,7 @@ private struct SmallTotalView: View {
                 }
             }
             Spacer(minLength: 0)
+            }
         }
     }
 
@@ -335,7 +340,10 @@ private struct MediumUpcomingView: View {
     let entry: SubscriptionEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        if entry.availability == .unavailable {
+            WidgetUnavailableView()
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("UPCOMING")
                     .font(.widgetMono(9, weight: .bold))
@@ -364,7 +372,7 @@ private struct MediumUpcomingView: View {
                         .foregroundStyle(WidgetColor.muted)
                         .tracking(0.4)
                     HStack(alignment: .firstTextBaseline, spacing: 3) {
-                        Text(amountString(sub.amount))
+                        Text(amountString(sub.amount, currencyCode: sub.currencyCode))
                             .font(.widgetMono(11, weight: .bold))
                             .foregroundStyle(WidgetColor.text)
                             .monospacedDigit()
@@ -378,6 +386,7 @@ private struct MediumUpcomingView: View {
                 .padding(.vertical, 2)
             }
             Spacer(minLength: 0)
+            }
         }
     }
 

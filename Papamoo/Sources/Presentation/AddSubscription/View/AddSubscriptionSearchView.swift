@@ -71,7 +71,7 @@ struct AddSubscriptionSearchView: View {
                                 Text(service.name)
                                     .font(.system(size: 17, weight: .semibold))
                                     .foregroundStyle(PapamooColor.text)
-                                Text("\(String(localized: service.category.displayName).uppercased()) · \(CurrencyFormatter.amountString(viewModel.presetDisplayAmount(service))) \(viewModel.baseCurrency)/MO")
+                                Text("\(String(localized: service.category.displayName).uppercased()) · \(CurrencyFormatter.amountString(viewModel.presetDisplayAmount(service), currencyCode: viewModel.baseCurrency)) \(viewModel.baseCurrency)/MO")
                                     .font(.papamooMeta)
                                     .foregroundStyle(PapamooColor.textMuted)
                                     .tracking(0.6)

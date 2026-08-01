@@ -5,6 +5,8 @@ import SwiftData
 final class HomeViewModel {
     private let context: ModelContext
     private(set) var subscriptions: [Subscription] = []
+    private(set) var fetchErrorMessage = ""
+    var isShowingFetchError = false
 
     init(context: ModelContext) {
         self.context = context
@@ -19,34 +21,21 @@ final class HomeViewModel {
     /// 기준 통화 코드.
     var baseCurrency: String { exchangeRate.baseCurrency }
 
-    /// 모든 구독의 월간 총액 (기준 통화 환산).
     var monthlyTotal: Decimal {
-        subscriptions.reduce(0) { total, sub in
-            total + exchangeRate.convertToBase(amount: sub.monthlyAmount, from: sub.currencyCode)
-        }
+        paidThisMonth + remainingThisMonth
     }
 
     /// 이번 달 이미 결제된 금액 (기준 통화 환산).
     var paidThisMonth: Decimal {
-        let calendar = Calendar.current
-        let now = Date.now
-        let currentMonth = calendar.component(.month, from: now)
-        let currentYear = calendar.component(.year, from: now)
-
-        return subscriptions
-            .filter { sub in
-                let next = sub.nextPaymentDate
-                let nextMonth = calendar.component(.month, from: next)
-                let nextYear = calendar.component(.year, from: next)
-                return nextYear > currentYear || (nextYear == currentYear && nextMonth > currentMonth)
-            }
-            .reduce(0) { total, sub in
-                total + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
-            }
+        subscriptions
+            .filter { hasPaidBillingThisMonth($0) }
+            .reduce(0) { $0 + exchangeRate.convertToBase(amount: $1.amount, from: $1.currencyCode) }
     }
 
     var remainingThisMonth: Decimal {
-        monthlyTotal - paidThisMonth
+        subscriptions
+            .filter { hasUpcomingBillingThisMonth($0) }
+            .reduce(0) { $0 + exchangeRate.convertToBase(amount: $1.amount, from: $1.currencyCode) }
     }
 
     var upcomingSubscriptions: [Subscription] {
@@ -57,6 +46,30 @@ final class HomeViewModel {
         let descriptor = FetchDescriptor<Subscription>(
             sortBy: [SortDescriptor(\Subscription.firstPaymentDate)]
         )
-        subscriptions = (try? context.fetch(descriptor)) ?? []
+        do {
+            subscriptions = try context.fetch(descriptor)
+            isShowingFetchError = false
+        } catch {
+            fetchErrorMessage = error.localizedDescription
+            isShowingFetchError = true
+        }
+    }
+
+    func removeSubscription(withID id: PersistentIdentifier) {
+        subscriptions.removeAll { $0.persistentModelID == id }
+    }
+
+    private func hasUpcomingBillingThisMonth(_ sub: Subscription) -> Bool {
+        Calendar.current.isDate(sub.nextPaymentDate, equalTo: .now, toGranularity: .month)
+    }
+
+    private func hasPaidBillingThisMonth(_ sub: Subscription) -> Bool {
+        let calendar = Calendar.current
+        let cycle: Calendar.Component = sub.billingCycle == .monthly ? .month : .year
+        guard let lastPayment = calendar.date(byAdding: cycle, value: -1, to: sub.nextPaymentDate),
+              lastPayment >= calendar.startOfDay(for: sub.firstPaymentDate) else {
+            return false
+        }
+        return calendar.isDate(lastPayment, equalTo: .now, toGranularity: .month)
     }
 }
