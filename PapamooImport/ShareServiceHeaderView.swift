@@ -9,7 +9,7 @@ struct ShareServiceHeaderView: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            ServiceIconView(category: category, iconName: iconName, size: 72)
+            ShareServiceIconView(category: category, iconName: iconName)
                 .accessibilityHidden(true)
 
             TextField("Service name", text: $name)
@@ -24,5 +24,29 @@ struct ShareServiceHeaderView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 20)
+    }
+}
+
+private struct ShareServiceIconView: View {
+    let category: SubscriptionCategory
+    let iconName: String?
+
+    var body: some View {
+        if let iconName, let image = UIImage(named: iconName) {
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 72, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        } else {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.tertiarySystemFill))
+                .frame(width: 72, height: 72)
+                .overlay {
+                    Image(systemName: category.iconSystemName)
+                        .font(.system(size: 25, weight: .medium))
+                        .foregroundStyle(.secondary)
+                }
+        }
     }
 }

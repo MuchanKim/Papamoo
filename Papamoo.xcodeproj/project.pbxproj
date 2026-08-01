@@ -117,7 +117,6 @@
 				"Resources/Fonts/IBMPlexMono-Regular.ttf",
 				"Resources/Fonts/IBMPlexMono-SemiBold.ttf",
 				Resources/Localizable.xcstrings,
-				Sources/Global/Components/ServiceIconView.swift,
 				Sources/Models/BillingCycle.swift,
 				Sources/Models/PresetService.swift,
 				Sources/Models/SubscriptionCategory.swift,
@@ -826,7 +825,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = PapamooWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PapamooWidget/PapamooWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
@@ -858,7 +857,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = PapamooWidgetExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PapamooWidget/PapamooWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
@@ -889,7 +888,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = PapamooImport/PapamooShare.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PapamooImport/PapamooShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
@@ -922,7 +921,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_ENTITLEMENTS = PapamooImport/PapamooShare.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PapamooImport/PapamooShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = F7T7NU8578;
