@@ -6,6 +6,8 @@
     <string>Papamoo</string>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>NSCameraUsageDescription</key>
+    <string>Papamoo uses the camera to read payment information.</string>
     <key>UIAppFonts</key>
     <array>
         <string>IBMPlexMono-Regular.ttf</string>

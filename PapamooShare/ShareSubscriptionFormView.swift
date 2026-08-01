@@ -122,7 +122,7 @@ struct ShareSubscriptionFormView: View {
         .disabled(viewModel.isFormValid == false || viewModel.isSaving || viewModel.isSaved)
         .animation(.easeInOut(duration: 0.2), value: viewModel.isSaving)
         .animation(.easeInOut(duration: 0.2), value: viewModel.isSaved)
-        .accessibilityHint("Save the subscription information and close the share sheet.")
+        .accessibilityHint("Save the subscription information and close this screen.")
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(Color(.systemGroupedBackground))

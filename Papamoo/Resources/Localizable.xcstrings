@@ -608,6 +608,22 @@
         }
       }
     },
+    "Choose from Photos" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真から選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진에서 선택"
+          }
+        }
+      }
+    },
     "Close" : {
       "localizations" : {
         "ja" : {
@@ -620,6 +636,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "닫기"
+          }
+        }
+      }
+    },
+    "Close add menu" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加メニューを閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추가 메뉴 닫기"
+          }
+        }
+      }
+    },
+    "Close camera" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラを閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라 닫기"
           }
         }
       }
@@ -909,6 +957,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "직접 입력"
+          }
+        }
+      }
+    },
+    "Enter subscription manually" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サブスクリプションを手動で入力"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구독 직접 입력"
           }
         }
       }
@@ -1737,18 +1801,18 @@
         }
       }
     },
-    "Save the subscription information and close the share sheet." : {
+    "Save the subscription information and close this screen." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サブスクリプション情報を保存して共有画面を閉じます。"
+            "value" : "サブスクリプション情報を保存してこの画面を閉じます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "입력한 구독 정보를 저장하고 공유 화면을 닫습니다."
+            "value" : "입력한 구독 정보를 저장하고 이 화면을 닫습니다."
           }
         }
       }
@@ -2077,6 +2141,22 @@
         }
       }
     },
+    "Switch camera" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カメラを切り替える"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카메라 전환"
+          }
+        }
+      }
+    },
     "System" : {
       "localizations" : {
         "ja" : {
@@ -2089,6 +2169,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시스템"
+          }
+        }
+      }
+    },
+    "Take a payment photo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "支払い情報を撮影"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결제 정보 촬영"
+          }
+        }
+      }
+    },
+    "Take photo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を撮る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 촬영"
           }
         }
       }

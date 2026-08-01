@@ -5,27 +5,49 @@ struct HomeView: View {
     @Bindable var coordinator: AppCoordinator
     @Bindable var viewModel: HomeViewModel
     let factory: ViewModelFactory
+    @State private var isShowingAddActions = false
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    topNav
-                    megaAmount
-                    metaLine
-                    yellowRuler
-                    upcomingSection
+            ZStack(alignment: .topTrailing) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        topNav
+                        megaAmount
+                        metaLine
+                        yellowRuler
+                        upcomingSection
+                    }
+                    .padding(.bottom, 16)
                 }
-                .padding(.bottom, 16)
+
+                if isShowingAddActions {
+                    Color.clear
+                        .contentShape(.rect)
+                        .ignoresSafeArea()
+                        .onTapGesture { dismissAddActions() }
+                }
+
+                addActions
+                    .allowsHitTesting(isShowingAddActions)
+                    .accessibilityHidden(isShowingAddActions == false)
+                    .zIndex(1)
             }
             .background(PapamooColor.background.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { coordinator.showAddSubscription() } label: {
-                        Image(systemName: "plus")
+                    Button {
+                        withAnimation(.spring(response: 0.24, dampingFraction: 0.78)) {
+                            isShowingAddActions.toggle()
+                        }
+                    } label: {
+                        Image(systemName: isShowingAddActions ? "xmark" : "plus")
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundStyle(PapamooColor.accent)
+                            .contentTransition(.symbolEffect(.replace))
                     }
+                    .accessibilityLabel(isShowingAddActions ? "Close add menu" : "Add subscription")
+                    .accessibilityIdentifier("home.add-menu")
                 }
             }
             .sheet(isPresented: $coordinator.isShowingAddSheet, onDismiss: {
@@ -34,6 +56,27 @@ struct HomeView: View {
                 AddSubscriptionSearchView(
                     coordinator: coordinator,
                     viewModel: factory.makeAddSubscriptionViewModel()
+                )
+            }
+            .fullScreenCover(
+                isPresented: $coordinator.isShowingCamera,
+                onDismiss: coordinator.finishCameraPresentation
+            ) {
+                CameraImagePicker(
+                    onImagePicked: coordinator.selectImageForImport,
+                    onCancel: coordinator.cancelCamera
+                )
+                .ignoresSafeArea()
+            }
+            .sheet(item: $coordinator.imageImportSelection, onDismiss: {
+                viewModel.fetch()
+            }) { selection in
+                ShareRootView(
+                    viewModel: factory.makeImageImportViewModel(
+                        imageData: selection.data,
+                        onComplete: coordinator.dismissImageImport,
+                        onCancel: coordinator.dismissImageImport
+                    )
                 )
             }
             .sheet(item: $coordinator.selectedSubscription, onDismiss: {
@@ -51,6 +94,63 @@ struct HomeView: View {
             } message: {
                 Text(viewModel.fetchErrorMessage)
             }
+        }
+    }
+
+    private var addActions: some View {
+        VStack(spacing: 6) {
+            addActionButton(
+                systemName: "camera",
+                accessibilityLabel: "Take a payment photo",
+                action: showCamera
+            )
+            addActionButton(
+                systemName: "pencil",
+                accessibilityLabel: "Enter subscription manually",
+                action: showDirectEntry
+            )
+        }
+        .padding(.top, 6)
+        .padding(.trailing, 16)
+    }
+
+    private func addActionButton(
+        systemName: String,
+        accessibilityLabel: LocalizedStringKey,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(PapamooColor.text)
+                .frame(width: 44, height: 44)
+                .background(PapamooColor.surface, in: Circle())
+                .overlay {
+                    Circle().stroke(PapamooColor.dividerSoft, lineWidth: 1)
+                }
+                .frame(width: 44, height: 44)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityIdentifier("home.add-\(systemName)")
+        .scaleEffect(isShowingAddActions ? 1 : 0.72)
+        .opacity(isShowingAddActions ? 1 : 0)
+    }
+
+    private func showCamera() {
+        dismissAddActions()
+        coordinator.showCamera()
+    }
+
+    private func showDirectEntry() {
+        dismissAddActions()
+        coordinator.showAddSubscription()
+    }
+
+    private func dismissAddActions() {
+        withAnimation(.spring(response: 0.22, dampingFraction: 0.82)) {
+            isShowingAddActions = false
         }
     }
 
