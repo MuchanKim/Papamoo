@@ -62,12 +62,10 @@ final class WidgetSnapshotSynchronizer {
         now: Date,
         calendar: Calendar
     ) -> Bool {
-        let cycle: Calendar.Component = subscription.billingCycle == .monthly ? .month : .year
-        guard let lastPayment = calendar.date(
-            byAdding: cycle,
-            value: -1,
-            to: subscription.nextPaymentDate
-        ), lastPayment >= calendar.startOfDay(for: subscription.firstPaymentDate) else {
+        guard let lastPayment = subscription.billingSchedule.previousPaymentDate(
+            relativeTo: now,
+            calendar: calendar
+        ) else {
             return false
         }
         return calendar.isDate(lastPayment, equalTo: now, toGranularity: .month)

@@ -75,9 +75,10 @@ final class HomeViewModel {
 
     private func hasPaidBillingThisMonth(_ sub: Subscription) -> Bool {
         let calendar = Calendar.current
-        let cycle: Calendar.Component = sub.billingCycle == .monthly ? .month : .year
-        guard let lastPayment = calendar.date(byAdding: cycle, value: -1, to: sub.nextPaymentDate),
-              lastPayment >= calendar.startOfDay(for: sub.firstPaymentDate) else {
+        guard let lastPayment = sub.billingSchedule.previousPaymentDate(
+            relativeTo: .now,
+            calendar: calendar
+        ) else {
             return false
         }
         return calendar.isDate(lastPayment, equalTo: .now, toGranularity: .month)

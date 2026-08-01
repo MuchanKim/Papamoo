@@ -129,6 +129,7 @@
 				Sources/Import/SubscriptionImportInbox.swift,
 				Sources/Import/SubscriptionImportParser.swift,
 				Sources/Models/BillingCycle.swift,
+				Sources/Models/BillingSchedule.swift,
 				Sources/Models/PresetService.swift,
 				Sources/Models/Subscription.swift,
 				Sources/Models/SubscriptionCategory.swift,

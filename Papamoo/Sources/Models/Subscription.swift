@@ -54,7 +54,6 @@ enum PapamooSchemaV2: VersionedSchema {
 typealias Subscription = PapamooSchemaV2.Subscription
 
 extension Subscription {
-
     var sourceCropRegion: CGRect? {
         guard let sourceCropX,
               let sourceCropY,
@@ -70,25 +69,19 @@ extension Subscription {
         )
     }
 
+    var billingSchedule: BillingSchedule {
+        BillingSchedule(
+            firstPaymentDate: firstPaymentDate,
+            billingCycle: billingCycle
+        )
+    }
+
     var nextPaymentDate: Date {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        let start = calendar.startOfDay(for: firstPaymentDate)
-        guard start <= today else { return start }
-        let component: Calendar.Component = billingCycle == .monthly ? .month : .year
-        var candidate = start
-        while candidate <= today {
-            guard let next = calendar.date(byAdding: component, value: 1, to: candidate) else { return candidate }
-            candidate = next
-        }
-        return candidate
+        billingSchedule.nextPaymentDate(relativeTo: .now)
     }
 
     var daysUntilNextPayment: Int {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: .now)
-        let next = calendar.startOfDay(for: nextPaymentDate)
-        return calendar.dateComponents([.day], from: today, to: next).day ?? 0
+        billingSchedule.daysUntilNextPayment(relativeTo: .now)
     }
 
     var monthlyAmount: Decimal {

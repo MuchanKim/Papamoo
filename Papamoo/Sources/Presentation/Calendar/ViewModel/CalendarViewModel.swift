@@ -71,20 +71,11 @@ final class CalendarViewModel {
     }
 
     private func paymentDateInDisplayedMonth(for sub: Subscription) -> Date? {
-        let calendar = Calendar.current
-        let next = sub.nextPaymentDate
-        if calendar.component(.month, from: next) == displayedMonth,
-           calendar.component(.year, from: next) == displayedYear {
-            return next
-        }
-        let cycle: Calendar.Component = sub.billingCycle == .monthly ? .month : .year
-        guard let last = calendar.date(byAdding: cycle, value: -1, to: next),
-              last >= calendar.startOfDay(for: sub.firstPaymentDate) else { return nil }
-        if calendar.component(.month, from: last) == displayedMonth,
-           calendar.component(.year, from: last) == displayedYear {
-            return last
-        }
-        return nil
+        sub.billingSchedule.paymentDate(
+            inMonth: displayedMonth,
+            year: displayedYear,
+            relativeTo: .now
+        )
     }
 
     func fetch() {
