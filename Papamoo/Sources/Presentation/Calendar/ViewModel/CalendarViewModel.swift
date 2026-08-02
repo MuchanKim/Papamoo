@@ -2,6 +2,9 @@ import Foundation
 
 @Observable
 final class CalendarViewModel {
+
+    // MARK: - Properties
+
     private let subscriptionStore: SubscriptionStore
     private let exchangeRate = ExchangeRateManager.shared
     var displayedMonth: Int
@@ -21,7 +24,6 @@ final class CalendarViewModel {
         subscriptionStore.subscriptions
     }
 
-    /// 선택된 일자의 결제 합계 (base currency 환산).
     var selectedDayTotal: Decimal {
         selectedDaySubscriptions.reduce(Decimal.zero) { total, sub in
             total + exchangeRate.convertToBase(amount: sub.amount, from: sub.currencyCode)
@@ -70,13 +72,7 @@ final class CalendarViewModel {
         )
     }
 
-    private func paymentDateInDisplayedMonth(for sub: Subscription) -> Date? {
-        sub.billingSchedule.paymentDate(
-            inMonth: displayedMonth,
-            year: displayedYear,
-            relativeTo: .now
-        )
-    }
+    // MARK: - Methods
 
     func changeMonth(by value: Int) {
         var components = DateComponents(year: displayedYear, month: displayedMonth)
@@ -85,5 +81,14 @@ final class CalendarViewModel {
         displayedMonth = Calendar.current.component(.month, from: date)
         displayedYear = Calendar.current.component(.year, from: date)
         selectedDay = nil
+    }
+
+    // MARK: - Private Methods
+
+    private func paymentDateInDisplayedMonth(for sub: Subscription) -> Date? {
+        sub.billingSchedule.paymentDate(
+            inMonth: displayedMonth,
+            year: displayedYear
+        )
     }
 }

@@ -1,67 +1,44 @@
 import Foundation
 
 nonisolated struct BillingSchedule: Sendable {
+
+    // MARK: - Properties
+
     let firstPaymentDate: Date
     let billingCycle: BillingCycle
+
+    // MARK: - Methods
 
     func nextPaymentDate(
         relativeTo referenceDate: Date,
         calendar: Calendar = .current
     ) -> Date {
-        let referenceDay = calendar.startOfDay(for: referenceDate)
-        let startDay = calendar.startOfDay(for: firstPaymentDate)
-        guard startDay <= referenceDay else { return startDay }
-
-        var candidate = startDay
-        while candidate <= referenceDay {
-            guard let next = calendar.date(
-                byAdding: billingCycle.calendarComponent,
-                value: 1,
-                to: candidate
-            ) else {
-                return candidate
-            }
-            candidate = next
-        }
-        return candidate
+        paymentDates(relativeTo: referenceDate, calendar: calendar).next
     }
 
     func previousPaymentDate(
         relativeTo referenceDate: Date,
         calendar: Calendar = .current
     ) -> Date? {
-        let startDay = calendar.startOfDay(for: firstPaymentDate)
-        let nextPayment = nextPaymentDate(relativeTo: referenceDate, calendar: calendar)
-        guard let previousPayment = calendar.date(
-            byAdding: billingCycle.calendarComponent,
-            value: -1,
-            to: nextPayment
-        ), previousPayment >= startDay else {
-            return nil
-        }
-        return previousPayment
+        paymentDates(relativeTo: referenceDate, calendar: calendar).previous
     }
 
     func paymentDate(
         inMonth month: Int,
         year: Int,
-        relativeTo referenceDate: Date,
         calendar: Calendar = .current
     ) -> Date? {
-        let nextPayment = nextPaymentDate(relativeTo: referenceDate, calendar: calendar)
-        if calendar.component(.month, from: nextPayment) == month,
-           calendar.component(.year, from: nextPayment) == year {
-            return nextPayment
-        }
-
-        guard let previousPayment = previousPaymentDate(
-            relativeTo: referenceDate,
-            calendar: calendar
-        ), calendar.component(.month, from: previousPayment) == month,
-           calendar.component(.year, from: previousPayment) == year else {
+        guard let monthStart = calendar.date(
+            from: DateComponents(year: year, month: month, day: 1)
+        ), let previousDay = calendar.date(byAdding: .day, value: -1, to: monthStart) else {
             return nil
         }
-        return previousPayment
+
+        let paymentDate = nextPaymentDate(relativeTo: previousDay, calendar: calendar)
+        guard calendar.isDate(paymentDate, equalTo: monthStart, toGranularity: .month) else {
+            return nil
+        }
+        return paymentDate
     }
 
     func daysUntilNextPayment(
@@ -72,7 +49,37 @@ nonisolated struct BillingSchedule: Sendable {
         let nextPayment = nextPaymentDate(relativeTo: referenceDate, calendar: calendar)
         return calendar.dateComponents([.day], from: referenceDay, to: nextPayment).day ?? 0
     }
+
+    // MARK: - Private Methods
+
+    private func paymentDates(
+        relativeTo referenceDate: Date,
+        calendar: Calendar
+    ) -> (previous: Date?, next: Date) {
+        let referenceDay = calendar.startOfDay(for: referenceDate)
+        let startDay = calendar.startOfDay(for: firstPaymentDate)
+        guard startDay <= referenceDay else { return (nil, startDay) }
+
+        var previous: Date?
+        var candidate = startDay
+        var occurrence = 0
+        while candidate <= referenceDay {
+            previous = candidate
+            occurrence += 1
+            guard let next = calendar.date(
+                byAdding: billingCycle.calendarComponent,
+                value: occurrence,
+                to: startDay
+            ), next > candidate else {
+                return (previous, candidate)
+            }
+            candidate = next
+        }
+        return (previous, candidate)
+    }
 }
+
+// MARK: - Extensions
 
 private extension BillingCycle {
     nonisolated var calendarComponent: Calendar.Component {
