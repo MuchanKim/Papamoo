@@ -98,6 +98,7 @@
 				"Resources/Fonts/IBMPlexMono-SemiBold.ttf",
 				Resources/Fonts/OFL.txt,
 				Resources/Localizable.xcstrings,
+				Sources/Utilities/DesignTokens.swift,
 			);
 			target = D1E098A52F9E0F6300283B24 /* PapamooWidgetExtension */;
 		};
