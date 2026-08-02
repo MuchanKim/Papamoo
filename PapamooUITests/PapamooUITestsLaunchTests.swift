@@ -1,10 +1,3 @@
-//
-//  PapamooUITestsLaunchTests.swift
-//  PapamooUITests
-//
-//  Created by Muchan Kim on 4/26/26.
-//
-
 import XCTest
 
 final class PapamooUITestsLaunchTests: XCTestCase {
@@ -21,11 +14,6 @@ final class PapamooUITestsLaunchTests: XCTestCase {
     func testLaunch() throws {
         let app = XCUIApplication()
         app.launch()
-
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
-        // XCUIAutomation Documentation
-        // https://developer.apple.com/documentation/xcuiautomation
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"

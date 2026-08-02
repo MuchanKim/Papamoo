@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareServiceHeaderView: View {
+
     @Environment(\.locale) private var locale
 
     @Binding var name: String
@@ -28,6 +29,7 @@ struct ShareServiceHeaderView: View {
 }
 
 private struct ShareServiceIconView: View {
+
     let category: SubscriptionCategory
     let iconName: String?
 

@@ -1,8 +1,6 @@
 import Foundation
 
-/// 앱 전역 통화 포맷 헬퍼.
 enum CurrencyFormatter {
-    /// 통화 코드의 narrow symbol.
     static func symbol(for code: String) -> String {
         switch code {
         case "KRW": "₩"

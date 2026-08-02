@@ -1,6 +1,9 @@
 import Foundation
 
 struct SubscriptionImportParser {
+
+    // MARK: - Methods
+
     func parse(lines: [String]) -> SubscriptionImportDraft {
         let normalizedLines = lines
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -36,6 +39,8 @@ struct SubscriptionImportParser {
 
         return draft
     }
+
+    // MARK: - Private Methods
 
     private func matchedPreset(in text: String) -> PresetService? {
         let normalized = normalizeServiceName(text)

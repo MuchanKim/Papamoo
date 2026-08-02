@@ -2,7 +2,12 @@ import SwiftUI
 import UIKit
 
 final class ShareViewController: UIViewController {
+
+    // MARK: - Properties
+
     private var hostingController: UIHostingController<ShareRootView>?
+
+    // MARK: - Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()

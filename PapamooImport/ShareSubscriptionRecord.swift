@@ -1,6 +1,7 @@
 import Foundation
 
 nonisolated struct ShareSubscriptionRecord: Sendable {
+
     let name: String
     let amount: Decimal
     let currencyCode: String

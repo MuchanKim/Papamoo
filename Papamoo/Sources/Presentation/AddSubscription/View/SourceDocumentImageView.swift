@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SourceDocumentImageView: View {
+
     let data: Data
 
     @State private var image: CGImage?

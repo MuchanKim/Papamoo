@@ -1,6 +1,7 @@
 import Foundation
 
 struct SubscriptionImportDraft: Equatable {
+
     var name: ImportField<String> = .missing
     var amount: ImportField<Decimal> = .missing
     var currencyCode: ImportField<String> = .missing

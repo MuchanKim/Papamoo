@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AddSubscriptionSearchView: View {
+
     @Bindable var coordinator: AppCoordinator
     @Bindable var viewModel: AddSubscriptionViewModel
 

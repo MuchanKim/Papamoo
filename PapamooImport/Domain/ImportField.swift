@@ -9,6 +9,9 @@ enum ImportFieldSource: Equatable {
 }
 
 struct ImportField<Value: Equatable>: Equatable {
+
+    // MARK: - Properties
+
     var value: Value?
     var source: ImportFieldSource
     var needsReview: Bool
@@ -16,6 +19,8 @@ struct ImportField<Value: Equatable>: Equatable {
     static var missing: Self {
         Self(value: nil, source: .missing, needsReview: false)
     }
+
+    // MARK: - Methods
 
     static func detected(_ value: Value, needsReview: Bool = false) -> Self {
         Self(value: value, source: .ocr, needsReview: needsReview)

@@ -6,6 +6,9 @@ import Testing
 
 @MainActor
 struct AddSubscriptionViewModelTests {
+
+    // MARK: - Methods
+
     @Test("편집 중인 값은 저장하기 전까지 원본 구독을 변경하지 않는다")
     func editingKeepsSubscriptionUnchangedUntilSave() throws {
         let store = try makeStore()
@@ -40,6 +43,8 @@ struct AddSubscriptionViewModelTests {
         #expect(subscription.sourceImageData == Data("receipt".utf8))
         #expect(subscription.sourceCropRegion == CGRect(x: 0.1, y: 0.2, width: 0.7, height: 0.6))
     }
+
+    // MARK: - Private Methods
 
     private func makeStore() throws -> AddSubscriptionTestStore {
         let directoryURL = FileManager.default.temporaryDirectory.appending(

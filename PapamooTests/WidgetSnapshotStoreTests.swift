@@ -3,6 +3,9 @@ import Testing
 @testable import Papamoo
 
 struct WidgetSnapshotStoreTests {
+
+    // MARK: - Methods
+
     @Test("위젯 스냅샷을 원자 파일에 저장하고 다시 읽는다")
     func savesAndLoadsSnapshot() throws {
         let directory = try makeTemporaryDirectory()
@@ -34,6 +37,8 @@ struct WidgetSnapshotStoreTests {
             try store.load()
         }
     }
+
+    // MARK: - Private Methods
 
     private func makeSnapshot() -> WidgetSnapshot {
         WidgetSnapshot(

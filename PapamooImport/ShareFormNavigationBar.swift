@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct ShareFormNavigationBar: View {
+
+    // MARK: - Properties
+
     let title: String
+
+    // MARK: - Callbacks
+
     let backAction: () -> Void
 
     var body: some View {

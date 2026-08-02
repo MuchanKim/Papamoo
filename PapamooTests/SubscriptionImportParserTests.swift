@@ -4,7 +4,12 @@ import Testing
 
 @MainActor
 struct SubscriptionImportParserTests {
+
+    // MARK: - Properties
+
     private let parser = SubscriptionImportParser()
+
+    // MARK: - Methods
 
     @Test("Netflix 결제 화면에서 필수 필드를 추출한다")
     func parsesNetflixPayment() throws {

@@ -1,6 +1,7 @@
 import Foundation
 
 nonisolated struct SubscriptionImportInbox: Sendable {
+
     enum InboxError: LocalizedError {
         case appGroupUnavailable
 
@@ -17,11 +18,15 @@ nonisolated struct SubscriptionImportInbox: Sendable {
         let payload: PendingSubscriptionImport
     }
 
+    // MARK: - Properties
+
     private let directoryURL: URL?
 
     init(directoryURL: URL? = nil) {
         self.directoryURL = directoryURL
     }
+
+    // MARK: - Methods
 
     func enqueue(_ payload: PendingSubscriptionImport) throws {
         let directory = try resolvedDirectoryURL()
@@ -62,6 +67,8 @@ nonisolated struct SubscriptionImportInbox: Sendable {
             try FileManager.default.removeItem(at: entry.fileURL)
         }
     }
+
+    // MARK: - Private Methods
 
     private func resolvedDirectoryURL() throws -> URL {
         if let directoryURL {

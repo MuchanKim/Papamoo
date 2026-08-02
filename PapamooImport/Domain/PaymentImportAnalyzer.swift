@@ -4,6 +4,8 @@ import Foundation
 struct PaymentImportAnalyzer {
     typealias Interpreter = ([String]) async throws -> PaymentInterpreterResult
 
+    // MARK: - Properties
+
     private let interpreter: Interpreter
     private let parser: SubscriptionImportParser
     private let mapper: PaymentEmailExtractionMapper
@@ -17,6 +19,8 @@ struct PaymentImportAnalyzer {
         self.mapper = mapper
         self.interpreter = interpreter
     }
+
+    // MARK: - Methods
 
     func analyze(ocrLines: [String]) async throws -> PaymentAnalysisOutcome {
         let normalizedLines = ocrLines.filter {

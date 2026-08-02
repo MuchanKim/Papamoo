@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SharePlanFieldsView: View {
+
     @Environment(\.locale) private var locale
 
     @Binding var amountText: String

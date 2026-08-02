@@ -5,6 +5,9 @@ import Testing
 
 @MainActor
 struct SubscriptionSynchronizationTests {
+
+    // MARK: - Methods
+
     @Test("다른 ModelContainer가 저장한 구독을 다시 조회한다")
     func refreshesAfterSeparateContainerSave() throws {
         let directory = try makeTemporaryDirectory()
@@ -56,6 +59,8 @@ struct SubscriptionSynchronizationTests {
         try subscriptionStore.refresh()
         #expect(viewModel.subscriptions.map(\.name) == ["Remaining"])
     }
+
+    // MARK: - Private Methods
 
     private func makeTemporaryDirectory() throws -> URL {
         let directory = FileManager.default.temporaryDirectory

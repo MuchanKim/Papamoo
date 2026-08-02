@@ -4,6 +4,9 @@ import Testing
 
 @MainActor
 struct PaymentImportAnalyzerTests {
+
+    // MARK: - Methods
+
     @Test("FM이 성공하면 누락 필드를 규칙 파서로 채우지 않는다")
     func doesNotMergeRulesWhenFoundationModelsSucceeds() async throws {
         let candidate = PaymentEmailExtractionCandidate(
@@ -89,6 +92,8 @@ struct PaymentImportAnalyzerTests {
 
         #expect(outcome == .rejected(.refund))
     }
+
+    // MARK: - Private Methods
 
     private func completedDraft(from outcome: PaymentAnalysisOutcome) -> SubscriptionImportDraft? {
         guard case let .completed(draft, _) = outcome else { return nil }

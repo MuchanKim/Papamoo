@@ -34,6 +34,7 @@ enum FoundationModelBillingCycle {
 
 @Generable(description: "결제 이메일 OCR 텍스트에서 추출한 정보")
 struct FoundationModelPaymentEmailResponse {
+
     @Guide(description: "completedPayment, refund, failedPayment, authorizationOnly, unknown 중 하나")
     var documentType: FoundationModelPaymentDocumentType
 

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ShareFailureView: View {
+
+    // MARK: - Properties
+
     @Environment(\.locale) private var locale
 
     @Bindable var viewModel: ShareImportViewModel
@@ -121,6 +124,8 @@ struct ShareFailureView: View {
             "Select area again"
         }
     }
+
+    // MARK: - Private Methods
 
     private func primaryAction() {
         switch kind {

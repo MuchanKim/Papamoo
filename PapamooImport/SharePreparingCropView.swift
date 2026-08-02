@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct SharePreparingCropView: View {
+
+    // MARK: - Callbacks
+
     let cancelAction: () -> Void
 
     var body: some View {

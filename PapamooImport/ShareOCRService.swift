@@ -3,6 +3,9 @@ import ImageIO
 import Vision
 
 actor ShareOCRService {
+
+    // MARK: - Methods
+
     func recognizeText(in imageData: Data, normalizedRegion: CGRect?) throws -> [String] {
         try Task.checkCancellation()
 
@@ -35,6 +38,8 @@ actor ShareOCRService {
             observation.topCandidates(1).first?.string
         }
     }
+
+    // MARK: - Private Methods
 
     private func imageOrientation(from source: CGImageSource) -> CGImagePropertyOrientation {
         guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],

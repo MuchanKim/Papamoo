@@ -4,7 +4,12 @@ import Testing
 
 @MainActor
 struct PaymentEmailExtractionMapperTests {
+
+    // MARK: - Properties
+
     private let mapper = PaymentEmailExtractionMapper()
+
+    // MARK: - Methods
 
     @Test("결제 완료 이메일을 구독 초안으로 구조화한다")
     func mapsCompletedPaymentEmail() throws {
@@ -161,6 +166,8 @@ struct PaymentEmailExtractionMapperTests {
         #expect(draft.billingCycle.value == .monthly)
         #expect(draft.firstPaymentDate.value != nil)
     }
+
+    // MARK: - Private Methods
 
     private func candidate(
         amountEvidence: String,

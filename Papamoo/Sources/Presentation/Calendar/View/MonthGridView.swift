@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct MonthGridView: View {
+
+    // MARK: - Properties
+
     let displayedMonth: Int
     let displayedYear: Int
     let dailyTotals: [Int: Decimal]
@@ -8,6 +11,7 @@ struct MonthGridView: View {
     @Binding var selectedDay: Int?
 
     private var calendar: Calendar { Calendar.current }
+
     private let weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
 
     private var firstWeekday: Int {
@@ -57,6 +61,8 @@ struct MonthGridView: View {
         }
         .padding(.horizontal, 14)
     }
+
+    // MARK: - Private Methods
 
     private func dayCell(for day: Int) -> some View {
         let columnIndex = (day + firstWeekday - 2) % 7

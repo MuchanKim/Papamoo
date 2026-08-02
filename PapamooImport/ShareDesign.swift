@@ -8,6 +8,8 @@ enum ShareColor {
     static let divider = PapamooColor.dividerSoft
 }
 
+// MARK: - Extensions
+
 extension Font {
     static var shareMeta: Font {
         .papamooMeta

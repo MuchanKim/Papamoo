@@ -5,8 +5,13 @@ import UniformTypeIdentifiers
 import UIKit
 
 struct CameraImagePicker: UIViewControllerRepresentable {
+
+    // MARK: - Callbacks
+
     let onImagePicked: (Data) -> Void
     let onCancel: () -> Void
+
+    // MARK: - Methods
 
     func makeCoordinator() -> Coordinator {
         Coordinator(onImagePicked: onImagePicked, onCancel: onCancel)
@@ -26,6 +31,9 @@ struct CameraImagePicker: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 
     final class Coordinator: NSObject, PHPickerViewControllerDelegate {
+
+        // MARK: - Properties
+
         private let onImagePicked: (Data) -> Void
         private let onCancel: () -> Void
         private var didFinish = false
@@ -34,6 +42,8 @@ struct CameraImagePicker: UIViewControllerRepresentable {
             self.onImagePicked = onImagePicked
             self.onCancel = onCancel
         }
+
+        // MARK: - Methods
 
         func makePhotoPicker() -> PHPickerViewController {
             var configuration = PHPickerConfiguration(photoLibrary: .shared())
@@ -67,6 +77,7 @@ struct CameraImagePicker: UIViewControllerRepresentable {
 }
 
 private final class CameraPreviewView: UIView {
+
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
     }

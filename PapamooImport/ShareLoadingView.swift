@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareLoadingView: View {
+
     @Bindable var viewModel: ShareImportViewModel
 
     var body: some View {

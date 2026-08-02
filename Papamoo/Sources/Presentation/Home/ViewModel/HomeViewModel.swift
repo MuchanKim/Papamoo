@@ -3,6 +3,9 @@ import SwiftData
 
 @Observable
 final class HomeViewModel {
+
+    // MARK: - Properties
+
     private let subscriptionStore: SubscriptionStore
     private let subscriptionService: SubscriptionService
 
@@ -24,14 +27,12 @@ final class HomeViewModel {
 
     private let exchangeRate = ExchangeRateManager.shared
 
-    /// 기준 통화 코드.
     var baseCurrency: String { exchangeRate.baseCurrency }
 
     var monthlyTotal: Decimal {
         paidThisMonth + remainingThisMonth
     }
 
-    /// 이번 달 이미 결제된 금액 (기준 통화 환산).
     var paidThisMonth: Decimal {
         subscriptions
             .filter { hasPaidBillingThisMonth($0) }
@@ -48,9 +49,13 @@ final class HomeViewModel {
         sortedByNextPayment
     }
 
+    // MARK: - Methods
+
     func deleteSubscription(withID id: PersistentIdentifier) async throws {
         try await subscriptionService.delete(id: id)
     }
+
+    // MARK: - Private Methods
 
     private func hasUpcomingBillingThisMonth(_ sub: Subscription) -> Bool {
         Calendar.current.isDate(sub.nextPaymentDate, equalTo: .now, toGranularity: .month)

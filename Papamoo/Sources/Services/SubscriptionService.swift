@@ -4,7 +4,9 @@ import SwiftData
 
 @MainActor
 final class SubscriptionService {
+
     struct Effects {
+
         let scheduleNotifications: (Subscription) -> Void
         let removeNotifications: (PersistentIdentifier) -> Void
         let notifyStoreChanged: () -> Void
@@ -22,6 +24,8 @@ final class SubscriptionService {
         )
     }
 
+    // MARK: - Properties
+
     private let context: ModelContext
     private let deletionStore: SubscriptionDeletionStore
     private let effects: Effects
@@ -35,6 +39,8 @@ final class SubscriptionService {
         self.deletionStore = deletionStore
         self.effects = effects
     }
+
+    // MARK: - Methods
 
     @discardableResult
     func create(from draft: SubscriptionDraft) throws -> Subscription {
@@ -89,6 +95,8 @@ final class SubscriptionService {
         effects.removeNotifications(id)
         effects.notifyStoreChanged()
     }
+
+    // MARK: - Private Methods
 
     private func apply(_ draft: SubscriptionDraft, to subscription: Subscription) {
         subscription.name = draft.name

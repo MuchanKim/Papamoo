@@ -1,6 +1,9 @@
 import CoreGraphics
 
 enum ShareCropLayout {
+
+    // MARK: - Methods
+
     static func aspectFitRect(imageSize: CGSize, containerSize: CGSize) -> CGRect {
         guard imageSize.width > 0, imageSize.height > 0 else { return .zero }
         let scale = min(containerSize.width / imageSize.width, containerSize.height / imageSize.height)
@@ -81,6 +84,8 @@ enum ShareCropLayout {
 
         return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     }
+
+    // MARK: - Private Methods
 
     private static func clamp(_ value: CGFloat, lowerBound: CGFloat, upperBound: CGFloat) -> CGFloat {
         min(max(value, lowerBound), upperBound)

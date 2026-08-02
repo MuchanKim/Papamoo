@@ -3,6 +3,9 @@ import SwiftData
 
 @Observable
 final class AddSubscriptionViewModel {
+
+    // MARK: - Properties
+
     private let subscriptionService: SubscriptionService
     private let exchangeRate = ExchangeRateManager.shared
 
@@ -15,15 +18,6 @@ final class AddSubscriptionViewModel {
 
     var baseCurrency: String { exchangeRate.baseCurrency }
     var supportedCurrencies: [String] { exchangeRate.supportedCurrencies }
-
-    func currencyLabel(for code: String) -> String {
-        "\(code) (\(exchangeRate.currencySymbol(for: code)))"
-    }
-
-    /// Preset prices are stored in KRW; convert to the user's base currency for display.
-    func presetDisplayAmount(_ preset: PresetService) -> Decimal {
-        exchangeRate.convertToBase(amount: preset.defaultAmount, from: "KRW")
-    }
 
     var name = ""
     var amount: Decimal = 0
@@ -66,12 +60,23 @@ final class AddSubscriptionViewModel {
         Subscription.isValid(name: name, amount: amount)
     }
 
+    // MARK: - Methods
+
+    func currencyLabel(for code: String) -> String {
+        "\(code) (\(exchangeRate.currencySymbol(for: code)))"
+    }
+
+    /// 프리셋 가격은 KRW로 저장되므로 사용자의 기준 통화로 변환해 표시한다.
+    func presetDisplayAmount(_ preset: PresetService) -> Decimal {
+        exchangeRate.convertToBase(amount: preset.defaultAmount, from: "KRW")
+    }
+
     func selectPreset(_ preset: PresetService) {
         selectedPreset = preset
         iconName = preset.iconName
         name = preset.name
         category = preset.category
-        // Preset prices are KRW-based; only auto-fill when base currency matches, otherwise let the user enter the local price.
+        // KRW 프리셋을 다른 통화 가격으로 단정할 수 없어 통화가 다르면 사용자가 직접 입력하게 한다.
         amount = currencyCode == "KRW" ? preset.defaultAmount : 0
     }
 

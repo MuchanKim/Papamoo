@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SubscriptionSourceDocumentView: View {
+
     let imageData: Data
 
     @State private var isExpanded = false

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ShareCropCanvasView: View {
+
+    // MARK: - Properties
+
     let image: UIImage
     @Binding var selection: CGRect
 
@@ -59,6 +62,8 @@ struct ShareCropCanvasView: View {
         .accessibilityLabel("Payment information selection")
         .accessibilityHint("Move the selection or drag a corner to resize it.")
     }
+
+    // MARK: - Private Methods
 
     private func moveGesture(in imageRect: CGRect) -> some Gesture {
         DragGesture()

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ShareBrandHeaderView: View {
+
+    // MARK: - Callbacks
+
     let closeAction: () -> Void
 
     var body: some View {

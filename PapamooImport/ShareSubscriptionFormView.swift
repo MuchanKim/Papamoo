@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareSubscriptionFormView: View {
+
     @Environment(\.locale) private var locale
 
     @Bindable var viewModel: ShareImportViewModel

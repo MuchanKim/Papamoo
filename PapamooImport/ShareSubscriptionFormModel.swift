@@ -4,6 +4,9 @@ import Observation
 @MainActor
 @Observable
 final class ShareSubscriptionFormModel {
+
+    // MARK: - Properties
+
     let supportedCurrencies = ["KRW", "USD", "JPY"]
 
     var name = ""
@@ -26,6 +29,8 @@ final class ShareSubscriptionFormModel {
         name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false &&
             amount.map { $0 > 0 } == true
     }
+
+    // MARK: - Methods
 
     func apply(_ draft: SubscriptionImportDraft) {
         name = draft.name.value ?? ""

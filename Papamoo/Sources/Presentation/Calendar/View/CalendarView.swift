@@ -2,6 +2,9 @@ import SwiftUI
 import SwiftData
 
 struct CalendarView: View {
+
+    // MARK: - Properties
+
     @Bindable var viewModel: CalendarViewModel
 
     var body: some View {
@@ -31,8 +34,6 @@ struct CalendarView: View {
             .toolbar(.hidden, for: .navigationBar)
         }
     }
-
-    // MARK: - Month Summary
 
     private var monthSummary: some View {
         HStack(alignment: .center, spacing: 16) {
@@ -86,7 +87,7 @@ struct CalendarView: View {
             .padding(.bottom, 12)
     }
 
-    // MARK: - Selected Day
+    // MARK: - Private Methods
 
     private func selectedDaySection(date: Date) -> some View {
         VStack(spacing: 0) {

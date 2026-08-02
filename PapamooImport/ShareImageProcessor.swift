@@ -4,6 +4,9 @@ import ImageIO
 import UniformTypeIdentifiers
 
 nonisolated enum ShareImageProcessor {
+
+    // MARK: - Methods
+
     @concurrent
     static func previewData(from data: Data, maxPixelSize: Int = 2_400) async throws -> Data {
         try Task.checkCancellation()
@@ -44,6 +47,8 @@ nonisolated enum ShareImageProcessor {
         try Task.checkCancellation()
         return try jpegData(from: croppedImage)
     }
+
+    // MARK: - Private Methods
 
     private static func downsampledImage(from data: Data, maxPixelSize: Int) throws -> CGImage {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {

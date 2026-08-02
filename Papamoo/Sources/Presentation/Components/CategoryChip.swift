@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CategoryChip: View {
+
     let title: LocalizedStringResource
     let isSelected: Bool
 

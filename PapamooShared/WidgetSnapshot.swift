@@ -19,6 +19,9 @@ nonisolated struct WidgetSubscriptionSnapshot: Codable, Equatable, Sendable {
 }
 
 nonisolated struct WidgetSnapshotStore: Sendable {
+
+    // MARK: - Properties
+
     static let fileName = "widget-snapshot.json"
 
     let fileURL: URL
@@ -26,6 +29,8 @@ nonisolated struct WidgetSnapshotStore: Sendable {
     init(containerURL: URL) {
         self.fileURL = containerURL.appending(path: Self.fileName)
     }
+
+    // MARK: - Methods
 
     func load() throws -> WidgetSnapshot? {
         guard FileManager.default.fileExists(atPath: fileURL.path) else {

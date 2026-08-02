@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareCropHandleView: View {
+
     let corner: ShareCropCorner
 
     var body: some View {

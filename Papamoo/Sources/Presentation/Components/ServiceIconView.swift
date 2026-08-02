@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ServiceIconView: View {
+
     let category: SubscriptionCategory
     var iconName: String? = nil
     var size: CGFloat = 40

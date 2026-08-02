@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareScanningView: View {
+
     @Bindable var viewModel: ShareImportViewModel
 
     var body: some View {

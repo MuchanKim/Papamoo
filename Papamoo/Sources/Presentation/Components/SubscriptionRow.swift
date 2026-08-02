@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SubscriptionRow: View {
+
     let subscription: Subscription
     let baseCurrency: String
     var showDday: Bool = false

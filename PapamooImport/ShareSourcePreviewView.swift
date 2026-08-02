@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareSourcePreviewView: View {
+
     let image: UIImage
     @Binding var isExpanded: Bool
 

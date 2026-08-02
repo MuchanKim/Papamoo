@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ShareCropView: View {
+
+    // MARK: - Properties
+
     @Bindable var viewModel: ShareImportViewModel
     @State private var selection: CGRect
 
@@ -51,6 +54,8 @@ struct ShareCropView: View {
         .padding(.top, 10)
         .padding(.bottom, 24)
     }
+
+    // MARK: - Private Methods
 
     private func applyCrop() {
         viewModel.applyCrop(selection)

@@ -2,6 +2,9 @@ import Foundation
 import FoundationModels
 
 nonisolated struct ShareFoundationModelService: Sendable {
+
+    // MARK: - Methods
+
     @concurrent
     func extractPayment(from ocrLines: [String]) async throws -> PaymentInterpreterResult {
         try Task.checkCancellation()
@@ -60,6 +63,8 @@ nonisolated struct ShareFoundationModelService: Sendable {
         try Task.checkCancellation()
         return .interpreted(response.content.candidate)
     }
+
+    // MARK: - Private Methods
 
     private func preparedOCRText(from lines: [String]) -> String {
         let text = lines

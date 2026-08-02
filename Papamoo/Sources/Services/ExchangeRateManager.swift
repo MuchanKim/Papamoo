@@ -1,14 +1,18 @@
 import Foundation
 
+// MARK: - Extensions
+
 extension UserDefaults {
     static let appGroup = UserDefaults(suiteName: AppGroup.identifier) ?? .standard
 }
 
 @Observable
 final class ExchangeRateManager {
+
+    // MARK: - Properties
+
     static let shared = ExchangeRateManager()
 
-    /// 기본 환율: 1 USD = N KRW, 1 USD = N JPY
     private static let defaultRatesFromUSD: [String: Double] = [
         "KRW": 1380,
         "JPY": 150,
@@ -22,7 +26,6 @@ final class ExchangeRateManager {
     var lastError: String?
     var isUsingFallbackRates = false
 
-    /// 1 USD = N 외화 (USD 기준).
     var ratesFromUSD: [String: Double] {
         didSet {
             if let data = try? JSONEncoder().encode(ratesFromUSD) {
@@ -59,6 +62,16 @@ final class ExchangeRateManager {
         self.baseCurrency = defaults.string(forKey: baseCurrencyKey) ?? "KRW"
     }
 
+    var krwPerUSD: Int {
+        Int(ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!)
+    }
+
+    var jpyPerUSD: Int {
+        Int(ratesFromUSD["JPY"] ?? Self.defaultRatesFromUSD["JPY"]!)
+    }
+
+    // MARK: - Methods
+
     func currencySymbol(for code: String) -> String {
         switch code {
         case "KRW": "₩"
@@ -68,59 +81,21 @@ final class ExchangeRateManager {
         }
     }
 
-    // MARK: - Display
-
-    /// 1 USD = ₩N
-    var krwPerUSD: Int {
-        Int(ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!)
-    }
-
-    /// 1 USD = ¥N
-    var jpyPerUSD: Int {
-        Int(ratesFromUSD["JPY"] ?? Self.defaultRatesFromUSD["JPY"]!)
-    }
-
-    // MARK: - Conversion
-
-    /// 임의의 통화 금액을 KRW로 환산.
-    private func toKRW(amount: Decimal, from code: String) -> Decimal {
-        switch code {
-        case "KRW": return amount
-        case "USD":
-            let rate = ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!
-            return amount * Decimal(rate)
-        case "JPY":
-            // 1 USD = krwRate KRW, 1 USD = jpyRate JPY
-            // → 1 JPY = krwRate / jpyRate KRW
-            let krwRate = ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!
-            let jpyRate = ratesFromUSD["JPY"] ?? Self.defaultRatesFromUSD["JPY"]!
-            return amount * Decimal(krwRate / jpyRate)
-        default: return amount
-        }
-    }
-
-    /// 임의의 통화 금액을 기준 통화로 환산.
     func convertToBase(amount: Decimal, from currencyCode: String) -> Decimal {
         guard currencyCode != baseCurrency else { return amount }
-        // 일단 KRW로 환산
         let krwAmount = toKRW(amount: amount, from: currencyCode)
-        // 기준 통화가 KRW면 그대로
         guard baseCurrency != "KRW" else { return krwAmount }
-        // KRW → 기준 통화
         let baseRate = ratesFromUSD[baseCurrency] ?? 1
         let krwRate = ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!
         return krwAmount * Decimal(baseRate / krwRate)
     }
 
-    /// 환율 수동 업데이트.
     func updateRate(for currencyCode: String, rate: Double) {
         var current = ratesFromUSD
         current[currencyCode] = rate
         ratesFromUSD = current
         lastUpdated = .now
     }
-
-    // MARK: - API
 
     func fetchIfStale(maxAge: TimeInterval = 24 * 60 * 60) async {
         if let last = lastUpdated, Date.now.timeIntervalSince(last) < maxAge {
@@ -154,6 +129,23 @@ final class ExchangeRateManager {
             isUsingFallbackRates = false
         } catch {
             applyFallback()
+        }
+    }
+
+    // MARK: - Private Methods
+
+    private func toKRW(amount: Decimal, from code: String) -> Decimal {
+        switch code {
+        case "KRW": return amount
+        case "USD":
+            let rate = ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!
+            return amount * Decimal(rate)
+        case "JPY":
+            // USD 기준 두 환율을 나누어 JPY의 KRW 교차 환율을 계산한다.
+            let krwRate = ratesFromUSD["KRW"] ?? Self.defaultRatesFromUSD["KRW"]!
+            let jpyRate = ratesFromUSD["JPY"] ?? Self.defaultRatesFromUSD["JPY"]!
+            return amount * Decimal(krwRate / jpyRate)
+        default: return amount
         }
     }
 

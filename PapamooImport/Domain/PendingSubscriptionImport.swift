@@ -2,6 +2,7 @@ import CoreGraphics
 import Foundation
 
 nonisolated struct PendingSubscriptionImport: Codable, Sendable {
+
     let id: UUID
     let name: String
     let amount: Decimal

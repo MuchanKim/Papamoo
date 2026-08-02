@@ -7,6 +7,9 @@ enum PaymentEmailMappingResult: Equatable {
 }
 
 struct PaymentEmailExtractionMapper {
+
+    // MARK: - Methods
+
     func map(
         _ extraction: PaymentEmailExtractionCandidate,
         ocrLines: [String]
@@ -46,6 +49,8 @@ struct PaymentEmailExtractionMapper {
 
         return draft.hasDetectedValue ? .completed(draft) : .insufficient
     }
+
+    // MARK: - Private Methods
 
     private func validatedServiceName(
         from extraction: PaymentEmailExtractionCandidate,

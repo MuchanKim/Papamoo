@@ -2,6 +2,9 @@ import SwiftUI
 import UIKit
 
 struct NotificationAuthorizationRow: View {
+
+    // MARK: - Properties
+
     let viewModel: SettingsViewModel
 
     var body: some View {
@@ -44,6 +47,8 @@ struct NotificationAuthorizationRow: View {
     private var notificationSettingsURL: URL? {
         URL(string: UIApplication.openNotificationSettingsURLString)
     }
+
+    // MARK: - Private Methods
 
     private func requestAuthorization() {
         Task {

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MonthlyTotalBar: View {
+
     let monthName: String
     let total: Decimal
     let currencyCode: String

@@ -4,6 +4,9 @@ import UserNotifications
 
 @Observable
 final class SettingsViewModel {
+
+    // MARK: - Properties
+
     private let modelContext: ModelContext
     private let exchangeRate = ExchangeRateManager.shared
 
@@ -75,6 +78,8 @@ final class SettingsViewModel {
         self.appLanguage = defaults.string(forKey: "appLanguage") ?? "system"
     }
 
+    // MARK: - Methods
+
     func currencyDisplayName(for code: String) -> String {
         switch code {
         case "KRW": "KRW (₩)"
@@ -107,6 +112,8 @@ final class SettingsViewModel {
             isShowingNotificationSchedulingError = true
         }
     }
+
+    // MARK: - Private Methods
 
     private func rescheduleNotifications() {
         do {

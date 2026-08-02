@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct AddSubscriptionDetailView: View {
+
+    // MARK: - Properties
+
     @Bindable var coordinator: AppCoordinator
     @Bindable var viewModel: AddSubscriptionViewModel
     @State private var isSaving = false
@@ -163,6 +166,8 @@ struct AddSubscriptionDetailView: View {
     private var addButtonTitle: LocalizedStringResource {
         isSaving ? "SAVING" : "ADD SUBSCRIPTION"
     }
+
+    // MARK: - Private Methods
 
     private func saveSubscription() {
         guard isSaving == false else { return }

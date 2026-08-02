@@ -7,6 +7,9 @@ struct NotificationManagerTests {
         "오늘의 설정 시각이 미래면 알림 시각을 반환한다",
         .bug("https://github.com/MuchanKim/Papamoo/issues/2")
     )
+
+    // MARK: - Methods
+
     func keepsConfiguredTimeLaterToday() throws {
         let calendar = try utcCalendar()
         let nextPaymentDate = try date(
@@ -73,6 +76,8 @@ struct NotificationManagerTests {
 
         #expect(result == nil)
     }
+
+    // MARK: - Private Methods
 
     private func utcCalendar() throws -> Calendar {
         var calendar = Calendar(identifier: .gregorian)

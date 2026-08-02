@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareNoteFieldView: View {
+
     @Binding var note: String
 
     var body: some View {

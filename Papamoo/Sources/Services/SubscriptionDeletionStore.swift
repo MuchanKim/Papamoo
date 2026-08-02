@@ -3,6 +3,7 @@ import SwiftData
 
 @ModelActor
 actor SubscriptionDeletionStore {
+
     enum DeletionError: LocalizedError {
         case subscriptionNotFound
 

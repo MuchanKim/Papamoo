@@ -5,6 +5,9 @@ import Testing
 
 @MainActor
 struct SubscriptionServiceTests {
+
+    // MARK: - Methods
+
     @Test("구독 생성 후 저장과 후속 작업을 실행한다")
     func createsSubscriptionAndRunsEffects() throws {
         let store = try makeStore()
@@ -79,6 +82,8 @@ struct SubscriptionServiceTests {
         #expect(removedIDs == [id])
         #expect(storeChangeCount == 1)
     }
+
+    // MARK: - Private Methods
 
     private func makeStore() throws -> TestStore {
         let directoryURL = FileManager.default.temporaryDirectory.appending(

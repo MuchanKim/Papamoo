@@ -3,6 +3,9 @@ import SwiftData
 import WidgetKit
 
 final class WidgetSnapshotSynchronizer {
+
+    // MARK: - Properties
+
     private let context: ModelContext
     private let store: WidgetSnapshotStore
     private let exchangeRate: ExchangeRateManager
@@ -16,6 +19,8 @@ final class WidgetSnapshotSynchronizer {
         self.store = store
         self.exchangeRate = exchangeRate
     }
+
+    // MARK: - Methods
 
     func synchronize(now: Date = .now, calendar: Calendar = .current) throws {
         let subscriptions = try context.fetch(FetchDescriptor<Subscription>())
@@ -57,6 +62,8 @@ final class WidgetSnapshotSynchronizer {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    // MARK: - Private Methods
+
     private func hasPaidBillingThisMonth(
         _ subscription: Subscription,
         now: Date,
@@ -71,6 +78,8 @@ final class WidgetSnapshotSynchronizer {
         return calendar.isDate(lastPayment, equalTo: now, toGranularity: .month)
     }
 }
+
+// MARK: - Extensions
 
 extension Notification.Name {
     static let subscriptionStoreDidChange = Notification.Name("subscriptionStoreDidChange")

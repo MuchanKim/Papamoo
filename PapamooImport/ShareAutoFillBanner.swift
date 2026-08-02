@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareAutoFillBanner: View {
+
     @Environment(\.locale) private var locale
 
     let mode: ShareImportFormMode
