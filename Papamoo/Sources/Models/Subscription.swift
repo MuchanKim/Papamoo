@@ -2,12 +2,14 @@ import CoreGraphics
 import Foundation
 import SwiftData
 
-enum PapamooSchemaV2: VersionedSchema {
-    static let versionIdentifier = Schema.Version(2, 0, 0)
+enum PapamooSchemaV3: VersionedSchema {
+
+    static let versionIdentifier = Schema.Version(3, 0, 0)
     static var models: [any PersistentModel.Type] { [Subscription.self] }
 
     @Model
     final class Subscription {
+
         var name: String
         var amount: Decimal
         var currencyCode: String
@@ -21,6 +23,7 @@ enum PapamooSchemaV2: VersionedSchema {
         var sourceCropY: Double?
         var sourceCropWidth: Double?
         var sourceCropHeight: Double?
+        var sourceImportID: UUID?
 
         init(
             name: String,
@@ -32,7 +35,8 @@ enum PapamooSchemaV2: VersionedSchema {
             note: String = "",
             iconName: String? = nil,
             sourceImageData: Data? = nil,
-            sourceCropRegion: CGRect? = nil
+            sourceCropRegion: CGRect? = nil,
+            sourceImportID: UUID? = nil
         ) {
             self.name = name
             self.amount = amount
@@ -47,13 +51,17 @@ enum PapamooSchemaV2: VersionedSchema {
             self.sourceCropY = sourceCropRegion.map { Double($0.minY) }
             self.sourceCropWidth = sourceCropRegion.map { Double($0.width) }
             self.sourceCropHeight = sourceCropRegion.map { Double($0.height) }
+            self.sourceImportID = sourceImportID
         }
     }
 }
 
-typealias Subscription = PapamooSchemaV2.Subscription
+typealias Subscription = PapamooSchemaV3.Subscription
+
+// MARK: - Extensions
 
 extension Subscription {
+
     var sourceCropRegion: CGRect? {
         guard let sourceCropX,
               let sourceCropY,

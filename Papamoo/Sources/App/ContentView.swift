@@ -1,23 +1,27 @@
 import SwiftUI
 
 struct ContentView: View {
+
+    // MARK: - Properties
+
     @Environment(\.scenePhase) private var scenePhase
     @Bindable var coordinator: AppCoordinator
-    let factory: ViewModelFactory
+    let appContainer: AppContainer
+    private let lifecycleSynchronizer: AppLifecycleSynchronizer
     @State private var homeViewModel: HomeViewModel
     @State private var calendarViewModel: CalendarViewModel
     @State private var settingsViewModel: SettingsViewModel
     @State private var synchronizationErrorMessage = ""
     @State private var isShowingSynchronizationError = false
 
-    init(coordinator: AppCoordinator, factory: ViewModelFactory) {
+    init(coordinator: AppCoordinator, appContainer: AppContainer) {
         self.coordinator = coordinator
-        self.factory = factory
-        // SwiftUI @State가 view identity 기반으로 인스턴스 lifecycle 관리.
-        // factory에서 한 번 생성, 이후 탭 전환에도 같은 인스턴스 유지 → 빈 데이터 깜빡임 없음.
-        _homeViewModel = State(wrappedValue: factory.makeHomeViewModel())
-        _calendarViewModel = State(wrappedValue: factory.makeCalendarViewModel())
-        _settingsViewModel = State(wrappedValue: factory.makeSettingsViewModel())
+        self.appContainer = appContainer
+        self.lifecycleSynchronizer = appContainer.makeAppLifecycleSynchronizer()
+        // 탭 전환 때 화면 모델을 다시 만들면 저장소 구독이 끊겨 빈 상태가 보일 수 있어 view identity에 묶어 유지한다.
+        _homeViewModel = State(wrappedValue: appContainer.makeHomeViewModel())
+        _calendarViewModel = State(wrappedValue: appContainer.makeCalendarViewModel())
+        _settingsViewModel = State(wrappedValue: appContainer.makeSettingsViewModel())
     }
 
     var body: some View {
@@ -26,7 +30,7 @@ struct ContentView: View {
                 HomeView(
                     coordinator: coordinator,
                     viewModel: homeViewModel,
-                    factory: factory
+                    appContainer: appContainer
                 )
             }
             Tab("Calendar", systemImage: "calendar", value: .calendar) {
@@ -41,10 +45,7 @@ struct ContentView: View {
         .task(id: scenePhase) {
             guard scenePhase == .active else { return }
             do {
-                try await factory.importPendingSubscriptions()
-                try factory.refreshSubscriptions()
-                try factory.synchronizeNotifications()
-                try factory.synchronizeWidgetSnapshot()
+                try await lifecycleSynchronizer.synchronizeOnActivation()
             } catch is CancellationError {
                 return
             } catch {
@@ -65,10 +66,11 @@ struct ContentView: View {
         }
     }
 
+    // MARK: - Private Methods
+
     private func synchronizeVisibleData() {
         do {
-            try factory.refreshSubscriptions()
-            try factory.synchronizeWidgetSnapshot()
+            try lifecycleSynchronizer.synchronizeAfterStoreChange()
         } catch {
             synchronizationErrorMessage = error.localizedDescription
             isShowingSynchronizationError = true
@@ -77,7 +79,7 @@ struct ContentView: View {
 
     private func synchronizeWidgetSnapshot() {
         do {
-            try factory.synchronizeWidgetSnapshot()
+            try lifecycleSynchronizer.synchronizeWidgetSnapshot()
         } catch {
             synchronizationErrorMessage = error.localizedDescription
             isShowingSynchronizationError = true

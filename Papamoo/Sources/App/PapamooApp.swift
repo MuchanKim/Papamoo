@@ -3,14 +3,16 @@ import SwiftData
 
 @main
 struct PapamooApp: App {
+
+    @State private var coordinator = AppCoordinator()
     private let modelContainer: ModelContainer
-    private let viewModelFactory: ViewModelFactory
+    private let appContainer: AppContainer
 
     init() {
-        // 1.0에서 appLanguage만 저장하고 AppleLanguages는 동기화하지 않은 빌드 대비 — 다음 launch에 반영
+        // 1.0이 appLanguage만 저장했던 호환 문제를 다음 실행부터 복구한다.
         LanguagePreference.apply(UserDefaults.appGroup.string(forKey: "appLanguage") ?? "system")
 
-        let schema = Schema(versionedSchema: PapamooSchemaV2.self)
+        let schema = Schema(versionedSchema: PapamooSchemaV3.self)
         let config = ModelConfiguration(
             schema: schema,
             groupContainer: .identifier(AppGroup.identifier),
@@ -33,7 +35,7 @@ struct PapamooApp: App {
         ) else {
             fatalError("Failed to access the Papamoo App Group container")
         }
-        self.viewModelFactory = ViewModelFactory(
+        self.appContainer = AppContainer(
             modelContainer: container,
             widgetSnapshotStore: WidgetSnapshotStore(containerURL: appGroupURL)
         )
@@ -42,8 +44,8 @@ struct PapamooApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(
-                coordinator: AppCoordinator(),
-                factory: viewModelFactory
+                coordinator: coordinator,
+                appContainer: appContainer
             )
             .task {
                 await ExchangeRateManager.shared.fetchIfStale()

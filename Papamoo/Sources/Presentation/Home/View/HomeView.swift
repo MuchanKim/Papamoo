@@ -2,9 +2,12 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
+
+    // MARK: - Properties
+
     @Bindable var coordinator: AppCoordinator
     @Bindable var viewModel: HomeViewModel
-    let factory: ViewModelFactory
+    let appContainer: AppContainer
     @State private var isShowingAddActions = false
     @State private var deletionErrorMessage = ""
     @State private var isShowingDeletionError = false
@@ -59,7 +62,7 @@ struct HomeView: View {
             .sheet(isPresented: $coordinator.isShowingAddSheet) {
                 AddSubscriptionSearchView(
                     coordinator: coordinator,
-                    viewModel: factory.makeAddSubscriptionViewModel()
+                    viewModel: appContainer.makeAddSubscriptionViewModel()
                 )
             }
             .fullScreenCover(
@@ -74,7 +77,7 @@ struct HomeView: View {
             }
             .sheet(item: $coordinator.imageImportSelection) { selection in
                 ShareRootView(
-                    viewModel: factory.makeImageImportViewModel(
+                    viewModel: appContainer.makeImageImportViewModel(
                         imageData: selection.data,
                         onComplete: coordinator.dismissImageImport,
                         onCancel: coordinator.dismissImageImport
@@ -84,7 +87,7 @@ struct HomeView: View {
             .sheet(item: $coordinator.selectedSubscription) { subscription in
                 EditSubscriptionView(
                     subscription: subscription,
-                    viewModel: factory.makeEditSubscriptionViewModel(
+                    viewModel: appContainer.makeEditSubscriptionViewModel(
                         subscription: subscription
                     )
                 )
@@ -113,6 +116,8 @@ struct HomeView: View {
         .padding(.top, 6)
         .padding(.trailing, 16)
     }
+
+    // MARK: - Private Methods
 
     private func addActionButton(
         systemName: String,
@@ -284,6 +289,8 @@ struct HomeView: View {
         return formatter.string(from: .now).uppercased()
     }
 }
+
+// MARK: - Extensions
 
 private extension View {
     func homeListRow() -> some View {

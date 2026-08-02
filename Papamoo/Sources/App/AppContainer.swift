@@ -1,29 +1,50 @@
 import Foundation
 import SwiftData
 
-/// ViewModel 생성 책임을 갖는 컴포지션 루트.
-/// AppCoordinator(navigation 책임)와 분리되어, 각자 단일 책임 원칙을 만족한다.
-final class ViewModelFactory {
+/// 화면들이 같은 저장소와 서비스 인스턴스를 공유하도록 앱 전역 의존성을 한 번만 조립한다.
+final class AppContainer {
+
+    // MARK: - Properties
+
     private let modelContext: ModelContext
     private let subscriptionStore: SubscriptionStore
     private let subscriptionService: SubscriptionService
-    private let pendingImportStore: PendingSubscriptionImportStore
-    private let widgetSnapshotSynchronizer: WidgetSnapshotSynchronizer
+    private let lifecycleSynchronizer: AppLifecycleSynchronizer
 
     init(modelContainer: ModelContainer, widgetSnapshotStore: WidgetSnapshotStore) {
-        self.modelContext = modelContainer.mainContext
-        self.subscriptionStore = SubscriptionStore(context: modelContainer.mainContext)
+        let modelContext = modelContainer.mainContext
+        let subscriptionStore = SubscriptionStore(context: modelContext)
         let deletionStore = SubscriptionDeletionStore(modelContainer: modelContainer)
-        self.subscriptionService = SubscriptionService(
-            context: modelContainer.mainContext,
+        let subscriptionService = SubscriptionService(
+            context: modelContext,
             deletionStore: deletionStore
         )
-        self.pendingImportStore = PendingSubscriptionImportStore(modelContainer: modelContainer)
-        self.widgetSnapshotSynchronizer = WidgetSnapshotSynchronizer(
-            context: modelContainer.mainContext,
+        let pendingImportStore = PendingSubscriptionImportStore(modelContainer: modelContainer)
+        let widgetSnapshotSynchronizer = WidgetSnapshotSynchronizer(
+            context: modelContext,
             store: widgetSnapshotStore
         )
+
+        self.modelContext = modelContext
+        self.subscriptionStore = subscriptionStore
+        self.subscriptionService = subscriptionService
+        self.lifecycleSynchronizer = AppLifecycleSynchronizer(
+            operations: .init(
+                refreshSubscriptions: subscriptionStore.refresh,
+                importPendingSubscriptions: {
+                    _ = try await pendingImportStore.importPendingSubscriptions()
+                },
+                synchronizeNotifications: {
+                    try NotificationManager.rescheduleAll(in: modelContext)
+                },
+                synchronizeWidgetSnapshot: {
+                    try widgetSnapshotSynchronizer.synchronize()
+                }
+            )
+        )
     }
+
+    // MARK: - Methods
 
     func makeHomeViewModel() -> HomeViewModel {
         HomeViewModel(
@@ -68,22 +89,12 @@ final class ViewModelFactory {
         )
     }
 
-    func importPendingSubscriptions() async throws {
-        _ = try await pendingImportStore.importPendingSubscriptions()
-    }
-
-    func refreshSubscriptions() throws {
-        try subscriptionStore.refresh()
-    }
-
-    func synchronizeWidgetSnapshot() throws {
-        try widgetSnapshotSynchronizer.synchronize()
-    }
-
-    func synchronizeNotifications() throws {
-        try NotificationManager.rescheduleAll(in: modelContext)
+    func makeAppLifecycleSynchronizer() -> AppLifecycleSynchronizer {
+        lifecycleSynchronizer
     }
 }
+
+// MARK: - Extensions
 
 private extension SubscriptionDraft {
     init(record: ShareSubscriptionRecord) {
