@@ -6,6 +6,9 @@ import UIKit
 @MainActor
 @Observable
 final class ShareImportViewModel {
+
+    // MARK: - Properties
+
     private static let logger = Logger(
         subsystem: "com.moolab.Papamoo.ShareExtension",
         category: "PaymentImport"
@@ -42,6 +45,17 @@ final class ShareImportViewModel {
 
     var selectedPreviewImage: UIImage? {
         analysisPreviewImage ?? previewImage
+    }
+
+    var preventsInteractiveDismissal: Bool {
+        if isSaving || isSaved { return true }
+
+        switch phase {
+        case .loading, .preparingCrop, .scanning:
+            return true
+        case .review, .crop, .form, .failed:
+            return false
+        }
     }
 
     private init(
@@ -92,6 +106,8 @@ final class ShareImportViewModel {
             cancellationAction: onCancel
         )
     }
+
+    // MARK: - Methods
 
     func loadInputIfNeeded() async {
         guard didLoadInput == false else { return }
@@ -283,14 +299,27 @@ final class ShareImportViewModel {
     }
 
     func cancel() {
+        stopWork()
+        cancellationAction()
+    }
+
+    func stopWork() {
         loadTask?.cancel()
         cropTask?.cancel()
         analysisTask?.cancel()
         saveTask?.cancel()
         completionTask?.cancel()
+        loadTask = nil
+        cropTask = nil
+        analysisTask = nil
+        saveTask = nil
+        completionTask = nil
+        isSaving = false
+        isSaved = false
         discardSessionData()
-        cancellationAction()
     }
+
+    // MARK: - Private Methods
 
     private func applyDraftToForm() {
         form.apply(draft)

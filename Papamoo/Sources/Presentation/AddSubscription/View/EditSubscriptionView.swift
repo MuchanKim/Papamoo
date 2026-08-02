@@ -2,13 +2,21 @@ import SwiftUI
 import SwiftData
 
 struct EditSubscriptionView: View {
+
+    // MARK: - Properties
+
     @Environment(\.dismiss) private var dismiss
     let subscription: Subscription
-    @Bindable var viewModel: AddSubscriptionViewModel
+    @State private var viewModel: AddSubscriptionViewModel
     @State private var isSaving = false
     @State private var isDeleting = false
     @State private var isShowingOperationError = false
     @State private var operationErrorMessage = ""
+
+    init(subscription: Subscription, viewModel: AddSubscriptionViewModel) {
+        self.subscription = subscription
+        _viewModel = State(initialValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {
@@ -181,6 +189,8 @@ struct EditSubscriptionView: View {
         .padding(.horizontal, 16)
         .padding(.top, 24)
     }
+
+    // MARK: - Private Methods
 
     private func saveSubscription() {
         guard isSaving == false, isDeleting == false else { return }

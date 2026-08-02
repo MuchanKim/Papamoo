@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShareRootView: View {
+
     @State private var viewModel: ShareImportViewModel
 
     init(viewModel: ShareImportViewModel) {
@@ -35,6 +36,8 @@ struct ShareRootView: View {
         .task {
             await viewModel.loadInputIfNeeded()
         }
+        .interactiveDismissDisabled(viewModel.preventsInteractiveDismissal)
+        .onDisappear(perform: viewModel.stopWork)
         .alert("Couldn’t save the subscription", isPresented: $viewModel.isShowingSaveError) {
             Button("OK", role: .cancel) {}
         } message: {
