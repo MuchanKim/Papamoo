@@ -63,7 +63,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		D111D9F92F9FA18700253ADA /* PapamooWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PapamooWidgetExtension.entitlements; sourceTree = "<group>"; };
 		D1E08ECA2F9DF6D600283B24 /* Papamoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Papamoo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1E08ED72F9DF6D700283B24 /* PapamooTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapamooTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1E08EE12F9DF6D700283B24 /* PapamooUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapamooUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -228,7 +227,6 @@
 		D1E08EC12F9DF6D600283B24 = {
 			isa = PBXGroup;
 			children = (
-				D111D9F92F9FA18700253ADA /* PapamooWidgetExtension.entitlements */,
 				D1E08ECC2F9DF6D600283B24 /* Papamoo */,
 				D3A000000000000000000001 /* PapamooShared */,
 				D2A000000000000000000003 /* PapamooImport */,
