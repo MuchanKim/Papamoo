@@ -10,7 +10,9 @@ struct PapamooApp: App {
 
     init() {
         // 1.0이 appLanguage만 저장했던 호환 문제를 다음 실행부터 복구한다.
-        LanguagePreference.apply(UserDefaults.appGroup.string(forKey: "appLanguage") ?? "system")
+        LanguagePreference.apply(
+            UserDefaults.appGroup.string(forKey: "appLanguage") ?? LanguagePreference.defaultSelection
+        )
 
         let schema = Schema(versionedSchema: PapamooSchemaV3.self)
         let config = ModelConfiguration(

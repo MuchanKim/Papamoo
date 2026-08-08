@@ -75,7 +75,7 @@ final class SettingsViewModel {
         self.isRemindThreeDaysBefore = defaults.bool(forKey: "isRemindThreeDaysBefore")
         self.notificationHour = defaults.object(forKey: "notificationHour") as? Int ?? 9
         self.weekStartsOnMonday = defaults.object(forKey: "weekStartsOnMonday") as? Bool ?? true
-        self.appLanguage = defaults.string(forKey: "appLanguage") ?? "system"
+        self.appLanguage = defaults.string(forKey: "appLanguage") ?? LanguagePreference.defaultSelection
     }
 
     // MARK: - Methods

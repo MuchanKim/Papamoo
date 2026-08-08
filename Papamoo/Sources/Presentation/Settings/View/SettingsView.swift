@@ -41,7 +41,7 @@ struct SettingsView: View {
     /// 실행 중인 Locale은 이전 언어이므로 재시작 안내만 사용자가 방금 고른 언어에서 직접 조회한다.
     private var alertBundle: Bundle {
         let code = viewModel.appLanguage
-        guard code != "system",
+        guard code != LanguagePreference.defaultSelection,
               let path = Bundle.main.path(forResource: code, ofType: "lproj"),
               let bundle = Bundle(path: path)
         else { return .main }
@@ -97,7 +97,7 @@ struct SettingsView: View {
     private var languageSection: some View {
         Section("Language") {
             Picker(selection: $viewModel.appLanguage) {
-                Text("System").tag("system")
+                Text("System").tag(LanguagePreference.defaultSelection)
                 Text("English").tag("en")
                 Text("한국어").tag("ko")
                 Text("日本語").tag("ja")
