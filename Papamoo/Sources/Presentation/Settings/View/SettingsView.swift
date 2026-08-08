@@ -108,7 +108,7 @@ struct SettingsView: View {
     }
 
     private var aboutSection: some View {
-        Section("About") {
+        Section {
             LabeledContent {
                 Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0")
             } label: {
@@ -124,6 +124,16 @@ struct SettingsView: View {
                     Image(systemName: "chart.line.uptrend.xyaxis")
                 }
             }
+        } header: {
+            Text("About")
+        } footer: {
+            Link(destination: URL(string: "https://moolab.io/en/apps/papamoo/privacy")!) {
+                Text("Privacy Policy")
+                    .underline()
+            }
+            .font(.footnote)
+            .foregroundStyle(PapamooColor.accent)
+            .frame(maxWidth: .infinity, minHeight: 44)
         }
     }
 }
